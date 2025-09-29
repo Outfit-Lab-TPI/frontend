@@ -86,6 +86,7 @@ button:focus-visible {
 }
 
 .header {
+  height: 60px;
   width: 100%;
   position: sticky;
   top: 0;
@@ -161,7 +162,7 @@ button:focus-visible {
 
 .prenda-image {
   flex: 1;
-  background-color: var(--white);
+  background-color: var(--black);
   border-radius: 6px;
   margin-bottom: 8px;
   display: flex;

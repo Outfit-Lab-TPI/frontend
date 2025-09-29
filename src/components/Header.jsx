@@ -10,11 +10,11 @@ function Header() {
       padding: '0 20px',
       height: '60px',
     }}>
-      <Link to="/home" style={{ textDecoration: 'none' }}>
+      <Link to="/home" style={{ textDecoration: 'none', height: 'fit-content', alignItems: 'center', display: 'flex' }}>
         <img
-          src="/vite.svg"
+          src="/isologo.svg"
           alt="Outfit Lab Logo"
-          style={{ height: '32px', width: '32px' }}
+          style={{ height: '40px' }}
         />
       </Link>
 

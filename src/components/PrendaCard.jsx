@@ -6,9 +6,9 @@ function PrendaCard({ prenda, isSelected, onSelect }) {
     >
       <div className="prenda-image">
         <img
-          src={prenda.imagen || '/vite.svg'}
+          src={prenda.imagen || '/isotipo.svg'}
           alt={prenda.nombre}
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          style={{ width: '80%', height: '80%', objectFit: 'cover' }}
         />
       </div>
       <div className="prenda-info">
