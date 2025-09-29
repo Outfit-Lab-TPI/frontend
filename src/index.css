@@ -96,3 +96,137 @@ button:focus-visible {
   width: 100%;
   margin-top: auto;
 }
+
+/* Home Layout */
+.home-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  height: 100%;
+  padding: 0 8rem;
+}
+
+.prendas-section {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.prendas-section h2 {
+  color: var(--white);
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.prendas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Prenda Card Styles */
+.prenda-card {
+  background-color: var(--gray);
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid transparent;
+  aspect-ratio: 3/4;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-width: 180px;
+}
+
+.prenda-card:hover {
+  background-color: var(--secondary);
+  transform: translateY(-1px);
+}
+
+.prenda-card.selected {
+  border-color: var(--tertiary);
+  background-color: var(--secondary);
+}
+
+.prenda-image {
+  flex: 1;
+  background-color: var(--white);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.prenda-info {
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.prenda-info h3 {
+  color: var(--white);
+  font-size: 0.75rem;
+  margin: 0 0 3px 0;
+  line-height: 1.2;
+}
+
+.prenda-info p {
+  color: var(--white);
+  font-size: 0.65rem;
+  margin: 0;
+  opacity: 0.8;
+  line-height: 1.1;
+}
+
+/* Probador Virtual Styles */
+.canvas-container {
+  width: 100%;
+  height: 80vh;
+  overflow: hidden;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .home-container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .prendas-grid {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+  }
+
+  .canvas-container {
+    height: 60vh;
+  }
+
+  .prenda-info h3 {
+    font-size: 0.7rem;
+  }
+
+  .prenda-info p {
+    font-size: 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .prendas-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+  }
+}
