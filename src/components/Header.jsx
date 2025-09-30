@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { User } from 'lucide-react'
+import { User, Wifi } from 'lucide-react'
 
 function Header() {
   return (
@@ -18,21 +18,39 @@ function Header() {
         />
       </Link>
 
-      <Link to="/profile" style={{ textDecoration: 'none' }}>
-        <div style={{
-          width: '40px',
-          height: '40px',
-          borderRadius: '50%',
-          backgroundColor: 'var(--secondary)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          transition: 'background-color 0.3s'
-        }}>
-          <User size={20} color="var(--white)" />
-        </div>
-      </Link>
+      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+        <Link to="/test-connection" style={{ textDecoration: 'none' }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            backgroundColor: '#2196f3',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            transition: 'background-color 0.3s'
+          }}>
+            <Wifi size={20} color="white" />
+          </div>
+        </Link>
+
+        <Link to="/profile" style={{ textDecoration: 'none' }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            backgroundColor: 'var(--secondary)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            transition: 'background-color 0.3s'
+          }}>
+            <User size={20} color="var(--white)" />
+          </div>
+        </Link>
+      </div>
     </header>
   )
 }
