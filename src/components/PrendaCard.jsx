@@ -3,7 +3,7 @@ function PrendaCard({ prenda, isSelected, onSelect }) {
     <div
       className={`prenda-card ${isSelected ? 'selected' : ''}`}
       onClick={() => onSelect(prenda.id)}
-    >
+      >
       <div className="prenda-image">
         <img
           src={prenda.imagen || '/isotipo.svg'}
@@ -18,5 +18,4 @@ function PrendaCard({ prenda, isSelected, onSelect }) {
     </div>
   );
 }
-
 export default PrendaCard;
