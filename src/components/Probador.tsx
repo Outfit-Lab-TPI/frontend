@@ -4,7 +4,7 @@ import { OrbitControls, Environment } from '@react-three/drei';
 import Model from './Model';
 
 interface ProbadorVirtualProps {
-  prendaSeleccionada: string | null;
+  prendaSeleccionada: string[];
 }
 
 function ProbadorVirtual({ prendaSeleccionada }: ProbadorVirtualProps) {
@@ -30,8 +30,12 @@ function ProbadorVirtual({ prendaSeleccionada }: ProbadorVirtualProps) {
             <meshStandardMaterial color="var(--secondary)" transparent opacity={0.3} />
           </mesh>
 
-          <Model url="/avatars/avatar-masculino-1.glb" scale={3} />
-          {prendaSeleccionada === 'traje-1' && <Model url="/prendas/traje-1.glb" scale={3} position={[0, 0, 0]} />}
+
+          {prendaSeleccionada?.includes('remera') && <Model url="/avatars/blue+shirted+person+3d+model.glb" scale={2} position={[0, 2.5, 0]} />}
+          {prendaSeleccionada?.includes('pantalon') && <Model url="/avatars/jogger+pants+3d+model.glb" scale={2} position={[0, 1, 0]} />}
+          {prendaSeleccionada?.includes('buzo') && <Model url="/avatars/buzoVioleta.glb" scale={2} position={[0, 2.5, 0]} />}
+          
+
         </Canvas>
       </div>
 

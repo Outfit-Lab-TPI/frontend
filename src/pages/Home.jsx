@@ -3,39 +3,44 @@ import ProbadorVirtual from "../components/Probador";
 import PrendaCard from "../components/PrendaCard";
 
 function Home() {
-  const [prendaSeleccionada, setPrendaSeleccionada] = useState(null);
 
-  const prendas = [
+  const [prendasSeleccionadas, setPrendasSeleccionadas] = useState([]);
+
+ const prendas = [
     {
-      id: 'traje-1',
-      nombre: 'Traje Formal',
+      id: 'remera',
+      nombre: 'remera azul casual',
       tipo: 'Conjunto',
       imagen: null,
       modelUrl: '/prendas/traje-1.glb'
     },
     {
-      id: 'outfit-2',
-      nombre: 'Casual Verano',
+      id: 'pantalon',
+      nombre: 'pantalon deportivo',
       tipo: 'Conjunto',
       imagen: null,
       modelUrl: null
     },
     {
-      id: 'outfit-3',
+      id: 'buzo',
       nombre: 'Business',
       tipo: 'Formal',
       imagen: null,
       modelUrl: null
     },
-    
+
   ];
 
+
+
   const handlePrendaSelect = (prendaId) => {
-    if (prendaSeleccionada === prendaId) {
-      setPrendaSeleccionada(null);
-    } else {
-      setPrendaSeleccionada(prendaId);
-    }
+    setPrendasSeleccionadas(prevSeleccion => {
+      if (prevSeleccion.includes(prendaId)) {
+        return prevSeleccion.filter(id => id !== prendaId);
+      } else {
+        return [...prevSeleccion, prendaId];
+      }
+    });
   };
 
   return (
@@ -47,7 +52,7 @@ function Home() {
             <PrendaCard
               key={prenda.id}
               prenda={prenda}
-              isSelected={prendaSeleccionada === prenda.id}
+              isSelected={prendasSeleccionadas.includes(prenda.id)}
               onSelect={handlePrendaSelect}
             />
           ))}
@@ -55,7 +60,7 @@ function Home() {
       </div>
 
       <div className="avatar-section">
-        <ProbadorVirtual prendaSeleccionada={prendaSeleccionada} />
+        <ProbadorVirtual prendaSeleccionada={prendasSeleccionadas} />
       </div>
     </div>
   );
