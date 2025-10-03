@@ -7,7 +7,11 @@ interface ProbadorVirtualProps {
   prendaSeleccionada: string[];
 }
 
+
 function ProbadorVirtual({ prendaSeleccionada }: ProbadorVirtualProps) {
+
+  const mostrarTorso = !prendaSeleccionada?.includes('remera') && !prendaSeleccionada?.includes('buzo');
+  const mostrarPiernas = !prendaSeleccionada?.includes('pantalon');
 
   return (
     <>
@@ -30,15 +34,24 @@ function ProbadorVirtual({ prendaSeleccionada }: ProbadorVirtualProps) {
             <meshStandardMaterial color="var(--secondary)" transparent opacity={0.3} />
           </mesh>
 
+          {mostrarTorso && (
+            <Model
+             url="/avatars/defaultTorso.glb"
+              scale={[2,2.3,2.2]}
+              position={[-0.06, 2.55,0]}
+              color="rgba(255, 255, 255, 1)" // Puedes cambiar este valor por el color que prefieras
+            />
+          )}
+          {mostrarPiernas && (
+            <Model url="/avatars/human+legs+3d+model.glb" scale={[1.6, 2, 1.6]} position={[0, 1.05, 0]} />
+          )}
 
-          {prendaSeleccionada?.includes('remera') && <Model url="/avatars/blue+shirted+person+3d+model.glb" scale={2} position={[0, 2.5, 0]} />}
-          {prendaSeleccionada?.includes('pantalon') && <Model url="/avatars/jogger+pants+3d+model.glb" scale={2} position={[0, 1, 0]} />}
-          {prendaSeleccionada?.includes('buzo') && <Model url="/avatars/buzoVioleta.glb" scale={2} position={[0, 2.5, 0]} />}
-          
+          {prendaSeleccionada?.includes('remera') && <Model url="/avatars/blue+shirted+person+3d+model.glb" scale={[2,2,2]} position={[0, 2.65, 0]} />}
+          {prendaSeleccionada?.includes('pantalon') && <Model url="/avatars/jogger+pants+3d+model.glb" scale={[2,2,2]} position={[0, 1.1, 0]} />}
+          {prendaSeleccionada?.includes('buzo') && <Model url="/avatars/buzoVioleta.glb" scale={[2,2,2]} position={[-0.05, 2.65, 0]} />}
 
         </Canvas>
       </div>
-
     </>
   );
 }
