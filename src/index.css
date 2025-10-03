@@ -1,11 +1,13 @@
+@import "tailwindcss";
+
 :root {
   /* Color Palette */
   --primary: #230636;
   --secondary: #926490;
-  --tertiary: #E3C18A;
-  --white: #FFFCF5;
+  --tertiary: #e3c18a;
+  --white: #fffcf5;
   --gray: #858182;
-  --black: #0A050E;
+  --black: #0a050e;
 
   /* Typography */
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -25,7 +27,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
