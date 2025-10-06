@@ -12,34 +12,6 @@ const tripoClient = axios.create({
 
 // API de Tripo3D (a través de nuestro backend)
 export const tripoAPI = {
-  // Crear tarea de text-to-model
-  createTextToModel: async (prompt, options = {}) => {
-    try {
-      const response = await tripoClient.post('/text-to-model', {
-        prompt: prompt,
-        ...options
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error creating text-to-model task:', error);
-      throw error;
-    }
-  },
-
-  // Crear tarea de image-to-model
-  createImageToModel: async (imageUrl, options = {}) => {
-    try {
-      const response = await tripoClient.post('/image-to-model', {
-        imageUrl: imageUrl,
-        ...options
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error creating image-to-model task:', error);
-      throw error;
-    }
-  },
-
   // Crear tarea de multiview-to-model (múltiples imágenes)
   createMultiviewToModel: async (imageUrls, options = {}) => {
     try {
@@ -111,12 +83,21 @@ export const tripoAPI = {
   },
 
   // Generar modelo directamente desde archivos
-  generateFromFiles: async (files) => {
+  generateFromFiles: async (filesWithPositions) => {
     try {
       const formData = new FormData();
-      files.forEach((file) => {
-        formData.append('files', file);
-      });
+
+      // Si recibimos un objeto con posiciones, las enviamos identificadas
+      if (typeof filesWithPositions === 'object' && !Array.isArray(filesWithPositions)) {
+        Object.entries(filesWithPositions).forEach(([position, file]) => {
+          formData.append(position, file);
+        });
+      } else {
+        // Compatibilidad con el formato anterior (array)
+        filesWithPositions.forEach((file) => {
+          formData.append('files', file);
+        });
+      }
 
       const response = await axios.post('http://localhost:8080/api/garments/generate', formData, {
         headers: {

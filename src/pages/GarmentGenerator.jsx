@@ -72,7 +72,19 @@ function GarmentGenerator() {
       addLog("🚀 Iniciando generación de modelo 3D...");
       addLog(`📸 Total de imágenes: ${validFiles.length}`);
 
-      const createResponse = await tripoAPI.generateFromFiles(validFiles);
+      // Crear objeto con posiciones identificadas
+      const positionMap = ["back", "front", "left", "right"];
+      const filesWithPositions = {};
+
+      imageFiles.forEach((file, index) => {
+        if (file) {
+          filesWithPositions[positionMap[index]] = file;
+        }
+      });
+
+      addLog(`📍 Posiciones: ${Object.keys(filesWithPositions).join(", ")}`);
+
+      const createResponse = await tripoAPI.generateFromFiles(filesWithPositions);
 
       if (createResponse.code !== 0) {
         throw new Error("Error al crear la tarea en Tripo");
@@ -101,6 +113,8 @@ function GarmentGenerator() {
       try {
         const result = await tripoAPI.getTaskStatus(taskId);
         const newStatus = result.data.status;
+
+        console.log('result', result);
 
         console.log(`Polling... Status: ${newStatus}`);
         addLog(`🔄 Estado: ${newStatus}`);
@@ -146,7 +160,7 @@ function GarmentGenerator() {
       if (status !== "success") {
         addLog("⏱️ Tiempo máximo alcanzado. Puedes consultar manualmente.");
       }
-    }, 180000); // 3 minutos
+    }, 360000); // 6 minutos
   };
 
   const handleDownload = async () => {
