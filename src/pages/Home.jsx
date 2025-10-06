@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from 'react-router-dom';
 import ProbadorVirtual from "../components/Probador";
-import TestProbadorVirtual from "../components/TestProbador";
 import PrendaCard from "../components/PrendaCard";
 
 function Home() {
@@ -51,6 +50,12 @@ function Home() {
           >
             👕 Avatars Showroom
           </Link>
+          <Link 
+            to="/garment-generator"
+            className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 flex items-center gap-2"
+          >
+            👕 Nueva prenda
+          </Link>
         <div className="prendas-grid">
           {prendas.map(prenda => (
             <PrendaCard
@@ -66,9 +71,7 @@ function Home() {
       <div className="avatar-section">
         <ProbadorVirtual prendaSeleccionada={prendasSeleccionadas} />
       </div>
-      <div className="avatar-section">
-        <TestProbadorVirtual />
-      </div>
+
     </div>
   );
 }
