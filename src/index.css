@@ -10,8 +10,9 @@
   --black: #0a050e;
 
   /* Typography */
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Bebas Neue", system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
+  letter-spacing: 0.5px;
   font-weight: 400;
 
   color: var(--white);
@@ -45,6 +46,8 @@ body {
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
+  max-width: 2000px;
+  margin: 0 auto;
 }
 
 a {
@@ -85,7 +88,6 @@ button:focus-visible {
 .main-content {
   flex: 1;
   width: 100%;
-  padding: 20px;
 }
 
 .header {
