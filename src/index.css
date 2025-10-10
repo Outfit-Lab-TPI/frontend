@@ -80,6 +80,25 @@ button:focus,
 button:focus-visible {
   outline: 2px solid var(--tertiary);
 }
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+button:disabled:hover {
+  background-color: var(--primary);
+}
+
+select {
+  background-color: var(--black);
+  color: var(--white);
+  border: 1px solid var(--gray);
+}
+
+input[type="text"] {
+  background-color: var(--black);
+  color: var(--white);
+  border: 1px solid var(--gray);
+}
 
 /* Layout Classes */
 .main-content {
@@ -123,12 +142,9 @@ button:focus-visible {
 }
 
 .prendas-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  flex: 1;
-  overflow-y: auto;
-  padding-right: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .avatar-section {
