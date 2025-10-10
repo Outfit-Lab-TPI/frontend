@@ -25,3 +25,5 @@ dist-ssr
 
 # Claude
 .claude
+
+package-lock.json

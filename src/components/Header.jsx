@@ -13,13 +13,13 @@ function Header() {
       <Link to="/home" style={{ textDecoration: 'none', height: 'fit-content', alignItems: 'center', display: 'flex' }}>
         <img
           src="/isologo.svg"
-          alt="Outfit Lab Logo"
+          alt="Outfit-Lab-logo"
           style={{ height: '40px' }}
         />
       </Link>
 
       <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-        <Link to="/test-connection" style={{ textDecoration: 'none' }}>
+        {/* <Link to="/test-connection" style={{ textDecoration: 'none' }}>
           <div style={{
             width: '40px',
             height: '40px',
@@ -33,7 +33,7 @@ function Header() {
           }}>
             <Wifi size={20} color="white" />
           </div>
-        </Link>
+        </Link> */}
 
         <Link to="/profile" style={{ textDecoration: 'none' }}>
           <div style={{

@@ -3,7 +3,6 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './pages/Home'
 import Profile from './pages/Profile'
-import TestConnection from './pages/TestConnection'
 
 function App() {
   return (
@@ -13,7 +12,6 @@ function App() {
         <Routes>
           <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/test-connection" element={<TestConnection />} />
           <Route path="/" element={<Home />} />
         </Routes>
       </main>
