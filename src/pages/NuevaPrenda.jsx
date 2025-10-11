@@ -33,7 +33,8 @@ function NuevaPrenda() {
       const formData = new FormData()
       formData.append('nombre', data.nombre)
       formData.append('tipo', data.tipo)
-      formData.append('imagenFrente', images.frente)
+      formData.append('image', images.frente)
+      // formData.append('imagenFrente', images.frente)
       formData.append('imagenAtras', images.atras)
 
       // Llamar a la API

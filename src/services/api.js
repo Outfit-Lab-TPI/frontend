@@ -7,7 +7,7 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 5000,
+  timeout: 10000,
 });
 
 // Response interceptor for error handling
@@ -39,7 +39,7 @@ export const prendaAPI = {
     }
 
     // Para FormData, necesitamos configurar headers específicos
-    return apiClient.post('/nueva-prenda', formData, {
+    return apiClient.post('/trippo/upload/image', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
