@@ -28,7 +28,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/Outfit-Lab-TPI/frontend-tpi
+          images: ghcr.io/outfit-lab-tpi/frontend-tpi
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
