@@ -30,24 +30,24 @@ export const mockMarcaDetails = {
     sitioUrl: "https://www.nike.com",
     prendas: [
       {
-        nombre: "Air Max 90",
-        tipo: "Zapatillas",
-        imagenUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/99486859-0ff3-46b4-949b-2d16af2ad421/custom-nike-air-max-90-by-you-shoes.png"
+        nombre: "Dri-FIT Polo",
+        tipo: "superior",
+        imagenUrl: "https://via.placeholder.com/400x400/1a1a1a/ffffff?text=Camisa"
       },
       {
         nombre: "Dri-FIT Shirt",
-        tipo: "Camiseta",
+        tipo: "superior",
         imagenUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/61b4738b-e1e1-4786-8f6c-26aa0008e80b/dri-fit-adv-techknit-ultra-mens-short-sleeve-running-top-FN3300.png"
       },
       {
         nombre: "Tech Fleece Hoodie",
-        tipo: "Sudadera",
+        tipo: "superior",
         imagenUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/86be332c-d2e0-458e-a4e5-d2e56f823c6d/tech-fleece-mens-full-zip-hoodie-CU4489.png"
       },
       {
-        nombre: "Pro Shorts",
-        tipo: "Pantalón corto",
-        imagenUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/7c5b3d3b-1e3f-4e3a-8b3c-1b3c3d3b3c3d/pro-mens-dri-fit-shorts-BV5635.png"
+        nombre: "Tech Fleece Pants",
+        tipo: "inferior",
+        imagenUrl: "https://via.placeholder.com/400x400/1a1a1a/ffffff?text=Pantalon"
       }
     ]
   },
@@ -57,23 +57,23 @@ export const mockMarcaDetails = {
     sitioUrl: "https://www.adidas.com",
     prendas: [
       {
-        nombre: "Ultraboost 22",
-        tipo: "Zapatillas",
-        imagenUrl: "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/fbaf991a78bc4896a3e9ad7800abcec6_9366/Ultraboost_22_Shoes_Black_GZ0127_01_standard.jpg"
+        nombre: "Originals Shirt",
+        tipo: "superior",
+        imagenUrl: "https://via.placeholder.com/400x400/1a1a1a/ffffff?text=Camisa"
       },
       {
         nombre: "3-Stripes Track Jacket",
-        tipo: "Chaqueta",
+        tipo: "superior",
         imagenUrl: "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/8827dce5c2314e09a321ad1e013f9d65_9366/3-Stripes_Track_Jacket_Black_GF3256_21_model.jpg"
       },
       {
         nombre: "Essentials T-Shirt",
-        tipo: "Camiseta",
+        tipo: "superior",
         imagenUrl: "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/aec3b27d3c254949a7ceade300b8f7ee_9366/Essentials_Big_Logo_Tee_Black_GK9121_21_model.jpg"
       },
       {
         nombre: "Tiro Track Pants",
-        tipo: "Pantalón",
+        tipo: "inferior",
         imagenUrl: "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/1d22c8ba24d54b74b4c2ae2f00e6ce33_9366/Tiro_Track_Pants_Black_GQ1043_21_model.jpg"
       }
     ]
@@ -84,23 +84,23 @@ export const mockMarcaDetails = {
     sitioUrl: "https://www.puma.com",
     prendas: [
       {
-        nombre: "Suede Classic",
-        tipo: "Zapatillas",
-        imagenUrl: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/374915/02/sv01/fnd/PNA/fmt/png/Suede-Classic-XXI-Sneakers"
+        nombre: "Classic Polo",
+        tipo: "superior",
+        imagenUrl: "https://via.placeholder.com/400x400/1a1a1a/ffffff?text=Camisa"
       },
       {
         nombre: "Essentials Logo Hoodie",
-        tipo: "Sudadera",
+        tipo: "superior",
         imagenUrl: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/586688/01/mod01/fnd/PNA/fmt/png/Essentials-Big-Logo-Hoodie"
       },
       {
         nombre: "Active T-Shirt",
-        tipo: "Camiseta",
+        tipo: "superior",
         imagenUrl: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/520010/01/mod01/fnd/PNA/fmt/png/Active-Small-Logo-Men's-Tee"
       },
       {
         nombre: "Amplified Sweatpants",
-        tipo: "Pantalón",
+        tipo: "inferior",
         imagenUrl: "https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa,w_2000,h_2000/global/581332/01/mod01/fnd/PNA/fmt/png/PUMA-x-AMPLIFIED-Men's-Sweatpants"
       }
     ]
@@ -111,24 +111,24 @@ export const mockMarcaDetails = {
     sitioUrl: "https://www.elementbrand.com",
     prendas: [
       {
-        nombre: "Section Skateboard Deck",
-        tipo: "Skateboard",
-        imagenUrl: "https://via.placeholder.com/400x400/1a1a1a/ffffff?text=Skateboard"
+        nombre: "Nature Logo Shirt",
+        tipo: "superior",
+        imagenUrl: "https://via.placeholder.com/400x400/1a1a1a/ffffff?text=Camisa"
       },
       {
         nombre: "Tree Logo Hoodie",
-        tipo: "Sudadera",
+        tipo: "superior",
         imagenUrl: "https://via.placeholder.com/400x400/1a1a1a/ffffff?text=Hoodie"
       },
       {
         nombre: "Vertical T-Shirt",
-        tipo: "Camiseta",
+        tipo: "superior",
         imagenUrl: "https://via.placeholder.com/400x400/1a1a1a/ffffff?text=T-Shirt"
       },
       {
-        nombre: "E-Town Shorts",
-        tipo: "Pantalón corto",
-        imagenUrl: "https://via.placeholder.com/400x400/1a1a1a/ffffff?text=Shorts"
+        nombre: "E-Town Pants",
+        tipo: "inferior",
+        imagenUrl: "https://via.placeholder.com/400x400/1a1a1a/ffffff?text=Pantalon"
       }
     ]
   }

@@ -1,7 +1,8 @@
 function PrendaGalleryCard({ prenda }) {
   return (
-    <div className="relative w-48 h-64 bg-gray-800 rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/30 group">
-      <div className="w-full h-48 flex items-center justify-center p-4">
+    <div className="relative w-48 h-64 bg-gray rounded-md overflow-hidden cursor-pointer group">
+      <div className="w-full h-full flex items-center justify-center p-5">
+        
         <img
           src={prenda.imagenUrl || '/isotipo.svg'}
           alt={prenda.nombre}
@@ -11,9 +12,8 @@ function PrendaGalleryCard({ prenda }) {
           }}
         />
       </div>
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4">
-        <h3 className="text-white font-semibold text-sm mb-1">{prenda.nombre}</h3>
-        <p className="text-gray-300 text-xs">{prenda.tipo}</p>
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent py-4 flex items-end transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+        <h5 className="text-white font-semibold text-base text-center w-full">{prenda.nombre}</h5>
       </div>
     </div>
   );
