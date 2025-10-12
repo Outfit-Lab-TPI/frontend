@@ -9,6 +9,8 @@ import NotFound from "./pages/errors/NotFound";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import NuevaPrenda from "./pages/NuevaPrenda";
+import Marcas from "./pages/Marcas";
+import MarcaDetalle from "./pages/MarcaDetalle";
 
 export default function AppContent() {
   const location = useLocation();
@@ -27,6 +29,8 @@ export default function AppContent() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/nueva-prenda" element={<NuevaPrenda />} />
+          <Route path="/marcas" element={<Marcas />} />
+          <Route path="/marcas/:codigoMarca" element={<MarcaDetalle />} />
           <Route path="/" element={<Landing />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

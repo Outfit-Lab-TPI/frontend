@@ -20,7 +20,7 @@ const Button = forwardRef(({
     const variants = {
       default: `${color ? `bg-${color}` : "bg-secondary"} text-${defaultTextColor} hover:enabled:bg-${color}/80 focus:ring-tertiary border border-transparent`,
       outline: `bg-transparent border border-${color} text-${defaultTextColor} hover:enabled:bg-${color} hover:enabled:text-${hoverTextColor}`,
-      ghost: `bg-transparent border border-transparent text-${defaultTextColor} hover:enabled:bg-${color}/10`,
+      ghost: `bg-transparent border border-transparent text-${defaultTextColor} hover:enabled:bg-gray/10`,
       text: `bg-transparent border-none text-${defaultTextColor} hover:enabled:text-${defaultTextColor}/80 p-0`,
       error: `bg-error text-${textColor || "white"} hover:enabled:bg-error/80 border border-transparent`
     };
