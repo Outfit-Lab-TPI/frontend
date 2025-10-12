@@ -1,5 +1,5 @@
 export default function CallToAction({
-  url = "/register",
+  url = "/login",
   align = "center",
   text = "Visitar probador virtual",
 }) {
