@@ -121,16 +121,16 @@ h1, h2, h3, h4, h5, h6, label {
   letter-spacing: normal;
 }
 
-
-select {
-  background-color: var(--black);
-  color: var(--white);
-  border: 1px solid var(--gray);
-}
-
-input {
+input, select {
   background-color: rgba(133, 129, 130, 0.2);
   color: var(--white);
+  border-radius: 4px;
+}
+
+input, select {
+  background-color: var(--black);
+  color: var(--white);
+  border-radius: 4px;
 }
 
 /* Layout Classes */
