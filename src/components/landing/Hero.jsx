@@ -2,7 +2,7 @@ import CallToAction from "../ui/CallToAction";
 
 export default function HeroSection() {
   return (
-    <section>
+    <section id="inicio">
       <div className="grid grid-cols-12 gap-4 lg:gap-2 items-center p-5 md:px-10">
         <div className="col-span-12 md:col-span-7 max-w-[600px] mx-auto">
           <h1 className="!text-4xl md:!text-5xl text-center md:text-left sm:mx-5 lg:mx-0 leading-tight">

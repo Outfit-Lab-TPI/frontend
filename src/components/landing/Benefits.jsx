@@ -35,8 +35,8 @@ export default function BenefitsSection() {
   ];
 
   return (
-    <section>
-      <div className="mx-3 sm:mx-10 md:mx-20 mt-20 mb-7 py-10 px-5 md:px-10 bg-[var(--primary)] rounded-xl">
+    <section id="beneficios" className="my-32">
+      <div className="mx-3 sm:mx-10 md:mx-20 mb-10 py-10 px-5 md:px-10 bg-[var(--primary)] rounded-xl">
         <div className="mx-auto text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold">
             ¿Por qué elegir nuestro probador virtual?

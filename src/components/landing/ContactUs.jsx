@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Send } from "lucide-react";
+import { toast } from "react-toastify";
+import ThemedToast from "../ui/ThemedToast";
 
 export default function ContactSection() {
   const [email, setEmail] = useState("");
@@ -8,13 +10,14 @@ export default function ContactSection() {
     e.preventDefault();
     console.log("Email submitted:", email);
     setEmail("");
+    toast.success("¡Gracias por suscribirte!");
   };
 
   return (
-    <section id="contacto" className="py-16 relative">
+    <section id="contacto" className="py-8 relative">
       <div className="container mx-auto px-3 md:px-6 relative z-10">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-gradient-to-br from-[#230636] to-[#230636]/50 border border-[#926490]/30 rounded-2xl p-8 md:p-12 backdrop-blur-sm">
+          <div className="bg-gradient-to-br from-[var(--primary)] to-[var(--primary)]/50 border border-[var(--secondary)]/30 rounded-2xl p-8 md:p-12 backdrop-blur-sm">
             <div className="text-center space-y-4 mb-8">
               <h2 className="text-3xl md:text-4xl font-heading text-[var(--white)]">
                 MANTENETE CONECTADO
@@ -32,11 +35,11 @@ export default function ContactSection() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="flex-1 bg-[#0a050e]/50 border border-[#926490]/30 text-[#fffcf5] placeholder:text-[var(--gray)] focus:border-[#926490] focus:outline-none h-12 rounded-md px-3"
+                  className="flex-1 bg-[var(--black)]/50 border border-[var(--secondary)]/30 text-[var(--white)] placeholder:text-[var(--gray)] focus:border-[var(--secondary)] focus:outline-none h-12 rounded-md px-3"
                 />
                 <button
                   type="submit"
-                  className="bg-[#926490] hover:bg-[#926490]/90 text-[#fffcf5] px-8 h-12 rounded-md flex items-center justify-center transition-colors"
+                  className="bg-[var(--secondary)] hover:bg-[var(--secondary)]/90 text-[#fffcf5] px-8 h-12 rounded-md flex items-center justify-center transition-colors"
                 >
                   Enviar
                   <Send className="ml-2 h-4 w-4" />
@@ -50,6 +53,7 @@ export default function ContactSection() {
           </div>
         </div>
       </div>
+      <ThemedToast />
     </section>
   );
 }

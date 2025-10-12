@@ -2,8 +2,8 @@ import CallToAction from "../ui/CallToAction";
 
 export default function DemoSection() {
   return (
-    <section className="mx-auto my-20 rounded-lg">
-      <div className="flex flex-col px-8 md:px-20 lg:flex-row items-center gap-10 mx-auto mb-20">
+    <section className="mx-auto my-20 rounded-lg" id="comoFunciona">
+      <div className="flex flex-col px-8 md:px-20 lg:flex-row items-center gap-10 mx-auto mb-10">
         <div className="lg:w-1/2 leading-loose text-[var(--gray)]">
           <h2 className="text-3xl md:text-4xl font-bold text-[var(--white)] text-left mb-8">
             Cómo tus prendas cobran vida en el probador virtual
