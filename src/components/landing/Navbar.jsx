@@ -87,7 +87,7 @@ export default function LandingNavbar() {
             Ingresar
           </button>
           <button
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/signup")}
             className="tracking-widest text-[var(--white)] hover:bg-[#926490]/10 px-4 py-2 rounded-full transition-all duration-300 font-semibold"
           >
             Registrarse
@@ -128,7 +128,7 @@ export default function LandingNavbar() {
               Ingresar
             </button>
             <button
-              onClick={() => navigate("/register")}
+              onClick={() => navigate("/signup")}
               className="tracking-widest hover-pointer text-[var(--white)] hover:bg-[#926490]/10 px-6 py-2 rounded-full font-semibold transition-all duration-300"
             >
               Registrarse

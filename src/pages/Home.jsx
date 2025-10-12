@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ProbadorVirtual from "../components/Probador";
 import PrendaCard from "../components/PrendaCard";
+import { Plus } from "lucide-react";
 
-function Home() {
+export default function Home() {
+  const navigate = useNavigate();
   const [prendasSeleccionadas, setPrendasSeleccionadas] = useState([]);
 
   const prendas = [
@@ -42,7 +45,16 @@ function Home() {
   return (
     <div className="home-container">
       <div className="prendas-section">
-        <h2>Selecciona tu outfit</h2>
+        <div className="flex justify-between mb-4">
+          <h2>Selecciona tu outfit</h2>
+          <button
+            className="flex gap-2"
+            onClick={() => navigate("/nueva-prenda")}
+          >
+            <Plus />
+            Nueva prenda
+          </button>
+        </div>
         <div className="prendas-grid">
           {prendas.map((prenda) => (
             <PrendaCard
@@ -61,5 +73,3 @@ function Home() {
     </div>
   );
 }
-
-export default Home;

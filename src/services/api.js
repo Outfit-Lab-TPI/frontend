@@ -7,7 +7,7 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 5000,
+  timeout: 10000,
 });
 
 // Response interceptor for error handling
@@ -28,6 +28,23 @@ apiClient.interceptors.response.use(
 // API endpoints
 export const userAPI = {
   getUserById: (id) => apiClient.get(`/users/${id}`),
+};
+
+export const prendaAPI = {
+  crearNuevaPrenda: (formData) => {
+    console.log('Enviando FormData:', formData);
+    // Validar que FormData tenga los campos requeridos
+    if (!formData.has('nombre') || !formData.has('tipo')) {
+      return Promise.reject(new Error('FormData debe contener nombre y tipo'));
+    }
+
+    // Para FormData, necesitamos configurar headers específicos
+    return apiClient.post('/trippo/upload/image', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
 };
 
 export default apiClient;

@@ -8,7 +8,6 @@ export default function ContactSection() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Email submitted:", email);
     setEmail("");
     toast.success("¡Gracias por suscribirte!");
   };
