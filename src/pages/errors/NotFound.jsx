@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import Button from "../../components/shared/Button";
 
 function NotFound() {
   const navigate = useNavigate();
@@ -18,9 +19,9 @@ function NotFound() {
             La página que buscas no existe o ha sido movida.
           </p>
         </div>
-        <button onClick={handleGoHome} className="w-full py-2 px-4 rounded-sm">
+        <Button onClick={handleGoHome}>
           Volver al inicio
-        </button>
+        </Button>
       </div>
     </div>
   );

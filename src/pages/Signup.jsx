@@ -99,13 +99,12 @@ function Signup() {
             )}
 
             {/* Botón Registrarse */}
-            <button
+            <Button
               type="submit"
               disabled={isSubmitting || !isValid}
-              className="w-full bg-tertiary text-white py-2 px-4 rounded-sm font-medium hover:bg-tertiary/90 focus:outline-none focus:ring-2 focus:ring-tertiary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {isSubmitting ? "Creando cuenta..." : "Registrarse"}
-            </button>
+            </Button>
 
             {/* Link para Login */}
             <div className="text-center">

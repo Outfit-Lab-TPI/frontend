@@ -21,12 +21,18 @@ export function AuthProvider({ children }) {
 
   const login = (userData) => {
     setUser(userData)
-    localStorage.setItem('user', JSON.stringify(userData))
+    localStorage.setItem('outfitlab-user', JSON.stringify(userData))
   }
 
   const logout = () => {
     setUser(null)
-    localStorage.removeItem('user')
+    localStorage.removeItem('outfitlab-user')
+  }
+
+  const updateUser = (updatedUserData) => {
+    const newUserData = { ...user, ...updatedUserData }
+    setUser(newUserData)
+    localStorage.setItem('outfitlab-user', JSON.stringify(newUserData))
   }
 
   const value = {
@@ -34,7 +40,8 @@ export function AuthProvider({ children }) {
     isAuthenticated: !!user,
     isLoading,
     login,
-    logout
+    logout,
+    updateUser
   }
 
   return (

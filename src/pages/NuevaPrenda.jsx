@@ -1,5 +1,6 @@
 import ImageUpload from '../components/ImageUpload'
 import { useNuevaPrenda } from '../hooks/useNuevaPrenda'
+import Button from '../components/shared/Button'
 
 function NuevaPrenda() {
   const {
@@ -18,7 +19,7 @@ function NuevaPrenda() {
       <h2 className="font-bold text-2xl mb-4">Nueva Prenda</h2>
 
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit}
         className="space-y-2"
         aria-label="nueva prenda"
       >
@@ -95,21 +96,21 @@ function NuevaPrenda() {
 
         {/* Botones */}
         <div className="flex gap-4">
-          <button
+          <Button
+            variant="outline"
+            color="white"
             type="button"
             onClick={handleCancel}
-            className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
           >
             Cancelar
-          </button>
+          </Button>
 
-          <button
+          <Button
             type="submit"
             disabled={isSubmitting || !isValid}
-            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-default"
           >
             {isSubmitting ? 'Guardando...' : 'Guardar Prenda'}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

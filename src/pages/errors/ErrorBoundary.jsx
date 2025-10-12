@@ -1,4 +1,5 @@
 import { Component } from 'react'
+import Button from '../../components/shared/Button'
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -34,12 +35,11 @@ class ErrorBoundary extends Component {
                 Por favor, intenta nuevamente
               </p>
             </div>
-            <button
+            <Button
               onClick={this.handleGoHome}
-              className="w-full py-2 px-4 rounded-sm"
             >
               Volver al inicio
-            </button>
+            </Button>
           </div>
         </div>
       )

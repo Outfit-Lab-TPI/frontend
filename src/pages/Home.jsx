@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import ProbadorVirtual from "../components/Probador";
 import PrendaCard from "../components/PrendaCard";
 import { Plus } from 'lucide-react';
+import Button from '../components/shared/Button';
 
 function Home() {
   const navigate = useNavigate();
@@ -50,10 +51,12 @@ function Home() {
       <div className="prendas-section">
         <div className="flex justify-between mb-4">
         <h2>Selecciona tu outfit</h2>
-        <button className='flex gap-2' onClick={() => navigate('/nueva-prenda')}>
+        <Button 
+        width='fit'
+        onClick={() => navigate('/nueva-prenda')}>
           <Plus />
           Nueva prenda
-        </button>
+        </Button>
 
         </div>
         <div className="prendas-grid">
