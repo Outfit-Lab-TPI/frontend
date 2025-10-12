@@ -3,15 +3,16 @@
 :root {
   /* Color Palette */
   --primary: #230636;
-  --secondary: #8F5D8D;
+  --secondary: #8f5d8d;
   --tertiary: #e3c18a;
   --white: #fffcf5;
   --gray: #858182;
   --black: #0a050e;
 
   /* Typography */
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Bebas Neue", system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
+  letter-spacing: 0.5px;
   font-weight: 400;
 
   color: var(--white);
@@ -30,10 +31,10 @@
   --color-white: var(--white);
   --color-gray: var(--gray);
   --color-black: var(--black);
-  --color-error: #B62626;
-  --color-success: #1F8724;
-  --color-warning: #BD7115;
-  --color-info: #1D8CC9;
+  --color-error: #b62626;
+  --color-success: #1f8724;
+  --color-warning: #bd7115;
+  --color-info: #1d8cc9;
 }
 
 * {
@@ -58,11 +59,18 @@ body {
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
+  max-width: 2000px;
+  margin: 0 auto;
 }
 
 a {
   font-weight: 500;
-} 
+}
+
+input,
+textarea {
+  font-family: "Arial Narrow", Arial, sans-serif;
+}
 
 h1 {
   font-size: 3.2em;
@@ -85,7 +93,6 @@ input {
 .main-content {
   flex: 1;
   width: 100%;
-  padding: 20px;
 }
 
 .header {

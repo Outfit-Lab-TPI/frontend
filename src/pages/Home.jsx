@@ -1,45 +1,42 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ProbadorVirtual from "../components/Probador";
 import PrendaCard from "../components/PrendaCard";
 import { Plus } from 'lucide-react';
 import Button from '../components/shared/Button';
 
-function Home() {
+export default function Home() {
   const navigate = useNavigate();
   const [prendasSeleccionadas, setPrendasSeleccionadas] = useState([]);
 
- const prendas = [
+  const prendas = [
     {
-      id: 'remera',
-      nombre: 'remera azul casual',
-      tipo: 'Conjunto',
+      id: "remera",
+      nombre: "remera azul casual",
+      tipo: "Conjunto",
       imagen: null,
-      modelUrl: '/prendas/traje-1.glb'
+      modelUrl: "/prendas/traje-1.glb",
     },
     {
-      id: 'pantalon',
-      nombre: 'pantalon deportivo',
-      tipo: 'Conjunto',
+      id: "pantalon",
+      nombre: "pantalon deportivo",
+      tipo: "Conjunto",
       imagen: null,
-      modelUrl: null
+      modelUrl: null,
     },
     {
-      id: 'buzo',
-      nombre: 'Business',
-      tipo: 'Formal',
+      id: "buzo",
+      nombre: "Business",
+      tipo: "Formal",
       imagen: null,
-      modelUrl: null
+      modelUrl: null,
     },
-
   ];
 
-
-
   const handlePrendaSelect = (prendaId) => {
-    setPrendasSeleccionadas(prevSeleccion => {
+    setPrendasSeleccionadas((prevSeleccion) => {
       if (prevSeleccion.includes(prendaId)) {
-        return prevSeleccion.filter(id => id !== prendaId);
+        return prevSeleccion.filter((id) => id !== prendaId);
       } else {
         return [...prevSeleccion, prendaId];
       }
@@ -60,7 +57,7 @@ function Home() {
 
         </div>
         <div className="prendas-grid">
-          {prendas.map(prenda => (
+          {prendas.map((prenda) => (
             <PrendaCard
               key={prenda.id}
               prenda={prenda}
@@ -77,5 +74,3 @@ function Home() {
     </div>
   );
 }
-
-export default Home;
