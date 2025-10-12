@@ -11,14 +11,14 @@ const Button = forwardRef(({
   width = "full",
   ...props
 }, ref) => {
-  const baseStyles = "h-10 inline-flex items-center justify-center gap-2 font-medium cursor-pointer transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-default";
+  const baseStyles = "font-family-secondary h-10 inline-flex items-center justify-center gap-2 font-medium cursor-pointer transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-default";
 
   const getVariantStyles = (variant, color, textColor) => {
     const defaultTextColor = textColor || (variant === "default" || variant === "error" ? "white" : color);
     const hoverTextColor = textColor || "white";
 
     const variants = {
-      default: `bg-${color} text-${defaultTextColor} hover:enabled:bg-${color}/80 focus:ring-tertiary border border-transparent`,
+      default: `${color ? `bg-${color}` : "bg-secondary"} text-${defaultTextColor} hover:enabled:bg-${color}/80 focus:ring-tertiary border border-transparent`,
       outline: `bg-transparent border border-${color} text-${defaultTextColor} hover:enabled:bg-${color} hover:enabled:text-${hoverTextColor}`,
       ghost: `bg-transparent border border-transparent text-${defaultTextColor} hover:enabled:bg-${color}/10`,
       text: `bg-transparent border-none text-${defaultTextColor} hover:enabled:text-${defaultTextColor}/80 p-0`,

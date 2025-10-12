@@ -47,7 +47,7 @@ export default function Home() {
     <div className="home-container">
       <div className="prendas-section">
         <div className="flex justify-between mb-4">
-        <h2>Selecciona tu outfit</h2>
+        <h3>Selecciona tu outfit</h3>
         <Button 
         width='fit'
         onClick={() => navigate('/nueva-prenda')}>

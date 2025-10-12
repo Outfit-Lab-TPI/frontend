@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useSignup } from "../hooks/auth/useSignup";
+import Button from "../components/shared/Button";
 
 function Signup() {
   const {

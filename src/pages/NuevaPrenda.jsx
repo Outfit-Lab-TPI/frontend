@@ -42,7 +42,7 @@ function NuevaPrenda() {
             placeholder="Ej: Remera azul"
           />
           {errors.nombre && (
-            <p className="text-red-500 text-sm mt-1">{errors.nombre.message}</p>
+            <p className="text-error text-sm mt-1">{errors.nombre.message}</p>
           )}
         </div>
 
@@ -59,11 +59,11 @@ function NuevaPrenda() {
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Selecciona un tipo</option>
-            <option value="remera">Remera</option>
-            <option value="pantalon">Pantalón</option>
+            <option value="superior">Parte superior</option>
+            <option value="inferior">Parte inferior</option>
           </select>
           {errors.tipo && (
-            <p className="text-red-500 text-sm mt-1">{errors.tipo.message}</p>
+            <p className="text-error text-sm mt-1">{errors.tipo.message}</p>
           )}
         </div>
 
@@ -83,14 +83,14 @@ function NuevaPrenda() {
             onError={handleImageError}
           />
           {errors.imagenes && (
-            <p className="text-red-500 text-sm mt-1">{errors.imagenes.message}</p>
+            <p className="text-error text-sm mt-1">{errors.imagenes.message}</p>
           )}
         </div>
 
         {/* Error de submit */}
         {errors.submit && (
           <div className="bg-red-50 border border-red-200 rounded-md p-3">
-            <p className="text-red-700 text-sm">{errors.submit.message}</p>
+            <p className="text-error text-sm">{errors.submit.message}</p>
           </div>
         )}
 
