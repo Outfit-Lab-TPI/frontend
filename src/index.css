@@ -3,7 +3,7 @@
 :root {
   /* Color Palette */
   --primary: #230636;
-  --secondary: #926490;
+  --secondary: #8F5D8D;
   --tertiary: #e3c18a;
   --white: #fffcf5;
   --gray: #858182;
@@ -21,6 +21,19 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@theme {
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-tertiary: var(--tertiary);
+  --color-white: var(--white);
+  --color-gray: var(--gray);
+  --color-black: var(--black);
+  --color-error: #B62626;
+  --color-success: #1F8724;
+  --color-warning: #BD7115;
+  --color-info: #1D8CC9;
 }
 
 * {
@@ -49,12 +62,7 @@ body {
 
 a {
   font-weight: 500;
-  color: var(--primary);
-  text-decoration: inherit;
-}
-a:hover {
-  color: var(--secondary);
-}
+} 
 
 h1 {
   font-size: 3.2em;
@@ -64,28 +72,29 @@ h1 {
 button {
   border-radius: 8px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  padding: .5rem 1rem;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: var(--primary);
+  background-color: var(--secondary);
   color: var(--white);
   cursor: pointer;
   transition: all 0.25s;
 }
 button:hover {
-  background-color: var(--secondary);
+  background-color: rgba(146, 100, 144, 0.8);
 }
 button:focus,
 button:focus-visible {
   outline: 2px solid var(--tertiary);
 }
 button:disabled {
-  opacity: 0.5;
+  opacity: 0.7;
   cursor: default;
 }
 button:disabled:hover {
-  background-color: var(--primary);
+  background-color: var(--secondary);
+  opacity: 0.7;
 }
 
 select {
@@ -94,10 +103,9 @@ select {
   border: 1px solid var(--gray);
 }
 
-input[type="text"] {
-  background-color: var(--black);
+input {
+  background-color: rgba(133, 129, 130, 0.2);
   color: var(--white);
-  border: 1px solid var(--gray);
 }
 
 /* Layout Classes */

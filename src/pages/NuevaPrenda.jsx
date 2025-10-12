@@ -1,63 +1,17 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
 import ImageUpload from '../components/ImageUpload'
-import { prendaAPI } from '../services/api'
+import { useNuevaPrenda } from '../hooks/useNuevaPrenda'
 
 function NuevaPrenda() {
-  const navigate = useNavigate()
-  const [images, setImages] = useState({ frente: null, atras: null })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
-    setError,
-    setValue,
-  } = useForm({ mode: 'onChange' })
-
-  const handleImagesChange = (newImages) => {
-    setImages(newImages)
-
-    // Actualizar el campo hidden para validación
-    const hasImages = newImages.frente && newImages.atras
-    setValue('imagenes', hasImages ? 'valid' : '', { shouldValidate: true })
-  }
-
-  const onSubmit = async (data) => {
-    setIsSubmitting(true)
-
-    try {
-      // Crear FormData para enviar al backend
-      const formData = new FormData()
-      formData.append('nombre', data.nombre)
-      formData.append('tipo', data.tipo)
-      formData.append('image', images.frente)
-      // formData.append('imagenFrente', images.frente)
-      formData.append('imagenAtras', images.atras)
-
-      // Llamar a la API
-      const response = await prendaAPI.crearNuevaPrenda(formData)
-
-      console.log('Prenda creada exitosamente:', response.data)
-
-      // Navegar al home tras éxito
-      navigate('/home')
-    } catch (error) {
-      console.error('Error al crear prenda:', error)
-      setError('submit', {
-        type: 'manual',
-        message: 'Error al crear la prenda.'
-      })
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const handleCancel = () => {
-    navigate('/home')
-  }
+    errors,
+    isValid,
+    isSubmitting,
+    handleImagesChange,
+    handleImageError,
+    handleCancel
+  } = useNuevaPrenda()
 
   return (
     <div className="max-w-2xl mx-auto p-6">
@@ -125,7 +79,7 @@ function NuevaPrenda() {
           <h3 className="text-lg font-medium mb-3">Imágenes de la prenda</h3>
           <ImageUpload
             onImagesChange={handleImagesChange}
-            onError={(error) => setError('imagenes', { type: 'manual', message: error })}
+            onError={handleImageError}
           />
           {errors.imagenes && (
             <p className="text-red-500 text-sm mt-1">{errors.imagenes.message}</p>
