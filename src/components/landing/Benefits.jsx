@@ -5,7 +5,7 @@ export default function BenefitsSection() {
   const benefits = [
     {
       icon: <Monitor className="mx-auto text-[var(--tertiary)]" size={60} />,
-      title: "Visualización 2D en tiempo real",
+      title: "Visualización en tiempo real",
       description:
         "Tus clientes podrán probar los productos como si estuvieran en la tienda, aumentando la confianza en la compra.",
     },
@@ -13,7 +13,7 @@ export default function BenefitsSection() {
       icon: <Zap className="mx-auto text-[var(--tertiary)]" size={60} />,
       title: "Modelado automático con fotos",
       description:
-        "Nuestro sistema genera el modelo 2D de forma automática y lista para probar, en base a las fotos que subas",
+        "Nuestro sistema genera el modelo de forma automática y lista para probar, en base a las fotos que subas",
     },
     {
       icon: <Smartphone className="mx-auto text-[var(--tertiary)]" size={60} />,
@@ -30,7 +30,7 @@ export default function BenefitsSection() {
       ),
       title: "Experiencia de compra mejorada",
       description:
-        "La experiencia interactiva con el probador virtual 2D incrementa la decisión de compra y reduce devoluciones.",
+        "La experiencia interactiva con el probador virtual incrementa la decisión de compra y reduce devoluciones.",
     },
   ];
 

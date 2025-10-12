@@ -9,7 +9,7 @@ export default function HeroSection() {
             Transforma tu catálogo en un
             <span className="text-[var(--tertiary)] font-semibold">
               {" "}
-              probador virtual 2D interactivo{" "}
+              probador virtual interactivo{" "}
             </span>
             para tus clientes
           </h1>
