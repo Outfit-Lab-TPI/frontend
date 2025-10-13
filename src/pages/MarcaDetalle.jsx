@@ -1,18 +1,22 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import { useMarcaDetail } from "../hooks/useMarcaDetail.jsx";
+import { useCombinacion } from "../hooks/useCombinacion.jsx";
 import PrendaGalleryCard from "../components/PrendaGalleryCard.jsx";
 import Button from "../components/shared/Button.jsx";
-import { SquareArrowOutUpRight } from "lucide-react";
+import { Ghost, SquareArrowOutUpRight } from "lucide-react";
 
 function MarcaDetalle() {
   const { codigoMarca } = useParams();
   const { marcaDetail, loading, error, criticalError } =
     useMarcaDetail(codigoMarca);
+  const { combinarPrendas, loading: loadingCombinacion, error: errorCombinacion, resultado, limpiarResultado } =
+    useCombinacion();
 
   // Estados para selección de prendas
   const [selectedSuperior, setSelectedSuperior] = useState(null);
   const [selectedInferior, setSelectedInferior] = useState(null);
+  const [esHombre, setEsHombre] = useState(true);
 
   // Categorizar prendas por tipo
   const prendasCategorizadas = useMemo(() => {
@@ -44,13 +48,22 @@ function MarcaDetalle() {
   // Verificar si se puede combinar
   const canCombine = selectedSuperior && selectedInferior;
 
-  // Manejar combinación de prendas
-  const handleCombinarPrendas = () => {
+  // Referencias para detectar cambios en la selección
+  const [lastCombination, setLastCombination] = useState(null);
+
+  // Limpiar resultado solo al iniciar una nueva combinación
+  const handleCombinarPrendas = async () => {
     if (canCombine) {
-      console.log("Prendas seleccionadas:", {
-        superior: selectedSuperior,
-        inferior: selectedInferior,
+      // Limpiar resultado anterior antes de generar uno nuevo
+      limpiarResultado();
+
+      // Guardar la combinación actual antes de enviarla
+      setLastCombination({
+        superior: selectedSuperior.nombre,
+        inferior: selectedInferior.nombre
       });
+
+      await combinarPrendas(esHombre, selectedSuperior, selectedInferior);
     }
   };
 
@@ -203,21 +216,72 @@ function MarcaDetalle() {
 
         {/* Columna derecha - Panel de combinación (1/3) */}
         <div className="w-1/3 flex flex-col border border-gray/20">
-          <div className="flex-1 flex items-center justify-center p-8">
-            <div className="text-center">
-              <div className="text-lg text-white leading-relaxed">
-                Selecciona dos prendas y combina tu outfit
+          <div className="flex-1 flex items-center justify-center">
+            {resultado ? (
+              <div className="text-center w-full">
+                <div className="mb-4">
+                  <img
+                    src={resultado}
+                    alt="Combinación de outfit"
+                    className="w-full max-w-sm mx-auto rounded-sm border border-gray/20 object-cover max-h-110"
+                    onError={(e) => {
+                      e.target.src = '/placeholder-outfit.svg';
+                    }}
+                  />
+                </div>
+              </div>
+            ) : errorCombinacion ? (
+              <div className="text-center">
+                <div className="text-error mb-4">
+                  Error: {errorCombinacion}
+                </div>
+                <div className="text-lg text-white leading-relaxed">
+                  Selecciona dos prendas y combina tu outfit
+                </div>
+              </div>
+            ) : (
+              <div className="text-center">
+                <div className="text-lg text-white leading-relaxed">
+                  Selecciona dos prendas y combina tu outfit
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Selector de avatar */}
+          {canCombine && (
+            <div className="p-4 border-t border-gray/20">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray">Tipo de avatar:</span>
+                <Button
+                  onClick={() => setEsHombre(true)}
+                  variant='outline'
+                  color='gray'
+                  width='fit'
+                  className={esHombre ? 'text-white border-gray' : ''}
+                >
+                  Hombre
+                </Button>
+                <Button
+                  onClick={() => setEsHombre(false)}
+                  variant='outline'
+                  color='gray'
+                  width='fit'
+                  className={!esHombre ? 'text-white border-gray' : ''}
+                >
+                  Mujer
+                </Button>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Botón en el panel lateral */}
             <div className="relative group p-4">
               <Button
                 onClick={handleCombinarPrendas}
-                disabled={!canCombine}
+                disabled={!canCombine || loadingCombinacion}
               >
-                Combinar prendas
+                {loadingCombinacion ? 'Combinando...' : 'Combinar prendas'}
               </Button>
 
               {/* Tooltip */}
