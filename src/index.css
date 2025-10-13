@@ -281,3 +281,10 @@ input, select {
     grid-template-rows: repeat(6, 1fr);
   }
 }
+
+/* Custom Modern Scrollbar Styles */
+.modern-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--gray) var(--black);
+}
+
