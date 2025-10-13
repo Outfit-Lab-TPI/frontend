@@ -23,7 +23,7 @@ export function useNuevaPrenda() {
 
     try {
       const formData = new FormData()
-      formData.append('codigoMarca', 'OUTFIT_LAB') // codigo hardcodeado
+      formData.append('codigoMarca', 'nike') // codigo hardcodeado
       formData.append('nombre', data.nombre)
       formData.append('tipo', data.tipo)
       formData.append('imagen', data.imagen[0])
