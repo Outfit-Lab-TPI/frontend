@@ -5,7 +5,7 @@ import ContactSection from "../components/landing/ContactUs";
 
 export default function Landing() {
   return (
-    <div className="p-6 pt-24">
+    <div className="p-6 pt-24 max-w-[1800px] mx-auto">
       <HeroSection />
       <BenefitsSection />
       <DemoSection />
