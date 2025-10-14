@@ -72,7 +72,7 @@ export default function LandingNavbar() {
             <button
               key={id}
               onClick={() => scrollToSection(id)}
-              className="tracking-widest text-[var(--white)]/70 hover:text-[#e3c18a] transition-colors text-sm font-medium"
+              className="tracking-widest cursor-pointer text-[var(--white)]/70 hover:text-[#e3c18a] transition-colors text-sm font-medium"
             >
               {name}
             </button>
@@ -82,13 +82,13 @@ export default function LandingNavbar() {
         <div className="hidden lg:flex items-center gap-3">
           <button
             onClick={() => navigate("/login")}
-            className="tracking-widest text-[var(--white)] hover:bg-[#926490]/10 px-4 py-2 rounded-full transition-all duration-300 font-semibold"
+            className="tracking-widest cursor-pointer text-[var(--white)] hover:bg-[#926490]/10 px-4 py-2 rounded-full transition-all duration-300 font-semibold"
           >
             Ingresar
           </button>
           <button
             onClick={() => navigate("/signup")}
-            className="tracking-widest text-[var(--white)] hover:bg-[#926490]/10 px-4 py-2 rounded-full transition-all duration-300 font-semibold"
+            className="tracking-widest cursor-pointer text-[var(--white)] hover:bg-[#926490]/10 px-4 py-2 rounded-full transition-all duration-300 font-semibold"
           >
             Registrarse
           </button>

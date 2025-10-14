@@ -18,7 +18,7 @@ export default function ContactSection() {
         <div className="max-w-2xl mx-auto">
           <div className="bg-gradient-to-br from-[var(--primary)] to-[var(--primary)]/50 border border-[var(--secondary)]/30 rounded-2xl p-8 md:p-12 backdrop-blur-sm">
             <div className="text-center space-y-4 mb-8">
-              <h2 className="text-3xl md:text-4xl font-heading text-[var(--white)]">
+              <h2 className="!text-3xl md:!text-4xl font-heading text-[var(--white)]">
                 MANTENETE CONECTADO
               </h2>
               <p className="text-lg text-[var(--gray)] leading-relaxed">
