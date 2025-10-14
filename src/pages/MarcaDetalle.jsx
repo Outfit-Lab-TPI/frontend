@@ -4,7 +4,8 @@ import { useMarcaDetail } from "../hooks/useMarcaDetail.jsx";
 import { useCombinacion } from "../hooks/useCombinacion.jsx";
 import PrendaGalleryCard from "../components/PrendaGalleryCard.jsx";
 import Button from "../components/shared/Button.jsx";
-import { Ghost, SquareArrowOutUpRight } from "lucide-react";
+import { Blend, Box, LoaderCircle, SquareArrowOutUpRight } from "lucide-react";
+import { VscPerson } from 'react-icons/vsc';
 
 function MarcaDetalle() {
   const { codigoMarca } = useParams();
@@ -17,6 +18,7 @@ function MarcaDetalle() {
   const [selectedSuperior, setSelectedSuperior] = useState(null);
   const [selectedInferior, setSelectedInferior] = useState(null);
   const [esHombre, setEsHombre] = useState(true);
+  const [lastCombination, setLastCombination] = useState(null);
 
   // Categorizar prendas por tipo
   const prendasCategorizadas = useMemo(() => {
@@ -46,10 +48,17 @@ function MarcaDetalle() {
   };
 
   // Verificar si se puede combinar
-  const canCombine = selectedSuperior && selectedInferior;
+  const canCombine = useMemo(() => {
+    // Debe haber prendas seleccionadas
+    if (!selectedSuperior || !selectedInferior) return false;
 
-  // Referencias para detectar cambios en la selección
-  const [lastCombination, setLastCombination] = useState(null);
+    // Si no hay combinación previa, permitir combinar
+    if (!lastCombination) return true;
+
+    // Si las prendas actuales son diferentes a la última combinación, permitir combinar
+    return !(selectedSuperior.nombre === lastCombination.superior &&
+             selectedInferior.nombre === lastCombination.inferior);
+  }, [selectedSuperior, selectedInferior, lastCombination]);
 
   // Limpiar resultado solo al iniciar una nueva combinación
   const handleCombinarPrendas = async () => {
@@ -122,7 +131,7 @@ function MarcaDetalle() {
 
   return (
 
-      <div className="flex-1 flex overflow-hidden px-24 gap-8" style={{height: 'calc(100vh - 60px)'}}>
+      <div className="flex-1 flex px-24 gap-8" style={{height: 'calc(100vh - 70px)'}}>
         {/* Columna izquierda - Galería de prendas (2/3) */}
         <div className="w-2/3 flex flex-col">
           {/* Área scrolleable de prendas */}
@@ -159,7 +168,7 @@ function MarcaDetalle() {
           </div>
         </div>
       </div>
-          <div className="flex-1 overflow-y-auto my-6 modern-scrollbar">
+          <div className="flex-1 overflow-y-auto mt-6 modern-scrollbar">
             {marcaDetail.prendas && marcaDetail.prendas.length > 0 ? (
               <div className="space-y-12 max-w-5xl mx-auto">
                 {/* Prendas Superiores */}
@@ -215,20 +224,33 @@ function MarcaDetalle() {
         </div>
 
         {/* Columna derecha - Panel de combinación (1/3) */}
-        <div className="w-1/3 flex flex-col border border-gray/20">
-          <div className="flex-1 flex items-center justify-center">
-            {resultado ? (
-              <div className="text-center w-full">
-                <div className="mb-4">
+        <div className="w-1/3 flex flex-col border border-gray/20 relative h-full">
+          <div className="flex-1 flex items-center justify-center overflow-hidden">
+            {loadingCombinacion ? (
+              <div className="display flex flex-col items-center gap-2">
+                <Blend className="animate-spin self-center h-20 w-20 mb-4" />
+                <div className="text-lg text-white leading-relaxed">
+                  Generando tu outfit...
+                </div>
+                <div className="text-sm text-gray">
+                  Esto puede tomar unos segundos
+                </div>
+              </div>
+            ) : resultado ? (
+              <div className="w-full h-full flex items-center justify-center p-0 relative">
+                  {/* Botón Box en esquina superior derecha */}
+                  <button className="absolute top-2 right-2 p-3 pb-2 pt-4 bg-gray/50 hover:bg-gray/70 backdrop-blur-sm rounded-full flex items-center justify-center transition-colors z-10 cursor-pointer">
+                    <Box className="w-5 h-5 text-white animate-bounce" />
+                  </button>
+
                   <img
                     src={resultado}
                     alt="Combinación de outfit"
-                    className="w-full max-w-sm mx-auto rounded-sm border border-gray/20 object-cover max-h-110"
+                    className="max-w-full max-h-full object-contain"
                     onError={(e) => {
                       e.target.src = '/placeholder-outfit.svg';
                     }}
                   />
-                </div>
               </div>
             ) : errorCombinacion ? (
               <div className="text-center">
@@ -241,16 +263,17 @@ function MarcaDetalle() {
               </div>
             ) : (
               <div className="text-center">
-                <div className="text-lg text-white leading-relaxed">
+                <VscPerson className="w-60 h-60 text-gray mx-auto mb-6 animate-pulse" />
+                <div className="text-lg text-gray leading-relaxed">
                   Selecciona dos prendas y combina tu outfit
                 </div>
               </div>
             )}
           </div>
 
-          {/* Selector de avatar */}
+          {/* Selector de avatar superpuesto */}
           {canCombine && (
-            <div className="p-4 border-t border-gray/20">
+            <div className="absolute bottom-15 left-0 right-0 p-2 bg-black/50 backdrop-blur-sm border-t border-gray/20">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray">Tipo de avatar:</span>
                 <Button
@@ -258,7 +281,7 @@ function MarcaDetalle() {
                   variant='outline'
                   color='gray'
                   width='fit'
-                  className={esHombre ? 'text-white border-gray' : ''}
+                  className={esHombre ? 'text-white text-sm border-gray' : 'text-sm'}
                 >
                   Hombre
                 </Button>
@@ -267,7 +290,7 @@ function MarcaDetalle() {
                   variant='outline'
                   color='gray'
                   width='fit'
-                  className={!esHombre ? 'text-white border-gray' : ''}
+                  className={!esHombre ? 'text-white text-sm border-gray' : 'text-sm'}
                 >
                   Mujer
                 </Button>
@@ -276,7 +299,7 @@ function MarcaDetalle() {
           )}
 
           {/* Botón en el panel lateral */}
-            <div className="relative group p-4">
+            <div className="relative group p-4 flex-shrink-0">
               <Button
                 onClick={handleCombinarPrendas}
                 disabled={!canCombine || loadingCombinacion}
@@ -285,7 +308,7 @@ function MarcaDetalle() {
               </Button>
 
               {/* Tooltip */}
-              {!canCombine && (
+              {!canCombine && !loadingCombinacion && (
                 <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
                   Selecciona una prenda superior y una inferior para combinar
                   <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>

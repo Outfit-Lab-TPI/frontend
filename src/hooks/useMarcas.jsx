@@ -1,9 +1,5 @@
 import { useState, useEffect } from 'react';
 import { marcaService } from '../services/marcaService.js';
-import { fetchMockMarcas } from '../services/mockData.js';
-
-// Configuración para usar mock data temporalmente
-const USE_MOCK_DATA = false;
 
 export const useMarcas = () => {
   const [marcas, setMarcas] = useState([]);
@@ -17,16 +13,10 @@ export const useMarcas = () => {
     setCriticalError(null);
     try {
       let response;
-      if (USE_MOCK_DATA) {
-        // Usar datos de mock mientras el backend no esté disponible
-        response = await fetchMockMarcas();
-      } else {
-        // Usar servicio real
-        response = await marcaService.getAllMarcas();
-      }
+      response = await marcaService.getAllMarcas();
       setMarcas(response.data);
     } catch (err) {
-      if (!USE_MOCK_DATA && err.isCritical) {
+      if (err.isCritical) {
         // Para errores críticos, los guardamos para ser lanzados en el componente
         setCriticalError(err);
       } else {
