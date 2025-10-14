@@ -1,5 +1,5 @@
 import { useMarcas } from '../hooks/useMarcas.jsx';
-import BrandCard from '../components/BrandCard.jsx';
+import MarcaCard from '../components/MarcaCard.jsx';
 import { useEffect } from 'react';
 
 function Marcas() {
@@ -36,7 +36,7 @@ function Marcas() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-6xl mx-auto justify-items-center">
         {marcas.map((marca) => (
-          <BrandCard key={marca.codigoMarca} marca={marca} />
+          <MarcaCard key={marca.codigoMarca} marca={marca} />
         ))}
       </div>
     </div>

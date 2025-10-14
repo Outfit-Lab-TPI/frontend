@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-function BrandCard({ marca }) {
+function MarcaCard({ marca }) {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -29,4 +29,4 @@ function BrandCard({ marca }) {
   );
 }
 
-export default BrandCard;
+export default MarcaCard;
