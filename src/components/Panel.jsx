@@ -61,7 +61,7 @@ function Panel({
               />
             ) : (
               <img
-                src={resultado}
+                src={resultado?.imageUrl}
                 alt="Combinación de outfit"
                 className="max-w-full max-h-full object-contain"
                 onError={(e) => {
