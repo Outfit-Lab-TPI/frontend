@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { combinacionService } from '../services/combinacionService.js';
 
 // Configuración para usar mock data temporalmente
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false;
 
 // Mock URLs de ejemplo para las combinaciones
 const MOCK_OUTFIT_URLS = [

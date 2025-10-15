@@ -3,7 +3,7 @@ import { marcaService } from '../services/marcaService.js';
 import { fetchMockMarcaDetail } from '../services/mockData.js';
 
 // Configuración para usar mock data temporalmente (misma que useMarcas)
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false;
 
 export const useMarcaDetail = (codigoMarca) => {
   const [marcaDetail, setMarcaDetail] = useState(null);
