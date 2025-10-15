@@ -6,12 +6,15 @@ export default function HeroSection() {
       <div className="grid grid-cols-12 gap-4 lg:gap-2 items-center p-5 md:px-10">
         <div className="col-span-12 md:col-span-7 max-w-[600px] mx-auto">
           <h1 className="!text-4xl md:!text-5xl text-center md:text-left max-w-[480px] sm:mx-5 lg:mx-0 leading-tight">
-            Transforma la
-            <span className="text-[var(--tertiary)] font-semibold"> moda </span>
-            con el probador virtual
+            Probá la{" "}
+            <span className="text-[var(--tertiary)] font-semibold">moda</span>{" "}
+            virtual
           </h1>
+          <em className="text-[var(--white)] max-w-[480px] sm:mx-5 lg:mx-0 hidden md:block mt-4 text-lg text-left mt-[-5px] mb-5">
+            Permití a tus clientes probarse tus prendas en segundos.
+          </em>
           <div className="m-4 hidden md:block lg:mx-0">
-            <CallToAction align="left" text="Descubrir" />
+            <CallToAction align="left" text="Descubrir más" />
           </div>
         </div>
         <div className="col-span-12 md:col-span-5">
@@ -28,8 +31,11 @@ export default function HeroSection() {
           </div>
         </div>
       </div>
+      <em className="md:hidden block text-center text-[var(--white)] text-lg mb-10 px-5 max-w-[350px] mx-auto">
+        Permití a tus clientes probarse tus prendas en segundos.
+      </em>
       <div className="m-4 w-full mx-auto md:hidden">
-        <CallToAction text="Descubrir" />
+        <CallToAction text="Descubrir más" />
       </div>
     </section>
   );

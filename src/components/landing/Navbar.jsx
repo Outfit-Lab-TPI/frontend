@@ -51,13 +51,9 @@ export default function LandingNavbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 transform ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 transform border-b border-[#926490]/20 ${
         hidden ? "-translate-y-full" : "translate-y-0"
-      } ${
-        scrolled
-          ? "bg-[#0a050e]/80 backdrop-blur-md border-b border-[#926490]/20"
-          : "bg-transparent"
-      }`}
+      } ${scrolled ? "bg-[#0a050e]/80 backdrop-blur-md" : "bg-transparent"}`}
     >
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         <div
@@ -67,12 +63,12 @@ export default function LandingNavbar() {
           <img src="/isologo.svg" className="w-28 h-10" alt="logo" />
         </div>
 
-        <div className="hidden lg:flex items-center gap-6">
+        <div className="hidden lg:flex items-center gap-8">
           {pages.map(({ id, name }) => (
             <button
               key={id}
               onClick={() => scrollToSection(id)}
-              className="tracking-widest cursor-pointer text-[var(--white)]/70 hover:text-[#e3c18a] transition-colors text-sm font-medium"
+              className="relative tracking-widest text-[var(--white)]/80 hover:text-[#e3c18a] text-sm font-medium cursor-pointer transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-0 after:h-[1px] after:bg-[#e3c18a] after:transition-all after:duration-300 hover:after:w-full"
             >
               {name}
             </button>
@@ -82,15 +78,9 @@ export default function LandingNavbar() {
         <div className="hidden lg:flex items-center gap-3">
           <button
             onClick={() => navigate("/login")}
-            className="tracking-widest cursor-pointer text-[var(--white)] hover:bg-[#926490]/10 px-4 py-2 rounded-full transition-all duration-300 font-semibold"
+            className="tracking-widest cursor-pointer text-sm text-[var(--white)] hover:text-[#e3c18a] border border-[var(--white)]/50 hover:border-[#e3c18a] hover:bg-[#e3c18a]/10 px-5 py-2 rounded-full transition-all duration-300 font-semibold"
           >
-            Ingresar
-          </button>
-          <button
-            onClick={() => navigate("/signup")}
-            className="tracking-widest cursor-pointer text-[var(--white)] hover:bg-[#926490]/10 px-4 py-2 rounded-full transition-all duration-300 font-semibold"
-          >
-            Registrarse
+            Iniciar sesión
           </button>
         </div>
 
@@ -125,13 +115,7 @@ export default function LandingNavbar() {
               onClick={() => navigate("/login")}
               className="tracking-widest hover-pointer text-[var(--white)] hover:bg-[#926490]/10 px-6 py-2 rounded-full font-semibold transition-all duration-300"
             >
-              Ingresar
-            </button>
-            <button
-              onClick={() => navigate("/signup")}
-              className="tracking-widest hover-pointer text-[var(--white)] hover:bg-[#926490]/10 px-6 py-2 rounded-full font-semibold transition-all duration-300"
-            >
-              Registrarse
+              Iniciar sesión
             </button>
           </div>
         </div>

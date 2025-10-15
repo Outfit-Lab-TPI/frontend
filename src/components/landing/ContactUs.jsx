@@ -34,11 +34,11 @@ export default function ContactSection() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="flex-1 bg-[var(--black)]/50 border border-[var(--secondary)]/30 text-[var(--white)] placeholder:text-[var(--gray)] focus:border-[var(--secondary)] focus:outline-none h-12 rounded-md px-3"
+                  className="flex-1 bg-[var(--black)]/50 border border-[var(--secondary)]/30 text-[var(--white)] placeholder:text-[var(--gray)] focus:border-[var(--secondary)] focus:outline-none h-12 !rounded-xl px-3"
                 />
                 <button
                   type="submit"
-                  className="bg-[var(--secondary)] hover:bg-[var(--secondary)]/90 text-[#fffcf5] px-8 h-12 rounded-md flex items-center justify-center transition-colors"
+                  className="bg-[var(--white)]/10 cursor-pointer border border-[var(--tertiary)]/30 backdrop-blur-sm text-[var(--tertiary)] px-8 h-12 rounded-xl flex items-center justify-center transition-colors hover:bg-[var(--white)]/20"
                 >
                   Enviar
                   <Send className="ml-2 h-4 w-4" />
