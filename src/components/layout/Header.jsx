@@ -14,7 +14,7 @@ function Header() {
       }}
     >
       <Link
-        to="/marcas"
+        to="/"
         style={{
           textDecoration: "none",
           height: "fit-content",
