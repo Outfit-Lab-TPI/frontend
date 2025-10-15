@@ -1,6 +1,7 @@
 import HeroSection from "../components/landing/Hero";
 import BenefitsSection from "../components/landing/Benefits";
 import BrandsCarousel from "../components/landing/brands-carousel";
+import StatsSection from "../components/landing/Stats";
 import DemoSection from "../components/landing/Demo";
 import ContactSection from "../components/landing/ContactUs";
 
@@ -10,6 +11,7 @@ export default function Landing() {
       <HeroSection />
       <BenefitsSection />
       <BrandsCarousel />
+      <StatsSection />
       <DemoSection />
       <ContactSection />
     </div>
