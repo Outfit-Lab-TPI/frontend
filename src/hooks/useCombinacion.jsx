@@ -76,6 +76,26 @@ export const useCombinacion = () => {
     }
   };
 
+  const getCombinacion = async (nombreCombinacion) => {
+    setLoading(true);
+    setError(null);
+    setResultado(null);
+
+    try {
+      const response = await combinacionService.getCombinacion(nombreCombinacion);
+      setResultado(response.data);
+      return response.data;
+    } catch (err) {
+      const errorMessage = err.response?.data?.message ||
+                          err.message ||
+                          'Error al obtener la combinación';
+      setError(errorMessage);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const limpiarResultado = () => {
     setResultado(null);
     setError(null);
@@ -83,6 +103,7 @@ export const useCombinacion = () => {
 
   return {
     combinarPrendas,
+    getCombinacion,
     loading,
     error,
     resultado,

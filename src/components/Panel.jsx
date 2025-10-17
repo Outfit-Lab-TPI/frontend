@@ -38,9 +38,9 @@ function Panel({
                 disabled={!resultado || loadingModelo3D}
                 className="absolute top-2 right-2 z-10 flex group bg-gray/50 hover:bg-gray/70 backdrop-blur-sm rounded-full transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-default overflow-hidden hover:px-4"
               >
-                <div className="hidden group-hover:flex items-center justify-center transition-all duration-300">
+                <div className=" font-family-primary hidden group-hover:flex items-center justify-center transition-all duration-300">
                   <span className="text-white text-sm font-medium whitespace-nowrap">
-                    Generar modelo 3D
+                    Proxímamente: probador 3D
                   </span>
                 </div>
 

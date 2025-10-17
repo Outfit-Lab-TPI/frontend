@@ -17,5 +17,15 @@ export const combinacionService = {
       console.error("error:", error);
       throw error;
     }
+  },
+
+  getCombinacion: async (nombreCombinacion) => {
+    try {
+      const response = await apiClient.get(`/fashion/combinacion/${nombreCombinacion}`);
+      return response.data;
+    } catch (error) {
+      console.error("error:", error);
+      throw error;
+    }
   }
 };

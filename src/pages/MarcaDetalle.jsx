@@ -10,7 +10,7 @@ function MarcaDetalle() {
   const { codigoMarca } = useParams();
   const { marcaDetail, loading, error, criticalError } =
     useMarcaDetail(codigoMarca);
-  const { combinarPrendas, loading: loadingCombinacion, error: errorCombinacion, resultado, limpiarResultado } =
+  const { combinarPrendas, getCombinacion, loading: loadingCombinacion, error: errorCombinacion, resultado, limpiarResultado } =
     useCombinacion();
   const { generarModelo3D, loading: loadingModelo3D, error: errorModelo3D, modeloUrl, limpiarModelo } =
     useModelo3D();
@@ -61,7 +61,11 @@ function MarcaDetalle() {
         inferior: selectedInferior.nombre
       });
 
-      await combinarPrendas(esHombre, selectedSuperior, selectedInferior);
+      const sexoAvatar = esHombre ? 'h' : 'm';
+      const nombreCombinacion = `${codigoMarca}-${sexoAvatar}-${selectedSuperior.nombre}-${selectedInferior.nombre}`;
+
+      // await combinarPrendas(esHombre, selectedSuperior, selectedInferior);
+      await getCombinacion(nombreCombinacion)
     }
   };
 
