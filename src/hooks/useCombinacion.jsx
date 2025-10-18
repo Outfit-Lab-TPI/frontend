@@ -82,13 +82,21 @@ export const useCombinacion = () => {
     setResultado(null);
 
     try {
-      const response = await combinacionService.getCombinacion(nombreCombinacion);
-      setResultado(response.data);
-      return response.data;
+      // combinacionService.getCombinacion ya retorna response.data (que es la URL string)
+      const imageUrl = await combinacionService.getCombinacion(nombreCombinacion);
+      console.log('Fetched combination in hook:', imageUrl);
+      
+      // El backend devuelve directamente la URL como string
+      // Necesitamos crear un objeto con la estructura esperada por el Panel
+      const resultado = { imageUrl };
+      
+      setResultado(resultado);
+      console.log('resultado in hook after fetch:', resultado);
+      return resultado;
     } catch (err) {
       const errorMessage = err.response?.data?.message ||
                           err.message ||
-                          'Error al obtener la combinación';
+                          'Error al obtener la combinación';
       setError(errorMessage);
       return null;
     } finally {

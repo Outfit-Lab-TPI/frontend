@@ -21,7 +21,10 @@ export const combinacionService = {
 
   getCombinacion: async (nombreCombinacion) => {
     try {
-      const response = await apiClient.get(`/fashion/combinacion/${nombreCombinacion}`);
+      console.log("Fetching combination:", nombreCombinacion);
+      const response = await apiClient.get(`/fashion/combinacion/vulk-h-s1-i1`);
+      // const response = await apiClient.get(`/fashion/combinacion/${nombreCombinacion}`);
+      console.log("Response:", response);
       return response.data;
     } catch (error) {
       console.error("error:", error);
