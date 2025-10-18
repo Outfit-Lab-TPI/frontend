@@ -28,7 +28,7 @@ export default function ContactSection() {
                 />
               </div>
               <p className="text-base sm:text-lg text-[var(--gray)] leading-relaxed">
-                Sé el primero en conocer nuestras novedades y actualizaciones
+                Sé el primero en conocer nuestras novedades y actualizaciones.
               </p>
             </div>
 

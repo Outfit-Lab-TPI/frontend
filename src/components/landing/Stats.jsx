@@ -53,8 +53,8 @@ export default function StatsSection() {
             por nosotros
           </h2>
           <p className="text-[var(--gray)] text-lg max-w-2xl mx-auto">
-            Miles de marcas ya confían en nuestra tecnología para transformar su
-            experiencia de compra
+            Cientas de marcas ya confían en nuestra tecnología para transformar
+            su experiencia de compra.
           </p>
         </motion.div>
 
@@ -132,7 +132,6 @@ function StatCard({ stat, index, isInView }) {
           e.currentTarget.style.boxShadow = "0 0 20px rgba(143, 93, 141, 0.1)";
         }}
       >
-        // Glow effect
         <div
           className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-500 pointer-events-none"
           style={{
