@@ -21,10 +21,11 @@ export const combinacionService = {
 
   getCombinacion: async (nombreCombinacion) => {
     try {
-      console.log("Fetching combination:", nombreCombinacion);
-      const response = await apiClient.get(`/fashion/combinacion/vulk-h-s1-i1`);
-      // const response = await apiClient.get(`/fashion/combinacion/${nombreCombinacion}`);
-      console.log("Response:", response);
+      // delay de 2000ms para simular delay de red
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await apiClient.get(`/fashion/combinacion/${nombreCombinacion}`);
+
+      console.log("back getCombinacion:", response);
       return response.data;
     } catch (error) {
       console.error("error:", error);

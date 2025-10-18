@@ -3,7 +3,7 @@ import { Check } from "lucide-react";
 function PrendaGalleryCard({ prenda, isSelected, onSelect }) {
   return (
     <div
-      className={`relative w-48 h-56 rounded-md overflow-hidden cursor-pointer group transition-all duration-300 ${
+      className={`relative w-40 h-48 rounded-md overflow-hidden cursor-pointer group transition-all duration-300 ${
         isSelected
           ? 'bg-primary ring-2 ring-primary shadow-lg scale-105'
           : 'bg-gray hover:bg-gray/80'

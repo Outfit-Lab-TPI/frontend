@@ -29,7 +29,8 @@ export const marcaService = {
 
   getMarcaByCode: async (codigoMarca) => {
     try {
-      return await apiClient.get(`/marcas/${codigoMarca}`);
+      const response = await apiClient.get(`/marcas/${codigoMarca}`);
+      return response;
     } catch (error) {
       // Agregar información sobre si es un error crítico
       error.isCritical = isCriticalError(error);

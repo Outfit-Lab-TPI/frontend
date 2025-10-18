@@ -61,14 +61,12 @@ function MarcaDetalle() {
         inferior: selectedInferior.nombre
       });
 
-      console.log('marca detail:' , marcaDetail);
-
       const sexoAvatar = esHombre ? 'h' : 'm';
-      const nombreCombinacion = `${codigoMarca}-${sexoAvatar}-${selectedSuperior.nombre}-${selectedInferior.nombre}`;
+      const nombreCombinacion = `${codigoMarca}-${sexoAvatar}-${selectedSuperior.codigo}-${selectedInferior.codigo}`;
 
+      console.log('Buscando combinación:', nombreCombinacion);
       // await combinarPrendas(esHombre, selectedSuperior, selectedInferior);
       await getCombinacion(nombreCombinacion)
-      console.log('resultado after getCombinacion:', resultado);
     }
   };
 

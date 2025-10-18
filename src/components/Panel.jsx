@@ -48,7 +48,7 @@ function Panel({
                   {loadingModelo3D ? (
                     <LoaderCircle className="w-5 h-5 text-white animate-spin" />
                   ) : (
-                    <Box className="w-5 h-5 text-white animate-bounce" />
+                    <Box className="w-5 h-5 text-white" />
                   )}
                 </div>
               </button>

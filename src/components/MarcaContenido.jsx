@@ -23,9 +23,9 @@ function MarcaContenido({
 
   return (
     <div className="w-2/3 flex flex-col">
-      <div className="flex-shrink-0 p-4 bg-gray/10">
+      <div className="flex-shrink-0 p-2 bg-gray/10">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-          <div className="w-20 h-20 bg-gray rounded-xl flex items-center justify-center p-4">
+          <div className="w-14 h-14 bg-gray rounded-xl flex items-center justify-center p-4">
             <img
               src={marcaDetail.logoUrl || "/isotipo.svg"}
               alt={marcaDetail.nombre}
@@ -36,16 +36,16 @@ function MarcaContenido({
             />
           </div>
 
-          <div className="h-20 flex flex-col justify-center gap-2">
-            <h2>{marcaDetail.nombre}</h2>
+          <div className="h-14 flex flex-col justify-center">
+            <h4>{marcaDetail.nombre}</h4>
             {marcaDetail.sitioUrl && (
               <a
                 href={marcaDetail.sitioUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-gray hover:text-white transition-colors"
+                className="text-sm inline-flex items-center gap-2 text-gray hover:text-white transition-colors"
               >
-                <SquareArrowOutUpRight className="w-4 h-4" />
+                <SquareArrowOutUpRight className="w-3 h-3" />
                 Visitar sitio web
               </a>
             )}
@@ -53,13 +53,13 @@ function MarcaContenido({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto mt-6 modern-scrollbar">
+      <div className="flex-1 overflow-y-auto mt-4 modern-scrollbar">
         {marcaDetail.prendas && marcaDetail.prendas.length > 0 ? (
-          <div className="space-y-12 max-w-5xl mx-auto">
+          <div className="space-y-4 max-w-5xl mx-auto">
             <div>
-              <h4 className="text-xl font-semibold mb-3">
+              <h5 className="text-xl font-semibold mb-1">
                 Prendas Superiores
-              </h4>
+              </h5>
               <div className="flex flex-wrap gap-8">
                 {prendasCategorizadas.superiores.map((prenda, index) => (
                   <PrendaGalleryCard
@@ -78,10 +78,10 @@ function MarcaContenido({
             </div>
 
             <div>
-              <h4 className="text-xl font-semibold mb-3">
+              <h5 className="text-xl font-semibold mb-1">
                 Prendas Inferiores
-              </h4>
-              <div className="flex flex-wrap gap-4">
+              </h5>
+              <div className="flex flex-wrap gap-8">
                 {prendasCategorizadas.inferiores.map((prenda, index) => (
                   <PrendaGalleryCard
                     key={`inferior-${index}`}

@@ -29,7 +29,6 @@ export function useNuevaPrenda() {
       formData.append('imagen', data.imagen[0])
 
       const response = await prendaService.crearPrenda(formData)
-      console.log('Prenda creada exitosamente:', response.data)
       navigate('/home')
     } catch (error) {
       console.error('Error al crear prenda:', error)
