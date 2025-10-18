@@ -34,7 +34,7 @@ function Marcas() {
         <h2 className="text-2xl font-bold tracking-wide">Marcas más populares</h2>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-6xl mx-auto justify-items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto justify-items-center">
         {marcas.map((marca) => (
           <MarcaCard key={marca.codigoMarca} marca={marca} />
         ))}

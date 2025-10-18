@@ -9,7 +9,7 @@ function MarcaCard({ marca }) {
 
   return (
     <div
-      className="relative w-64 h-80 bg-gray rounded-lg overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-black/30 group"
+      className="relative w-80 h-80 bg-gray rounded-lg overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-black/30 group"
       onClick={handleClick}
     >
       <div className="w-full h-full flex items-center justify-center p-5">

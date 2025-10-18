@@ -37,16 +37,19 @@ function MarcaDetalle() {
 
   // Verificar si se puede combinar
   const canCombine = useMemo(() => {
-    // Debe haber prendas seleccionadas
+    // Debe haber AMBAS prendas seleccionadas (superior Y inferior)
     if (!selectedSuperior || !selectedInferior) return false;
 
     // Si no hay combinación previa, permitir combinar
     if (!lastCombination) return true;
 
+    // Si cambió el avatar, permitir combinar
+    if (esHombre !== lastCombination.esHombre) return true;
+
     // Si las prendas actuales son diferentes a la última combinación, permitir combinar
     return !(selectedSuperior.nombre === lastCombination.superior &&
              selectedInferior.nombre === lastCombination.inferior);
-  }, [selectedSuperior, selectedInferior, lastCombination]);
+  }, [selectedSuperior, selectedInferior, esHombre, lastCombination]);
 
   // Limpiar resultado solo al iniciar una nueva combinación
   const handleCombinarPrendas = async () => {
@@ -57,8 +60,9 @@ function MarcaDetalle() {
 
       // Guardar la combinación actual antes de enviarla
       setLastCombination({
-        superior: selectedSuperior.nombre,
-        inferior: selectedInferior.nombre
+        superior: selectedSuperior?.nombre,
+        inferior: selectedInferior?.nombre,
+        esHombre: esHombre
       });
 
       const sexoAvatar = esHombre ? 'h' : 'm';
@@ -75,12 +79,6 @@ function MarcaDetalle() {
     if (resultado) {
       await generarModelo3D(resultado);
     }
-  };
-
-  const getButtonText = () => {
-    if (loadingCombinacion) return 'Combinando...';
-    if (!canCombine) return 'Elige prendas para combinar';
-    return 'Combinar prendas';
   };
 
   // Lanzar excepción para errores críticos para que sea capturada por ErrorBoundary
@@ -148,7 +146,6 @@ function MarcaDetalle() {
         setEsHombre={setEsHombre}
         onCombinarPrendas={handleCombinarPrendas}
         loadingCombinacion={loadingCombinacion}
-        getButtonText={getButtonText}
       />
 
       <Panel

@@ -13,7 +13,6 @@ function MarcaContenido({
   setEsHombre,
   onCombinarPrendas,
   loadingCombinacion,
-  getButtonText,
 }) {
   const prendasCategorizadas = useMemo(() => {
     if (!marcaDetail?.prendas) return { superiores: [], inferiores: [] };
@@ -60,43 +59,42 @@ function MarcaContenido({
             </div>
           </div>
 
-          {canCombine && (
-            <div className="flex items-center gap-4 ml-auto">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray">Tipo de avatar:</span>
-                <Button
+          <div className="flex items-center gap-2 ml-auto">
+            <div className="flex items-center">
+              <span className="text-sm text-gray">Avatar:</span>
+              {/* Toggle moderno para selección de género */}
+              <div className="relative inline-flex items-center bg-dark-gray rounded-full p-1 transition-colors">
+                <button
                   onClick={() => setEsHombre(true)}
-                  variant="outline"
-                  color="gray"
-                  width="fit"
-                  className={
-                    esHombre ? "text-white text-sm border-gray" : "text-sm"
-                  }
+                  className={`relative z-10 px-3 py-1 text-xs font-medium rounded-l-full transition-all duration-200 border border-gray ${
+                    esHombre
+                      ? 'text-black bg-white/80 shadow-sm'
+                      : 'text-gray hover:text-white'
+                  }`}
                 >
                   Hombre
-                </Button>
-                <Button
+                </button>
+                <button
                   onClick={() => setEsHombre(false)}
-                  variant="outline"
-                  color="gray"
-                  width="fit"
-                  className={
-                    !esHombre ? "text-white text-sm border-gray" : "text-sm"
-                  }
+                  className={`relative z-10 px-3 py-1 text-xs font-medium rounded-r-full transition-all duration-200 border border-gray ${
+                    !esHombre
+                      ? 'text-black bg-white/80 shadow-sm'
+                      : 'text-gray hover:text-white'
+                  }`}
                 >
                   Mujer
-                </Button>
+                </button>
               </div>
-
-              <Button
-                onClick={onCombinarPrendas}
-                disabled={!canCombine || loadingCombinacion}
-                width="fit"
-              >
-                {getButtonText()}
-              </Button>
             </div>
-          )}
+
+            <Button
+              onClick={onCombinarPrendas}
+              disabled={!canCombine || loadingCombinacion}
+              width="fit"
+            >
+              Combinar prendas
+            </Button>
+          </div>
         </div>
       </div>
       {/* Galería de prendas */}
