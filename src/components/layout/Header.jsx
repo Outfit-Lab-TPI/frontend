@@ -45,7 +45,7 @@ function Header() {
             <Wifi size={20} color="white" />
           </div>
         </Link> */}
-
+{/* 
         <Link to="/profile">
           <div
             className="w-10 h-10 rounded-full 
@@ -57,7 +57,7 @@ function Header() {
           >
             <User size={20} color="var(--white)" />
           </div>
-        </Link>
+        </Link> */}
       </div>
     </header>
   );

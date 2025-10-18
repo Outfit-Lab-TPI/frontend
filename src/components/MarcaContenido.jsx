@@ -1,5 +1,6 @@
+import { Link } from "react-router-dom";
 import { useMemo } from "react";
-import { SquareArrowOutUpRight } from "lucide-react";
+import { MoveLeft, ChevronLeft, SquareArrowOutUpRight } from "lucide-react";
 import PrendaGalleryCard from "./PrendaGalleryCard.jsx";
 import Button from "./shared/Button.jsx";
 
@@ -30,7 +31,11 @@ function MarcaContenido({
   return (
     <div className="w-2/3 flex flex-col">
       {/* Detalles de marca */}
-      <div className="flex-shrink-0 p-2 bg-gray/10">
+      <div className="flex gap-2">
+        <Link to="/marcas">
+        <ChevronLeft className="h-5 w-5 m-1" color="gray" />
+        </Link>
+      <div className="p-2 bg-gray/10 w-full">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 bg-gray rounded-xl flex items-center justify-center p-4">
@@ -59,14 +64,15 @@ function MarcaContenido({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 ml-auto">
+          <div className="flex items-center gap-3 ml-auto">
+            {selectedSuperior && selectedInferior ? (
             <div className="flex items-center">
               <span className="text-sm text-gray">Avatar:</span>
               {/* Toggle moderno para selección de género */}
               <div className="relative inline-flex items-center bg-dark-gray rounded-full p-1 transition-colors">
                 <button
                   onClick={() => setEsHombre(true)}
-                  className={`relative z-10 px-3 py-1 text-xs font-medium rounded-l-full transition-all duration-200 border border-gray ${
+                  className={`cursor-pointer relative z-10 px-3 py-1 text-xs font-medium rounded-l-full transition-all duration-200 border border-gray ${
                     esHombre
                       ? 'text-black bg-white/80 shadow-sm'
                       : 'text-gray hover:text-white'
@@ -76,7 +82,7 @@ function MarcaContenido({
                 </button>
                 <button
                   onClick={() => setEsHombre(false)}
-                  className={`relative z-10 px-3 py-1 text-xs font-medium rounded-r-full transition-all duration-200 border border-gray ${
+                  className={`cursor-pointer relative z-10 px-3 py-1 text-xs font-medium rounded-r-full transition-all duration-200 border border-gray ${
                     !esHombre
                       ? 'text-black bg-white/80 shadow-sm'
                       : 'text-gray hover:text-white'
@@ -86,6 +92,9 @@ function MarcaContenido({
                 </button>
               </div>
             </div>
+            ) : (
+              <span className="text-sm text-gray">Selecciona 2 prendas</span>
+            )}
 
             <Button
               onClick={onCombinarPrendas}
@@ -97,13 +106,14 @@ function MarcaContenido({
           </div>
         </div>
       </div>
+</div>
       {/* Galería de prendas */}
       <div className="flex-1 overflow-y-auto mt-4 modern-scrollbar">
         {marcaDetail.prendas && marcaDetail.prendas.length > 0 ? (
           <div className="space-y-4 max-w-5xl mx-auto">
             <div>
               <h5 className="text-xl font-semibold mb-1">Prendas Superiores</h5>
-              <div className="flex flex-wrap gap-8">
+              <div className="flex flex-wrap gap-10">
                 {prendasCategorizadas.superiores.map((prenda, index) => (
                   <PrendaGalleryCard
                     key={`superior-${index}`}
@@ -122,7 +132,7 @@ function MarcaContenido({
 
             <div>
               <h5 className="text-xl font-semibold mb-1">Prendas Inferiores</h5>
-              <div className="flex flex-wrap gap-8">
+              <div className="flex flex-wrap gap-10">
                 {prendasCategorizadas.inferiores.map((prenda, index) => (
                   <PrendaGalleryCard
                     key={`inferior-${index}`}
