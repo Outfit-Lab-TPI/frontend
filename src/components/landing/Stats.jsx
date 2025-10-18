@@ -36,7 +36,7 @@ export default function StatsSection() {
   return (
     <section
       ref={ref}
-      className="py-24 px-10 md:px-24 relative overflow-hidden mx-[-20px]"
+      className="py-24 px-6 sm:px-10 md:px-24 relative overflow-hidden mx-[-20px]"
       id="numeros"
     >
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--primary)]/30 to-transparent pointer-events-none" />
@@ -52,13 +52,13 @@ export default function StatsSection() {
             Números que <span className="text-[var(--tertiary)]">hablan</span>{" "}
             por nosotros
           </h2>
-          <p className="text-[var(--gray)] text-lg max-w-2xl mx-auto">
+          <p className="text-[var(--gray)] px-2 text-base text-left sm:text-center md:text-lg mx-auto">
             Cientas de marcas ya confían en nuestra tecnología para transformar
             su experiencia de compra.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-[400px] sm:max-w-none mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-[400px] sm:max-w-none mx-auto mt-[-20px]">
           {stats.map((stat, index) => (
             <StatCard
               key={index}

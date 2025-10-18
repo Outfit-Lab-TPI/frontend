@@ -37,8 +37,8 @@ export default function DemoSection() {
           animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="!text-3xl md:!text-4xl font-bold text-[var(--white)] text-left mb-8">
-            Cómo tus prendas cobran vida en el probador virtual
+          <h2 className="!text-3xl md:!text-4xl font-bold text-[var(--white)] text-center lg:text-left mb-8">
+            Como tus prendas cobran vida
           </h2>
 
           <p className="text-base md:text-lg mb-6">

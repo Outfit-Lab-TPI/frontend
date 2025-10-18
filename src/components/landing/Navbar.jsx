@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 const pages = [
   { name: "Inicio", id: "inicio" },
   { name: "Beneficios", id: "beneficios" },
-  { name: "Marcas", id: "marcas" },
   { name: "Números", id: "numeros" },
   { name: "Cómo funciona", id: "comoFunciona" },
   { name: "Contacto", id: "contacto" },
