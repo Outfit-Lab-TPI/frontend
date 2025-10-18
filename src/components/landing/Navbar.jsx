@@ -6,6 +6,7 @@ const pages = [
   { name: "Inicio", id: "inicio" },
   { name: "Beneficios", id: "beneficios" },
   { name: "Marcas", id: "marcas" },
+  { name: "Números", id: "numeros" },
   { name: "Cómo funciona", id: "comoFunciona" },
   { name: "Contacto", id: "contacto" },
 ];
@@ -111,14 +112,13 @@ export default function LandingNavbar() {
               {name}
             </button>
           ))}
-          <div className="flex flex-col gap-4 pt-6">
-            <button
-              onClick={() => navigate("/login")}
-              className="tracking-widest hover-pointer text-[var(--white)] hover:bg-[#926490]/10 px-6 py-2 rounded-full font-semibold transition-all duration-300"
-            >
-              Iniciar sesión
-            </button>
-          </div>
+          <div className="w-10/12 h-[1px] bg-gradient-to-r from-transparent via-[var(--white)]/50 to-transparent my-4" />
+          <button
+            onClick={() => navigate("/login")}
+            className="tracking-widest hover-pointer text-[var(--white)] hover:bg-[#926490]/10 px-6 py-2 rounded-full font-semibold transition-all duration-300"
+          >
+            Iniciar sesión
+          </button>
         </div>
       </div>
     </nav>
