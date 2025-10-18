@@ -143,6 +143,12 @@ function MarcaDetalle() {
         selectedSuperior={selectedSuperior}
         selectedInferior={selectedInferior}
         onSelectPrenda={handleSelectPrenda}
+        canCombine={canCombine}
+        esHombre={esHombre}
+        setEsHombre={setEsHombre}
+        onCombinarPrendas={handleCombinarPrendas}
+        loadingCombinacion={loadingCombinacion}
+        getButtonText={getButtonText}
       />
 
       <Panel
@@ -152,12 +158,7 @@ function MarcaDetalle() {
         errorModelo3D={errorModelo3D}
         modeloUrl={modeloUrl}
         loadingModelo3D={loadingModelo3D}
-        canCombine={canCombine}
-        esHombre={esHombre}
-        setEsHombre={setEsHombre}
-        onCombinarPrendas={handleCombinarPrendas}
         onGenerarModelo3D={handleGenerarModelo3D}
-        getButtonText={getButtonText}
       />
     </div>
   );

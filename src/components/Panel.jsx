@@ -10,15 +10,10 @@ function Panel({
   errorModelo3D,
   modeloUrl,
   loadingModelo3D,
-  canCombine,
-  esHombre,
-  setEsHombre,
-  onCombinarPrendas,
-  onGenerarModelo3D,
-  getButtonText
+  onGenerarModelo3D
 }) {
   return (
-    <div className="w-1/3 flex flex-col border border-gray/20 relative h-full">
+    <div className="w-1/3 flex flex-col border-l border-gray/20 relative h-full">
       <div className="flex-1 flex items-center justify-center overflow-hidden">
         {loadingCombinacion ? (
           <div className="display flex flex-col items-center gap-2">
@@ -89,40 +84,6 @@ function Panel({
         )}
       </div>
 
-      {canCombine && (
-        <div className="absolute bottom-15 left-0 right-0 p-2 bg-black/50 backdrop-blur-sm border-t border-gray/20">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray">Tipo de avatar:</span>
-            <Button
-              onClick={() => setEsHombre(true)}
-              variant='outline'
-              color='gray'
-              width='fit'
-              className={esHombre ? 'text-white text-sm border-gray' : 'text-sm'}
-            >
-              Hombre
-            </Button>
-            <Button
-              onClick={() => setEsHombre(false)}
-              variant='outline'
-              color='gray'
-              width='fit'
-              className={!esHombre ? 'text-white text-sm border-gray' : 'text-sm'}
-            >
-              Mujer
-            </Button>
-          </div>
-        </div>
-      )}
-
-      <div className="absolute bottom-0 left-0 right-0 group p-2 flex-shrink-0">
-        <Button
-          onClick={onCombinarPrendas}
-          disabled={!canCombine || loadingCombinacion}
-        >
-          {getButtonText()}
-        </Button>
-      </div>
     </div>
   );
 }
