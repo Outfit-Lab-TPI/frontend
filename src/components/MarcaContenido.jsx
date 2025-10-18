@@ -38,7 +38,7 @@ function MarcaContenido({
       <div className="p-2 bg-gray/10 w-full">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-gray rounded-xl flex items-center justify-center p-4">
+            <div className="w-14 h-14 bg-gray rounded-xl flex items-center justify-center p-1">
               <img
                 src={marcaDetail.logoUrl || "/isotipo.svg"}
                 alt={marcaDetail.nombre}

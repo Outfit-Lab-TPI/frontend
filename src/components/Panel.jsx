@@ -55,14 +55,26 @@ function Panel({
                 className="max-w-full max-h-full"
               />
             ) : (
-              <img
-                src={resultado?.imageUrl}
-                alt="Combinación de outfit"
-                className="max-w-full max-h-full object-contain"
-                onError={(e) => {
-                  e.target.src = '/placeholder-outfit.svg';
-                }}
-              />
+              <div className="w-full h-full flex items-center justify-center">
+                <img
+                  src={resultado?.imageUrl}
+                  alt="Combinación de outfit"
+                  className="max-w-full max-h-full object-contain"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    const parent = e.target.parentElement;
+                    if (!parent.querySelector('.error-message')) {
+                      const errorDiv = document.createElement('div');
+                      errorDiv.className = 'error-message text-center p-8';
+                      errorDiv.innerHTML = `
+                        <div class="text-gray text-lg mb-2">No pudimos generar la imagen</div>
+                        <div class="text-gray/70 text-sm">Por favor elige otra combinación</div>
+                      `;
+                      parent.appendChild(errorDiv);
+                    }
+                  }}
+                />
+              </div>
             )}
           </div>
         ) : errorCombinacion || errorModelo3D ? (
