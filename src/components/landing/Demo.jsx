@@ -1,4 +1,5 @@
 import { Brain, Camera, ShoppingBag } from "lucide-react";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import { useInView } from "framer-motion";
@@ -11,22 +12,26 @@ export default function DemoSection() {
   const steps = [
     {
       icon: Camera,
-      text: "Subís fotos de la prenda en diferentes ángulos."
+      text: "Subís fotos de la prenda en diferentes ángulos.",
     },
     {
       icon: Brain,
-      text: "El sistema genera el modelado virtual."
+      text: "El sistema genera el modelado virtual.",
     },
     {
       icon: ShoppingBag,
-      text: "El modelo se agrega al catálogo del probador."
-    }
+      text: "El modelo se agrega al catálogo del probador.",
+    },
   ];
 
   return (
-    <section className="mx-auto my-20 rounded-lg" id="comoFunciona" ref={ref}>
+    <section
+      className="max-w-[1500px] mx-auto my-32 rounded-lg"
+      id="comoFunciona"
+      ref={ref}
+    >
       <div className="flex flex-col px-8 md:px-20 lg:flex-row items-center gap-10 mx-auto mb-10">
-        <motion.div 
+        <motion.div
           className="lg:w-1/2 leading-loose text-[var(--gray)]"
           initial={{ opacity: 0, x: -50 }}
           animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
@@ -45,14 +50,16 @@ export default function DemoSection() {
             {steps.map((step, index) => {
               const Icon = step.icon;
               return (
-                <motion.li 
+                <motion.li
                   key={index}
                   className="flex items-start gap-4"
                   initial={{ opacity: 0, x: -30 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
-                  transition={{ 
-                    duration: 0.5, 
-                    delay: 0.3 + index * 0.2 
+                  animate={
+                    isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }
+                  }
+                  transition={{
+                    duration: 0.5,
+                    delay: 0.3 + index * 0.2,
                   }}
                 >
                   <motion.div
@@ -67,7 +74,7 @@ export default function DemoSection() {
             })}
           </ul>
         </motion.div>
-        
+
         <motion.img
           src="./demo.jpg"
           alt="Demostración del probador virtual"
