@@ -78,6 +78,12 @@ export default function LandingNavbar() {
 
         <div className="hidden lg:flex items-center gap-3">
           <button
+            onClick={() => navigate("/ruleta")}
+            className="tracking-widest cursor-pointer text-sm text-[var(--black)] bg-gradient-to-r from-[#e3c18a] to-[#d4a868] hover:from-[#d4a868] hover:to-[#c59757] px-5 py-2 rounded-full transition-all duration-300 font-bold shadow-lg hover:shadow-[0_0_20px_rgba(227,193,138,0.4)]"
+          >
+            EXPO-PROYECTO
+          </button>
+          <button
             onClick={() => navigate("/login")}
             className="tracking-widest cursor-pointer text-sm text-[var(--white)] hover:text-[#e3c18a] border border-[var(--white)]/50 hover:border-[#e3c18a] hover:bg-[#e3c18a]/10 px-5 py-2 rounded-full transition-all duration-300 font-semibold"
           >
@@ -112,6 +118,12 @@ export default function LandingNavbar() {
             </button>
           ))}
           <div className="w-10/12 h-[1px] bg-gradient-to-r from-transparent via-[var(--white)]/50 to-transparent my-4" />
+          <button
+            onClick={() => navigate("/ruleta")}
+            className="tracking-widest hover-pointer text-[var(--black)] bg-gradient-to-r from-[#e3c18a] to-[#d4a868] px-6 py-2 rounded-full font-bold transition-all duration-300 shadow-lg"
+          >
+            EXPO-PROYECTO
+          </button>
           <button
             onClick={() => navigate("/login")}
             className="tracking-widest hover-pointer text-[var(--white)] hover:bg-[#926490]/10 px-6 py-2 rounded-full font-semibold transition-all duration-300"

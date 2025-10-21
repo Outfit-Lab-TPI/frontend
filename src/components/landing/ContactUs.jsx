@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Send } from "lucide-react";
+import { Mailbox, Newspaper, Send } from "lucide-react";
 import { toast } from "react-toastify";
 import ThemedToast from "../ui/ThemedToast";
 
@@ -27,14 +27,14 @@ export default function ContactSection() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex flex-col sm:flex-row gap-3 max-w-[600px] mx-auto">
                 <input
                   type="email"
-                  placeholder="juandiaz@gmail.com"
+                  placeholder="Ingresa aquí tu correo"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="flex-1 bg-[var(--black)]/50 border border-[var(--secondary)]/30 text-[var(--white)] placeholder:text-[var(--gray)] focus:border-[var(--secondary)] focus:outline-none h-12 !rounded-xl px-3"
+                  className="flex-1 bg-[var(--black)]/50 border border-[var(--secondary)]/30 text-[var(--white)] placeholder:text-[var(--gray)] focus:border-[var(--secondary)] focus:outline-none h-12 !rounded-xl p-3"
                 />
                 <button
                   type="submit"
@@ -44,9 +44,9 @@ export default function ContactSection() {
                   <Send className="ml-2 h-4 w-4" />
                 </button>
               </div>
-              <p className="text-sm text-[var(--gray)] text-center">
+              <p className="text-xs sm:text-sm text-[var(--gray)] text-center italic">
                 Al suscribirte, aceptas recibir actualizaciones sobre nuestro
-                probador virtual
+                probador virtual.
               </p>
             </form>
           </div>
