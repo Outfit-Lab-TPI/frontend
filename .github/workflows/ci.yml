@@ -5,6 +5,7 @@ on:
     branches:
       - "main"
       - "dev"
+      - "deploy/expo"
 
 jobs:
   build-and-push:
