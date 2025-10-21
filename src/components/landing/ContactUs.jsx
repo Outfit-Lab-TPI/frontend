@@ -22,7 +22,7 @@ export default function ContactSection() {
                 MANTENETE CONECTADO
               </h2>
               <p className="text-lg text-[var(--gray)] leading-relaxed">
-                Sé el primero en conocer nuestras novedades y actualizaciones
+                Sé el primero en conocer nuestras novedades y actualizaciones.
               </p>
             </div>
 

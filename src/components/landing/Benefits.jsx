@@ -1,4 +1,5 @@
 import { Monitor, Zap, Smartphone, ChartColumnIncreasing } from "lucide-react";
+// eslint-disable-next-line no-unused-vars
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { useInView } from "framer-motion";
@@ -28,11 +29,11 @@ function BenefitCard({ benefit, index, isInView }) {
     <motion.div
       initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-      transition={{ 
-        duration: 0.5, 
+      transition={{
+        duration: 0.5,
         delay: index * 0.1,
         type: "spring",
-        stiffness: 100
+        stiffness: 100,
       }}
       style={{
         rotateX,
@@ -47,11 +48,12 @@ function BenefitCard({ benefit, index, isInView }) {
       <motion.div
         className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"
         style={{
-          background: 'linear-gradient(135deg, transparent 40%, rgba(227, 193, 138, 0.3) 50%, transparent 60%)',
-          backgroundSize: '200% 200%',
+          background:
+            "linear-gradient(135deg, transparent 40%, rgba(227, 193, 138, 0.3) 50%, transparent 60%)",
+          backgroundSize: "200% 200%",
         }}
         animate={{
-          backgroundPosition: ['0% 0%', '100% 100%'],
+          backgroundPosition: ["0% 0%", "100% 100%"],
         }}
         transition={{
           duration: 3,
@@ -60,7 +62,7 @@ function BenefitCard({ benefit, index, isInView }) {
         }}
       />
 
-      <motion.div 
+      <motion.div
         className="mb-4"
         style={{ transform: "translateZ(50px)" }}
         whileHover={{ scale: 1.1 }}
@@ -68,15 +70,15 @@ function BenefitCard({ benefit, index, isInView }) {
       >
         {benefit.icon}
       </motion.div>
-      
-      <h3 
+
+      <h3
         className="!text-2xl md:!text-3xl font-semibold mb-3 mx-2 text-center text-[var(--secondary)]"
         style={{ transform: "translateZ(30px)" }}
       >
         {benefit.title}
       </h3>
-      
-      <p 
+
+      <p
         className="text-gray-700 font-medium px-2 text-left"
         style={{ transform: "translateZ(20px)" }}
       >
@@ -148,9 +150,9 @@ export default function BenefitsSection() {
   ];
 
   return (
-    <section id="beneficios" className="my-32" ref={ref}>
-      <div className="mx-3 sm:mx-10 md:mx-20 mb-10 py-10 px-5 md:px-10 bg-[var(--primary)] rounded-xl">
-        <motion.div 
+    <section id="beneficios" className="my-32 max-w-[1500px] mx-auto" ref={ref}>
+      <div className="mx-1 sm:mx-10 md:mx-20 mb-10 py-10 px-6 sm:px-8 md:px-10 bg-[var(--primary)] rounded-xl">
+        <motion.div
           className="mx-auto text-center mb-12"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
@@ -165,9 +167,9 @@ export default function BenefitsSection() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mx-auto perspective-1000">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mx-auto perspective-1000">
           {benefits.map((benefit, index) => (
-            <BenefitCard 
+            <BenefitCard
               key={index}
               benefit={benefit}
               index={index}
