@@ -3,14 +3,14 @@ import { ArrowLeft, Trophy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const prizes = [
-  { id: 1, name: "20% OFF", color: "#8f5d8d" },
-  { id: 2, name: "SORPRESA", color: "#230636" },
-  { id: 3, name: "10% OFF", color: "#e3c18a" },
-  { id: 4, name: "DESCUENTO", color: "#8f5d8d" },
-  { id: 5, name: "30% OFF", color: "#230636" },
-  { id: 6, name: "PRENDA GRATIS", color: "#e3c18a" },
-  { id: 7, name: "15% OFF", color: "#8f5d8d" },
-  { id: 8, name: "REGALO", color: "#230636" },
+  { id: 1, name: "Sticker", color: "#8f5d8d" },
+  { id: 2, name: "Golosina", color: "#230636" },
+  { id: 3, name: "Perchas ×3", color: "#5d3a5e" },
+  { id: 4, name: "Otro intento", color: "#8f5d8d" },
+  { id: 5, name: "Sticker", color: "#230636" },
+  { id: 6, name: "Golosina", color: "#5d3a5e" },
+  { id: 7, name: "Premio sorpresa", color: "#8f5d8d" },
+  { id: 8, name: "Otro intento", color: "#230636" },
 ];
 
 export default function Ruleta() {
@@ -25,21 +25,49 @@ export default function Ruleta() {
     setIsSpinning(true);
     setWinner(null);
 
-    // Numero random para la rotación
-    const fullRotations = Math.floor(Math.random() * 6) + 5;
-    const randomDegree = Math.floor(Math.random() * 360);
-    const totalRotation = fullRotations * 360 + randomDegree;
+    // 1. Selección con pesos - "Perchas x3" (índice 2) y "Premio sorpresa" (índice 6) tienen menos chances
+    const weightedPrizes = [];
+    prizes.forEach((prize, index) => {
+      // Índice 2 (Perchas x3) y 6 (Premio sorpresa) se agregan solo 1 vez, otros 3 veces
+      const repetitions = (index === 2 || index === 6) ? 1 : 3;
+      for (let i = 0; i < repetitions; i++) {
+        weightedPrizes.push(index);
+      }
+    });
 
-    const normalizedDegree = (360 - (randomDegree % 360)) % 360;
-    const prizeIndex = Math.floor((normalizedDegree / 360) * prizes.length);
-    const wonPrize = prizes[prizeIndex];
+    // 2. Seleccionar premio aleatoriamente del array con pesos
+    const randomIndex = Math.floor(Math.random() * weightedPrizes.length);
+    const winnerIndex = weightedPrizes[randomIndex];
 
-    setRotation(rotation + totalRotation);
+    // 3. Calcular rotación para que la flecha quede exactamente en el centro del premio
+    const degreesPerSegment = 360 / prizes.length; // 45° por segmento
+    const minRotations = 20;
+    const maxRotations = 30;
+    const extraRotations = Math.floor(Math.random() * (maxRotations - minRotations + 1)) + minRotations;
 
+    // La flecha apunta hacia arriba (0°). Para que un segmento específico quede bajo la flecha,
+    // necesitamos calcular cuánto rotar la ruleta.
+    // El primer segmento (índice 0) está centrado en 22.5° (la mitad del primer segmento)
+    // El segmento ganador está centrado en: (winnerIndex * degreesPerSegment) + (degreesPerSegment / 2)
+    const segmentCenterAngle = (winnerIndex * degreesPerSegment) + (degreesPerSegment / 2);
+
+    // Para que el centro del segmento ganador quede en 0° (donde apunta la flecha),
+    // necesitamos rotar la ruleta en sentido contrario al ángulo del centro del segmento
+    const targetFinalAngle = -segmentCenterAngle;
+
+    // Normalizar el ángulo a un valor positivo entre 0 y 360
+    const normalizedTargetAngle = ((targetFinalAngle % 360) + 360) % 360;
+
+    // La rotación final incluye las vueltas extra más el ángulo exacto para centrar el premio
+    const newRotation = extraRotations * 360 + normalizedTargetAngle;
+
+    setRotation(newRotation);
+
+    // Guardamos el premio después de calcular la rotación
     setTimeout(() => {
       setIsSpinning(false);
-      setWinner(wonPrize);
-    }, 4000);
+      setWinner(prizes[winnerIndex]);
+    }, 6000);
   };
 
   return (
@@ -65,10 +93,7 @@ export default function Ruleta() {
         {/* Title */}
         <div className="text-center mb-4">
           <h1 className="text-5xl md:text-7xl text-[var(--tertiary)] mb-4 tracking-wider font-bold">
-            RULETA DE
-          </h1>
-          <h1 className="text-5xl md:text-7xl text-[var(--tertiary)] mb-4 tracking-wider font-bold">
-            REGALOS
+            RULETA DE REGALOS
           </h1>
           <p className="text-[var(--white)]/70 text-lg tracking-widest">
             Girá la ruleta y ganá premios increíbles
@@ -88,7 +113,7 @@ export default function Ruleta() {
             style={{
               transform: `rotate(${rotation}deg)`,
               transition: isSpinning
-                ? "transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)"
+                ? "transform 6s cubic-bezier(0.17, 0.67, 0.12, 0.99)"
                 : "none",
               border: "8px solid var(--tertiary)",
             }}
@@ -107,12 +132,12 @@ export default function Ruleta() {
                   }}
                 >
                   <div
-                    className="absolute top-[20%] left-[60%] transform -translate-x-1/2 -rotate-0"
+                    className="absolute top-[15%] left-[63%] transform -translate-x-1/2 w-16 text-center"
                     style={{
                       transform: `rotate(${360 / prizes.length / 2}deg)`,
                     }}
                   >
-                    <p className="text-[var(--white)] text-xs md:text-sm font-bold tracking-wider whitespace-nowrap">
+                    <p className="text-[var(--white)] text-xs md:text-sm font-bold tracking-wider leading-tight break-words">
                       {prize.name}
                     </p>
                   </div>
@@ -131,7 +156,7 @@ export default function Ruleta() {
         <button
           onClick={spinWheel}
           disabled={isSpinning}
-          className={`relative px-12 py-5 bg-gradient-to-r from-[var(--tertiary)] to-[#d4a868] text-[var(--black)] text-2xl md:text-3xl font-bold tracking-widest rounded-full shadow-2xl transition-all duration-300 ${
+          className={`relative px-16 py-5 bg-gradient-to-r from-[var(--tertiary)] to-[#d4a868] text-[var(--black)] text-xl md:text-2xl font-bold tracking-widest rounded-full shadow-2xl transition-all duration-300 ${
             isSpinning
               ? "opacity-50 cursor-not-allowed"
               : "hover:scale-105 hover:shadow-[0_0_30px_rgba(227,193,138,0.5)] active:scale-95"
@@ -148,25 +173,22 @@ export default function Ruleta() {
         {winner && !isSpinning && (
           <div className="mt-6 text-center animate-[fadeIn_0.5s_ease-in]">
             <div className="bg-[var(--primary)] border-2 border-[var(--tertiary)] rounded-2xl p-8 shadow-2xl">
-              <h3 className="text-3xl text-[var(--tertiary)] mb-3 tracking-wider">
-                ¡FELICITACIONES!
-              </h3>
-              <p className="text-[var(--white)] text-xl mb-2">
-                Ganaste:
-              </p>
+              {winner.id !== 4 && winner.id !== 8 && (
+                <>
+                  <h3 className="text-3xl text-[var(--tertiary)] mb-3 tracking-wider">
+                    ¡FELICITACIONES!
+                  </h3>
+                  <p className="text-[var(--white)] text-xl mb-2">
+                    Ganaste:
+                  </p>
+                </>
+              )}
               <p className="text-4xl text-[var(--tertiary)] font-bold tracking-widest">
                 {winner.name}
               </p>
             </div>
           </div>
         )}
-
-        {/* Instructions */}
-        <div className="text-center text-[var(--white)]/50 text-sm max-w-md mt-4">
-          <p className="tracking-wide">
-            * Hacé click en el botón para girar la ruleta y descubrí qué premio te toca
-          </p>
-        </div>
       </div>
 
       <style jsx>{`
