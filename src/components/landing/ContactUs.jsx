@@ -1,15 +1,34 @@
-import { useState } from "react";
-import { Mailbox, Newspaper, Send } from "lucide-react";
+import React, { useState } from "react";
+import { Send, Download } from "lucide-react";
 import { toast } from "react-toastify";
 import ThemedToast from "../ui/ThemedToast";
+import ErrorToast from "../ui/ErrorToast";
+import { patterns } from "../../utils/validations";
 
 export default function ContactSection() {
   const [email, setEmail] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!email) return;
+    if (!validateEmail(email)) return;
+
     setEmail("");
     toast.success("¡Gracias por suscribirte!");
+  };
+
+  const handleDownload = () => {
+    const stored = JSON.parse(localStorage.getItem("emails") || "[]");
+    const blob = new Blob([JSON.stringify(stored, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "emails.json";
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -44,6 +63,17 @@ export default function ContactSection() {
                   <Send className="ml-2 h-4 w-4" />
                 </button>
               </div>
+
+              <div className="flex justify-center mt-2">
+                <button
+                  type="button"
+                  onClick={handleDownload}
+                  className="text-sm text-[var(--white)] underline hover:text-[var(--gray)] cursor-pointer opacity-0 hover:opacity-100 transition-opacity duration-300 px-3"
+                >
+                  <Download className="inline ml-1 size-4" />
+                </button>
+              </div>
+
               <p className="text-xs sm:text-sm text-[var(--gray)] text-center italic">
                 Al suscribirte, aceptas recibir actualizaciones sobre nuestro
                 probador virtual.
@@ -56,3 +86,22 @@ export default function ContactSection() {
     </section>
   );
 }
+
+const validateEmail = (email) => {
+  const normalizedEmail = email.trim().toLowerCase();
+  const stored = JSON.parse(localStorage.getItem("emails") || "[]");
+
+  if (!patterns.email.test(normalizedEmail)) {
+    ErrorToast("Por favor, ingrese un correo válido");
+    return false;
+  }
+
+  if (stored.includes(normalizedEmail)) {
+    ErrorToast("Este correo ya se encuentra registrado");
+    return false;
+  }
+
+  stored.push(normalizedEmail);
+  localStorage.setItem("emails", JSON.stringify(stored));
+  return true;
+};
