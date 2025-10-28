@@ -1,6 +1,5 @@
 import { Blend, Box, LoaderCircle } from "lucide-react";
 import { VscPerson } from 'react-icons/vsc';
-import Button from "./shared/Button.jsx";
 import ModeloViewer from "./ModeloViewer.jsx";
 
 function Panel({
@@ -10,15 +9,10 @@ function Panel({
   errorModelo3D,
   modeloUrl,
   loadingModelo3D,
-  canCombine,
-  esHombre,
-  setEsHombre,
-  onCombinarPrendas,
-  onGenerarModelo3D,
-  getButtonText
+  onGenerarModelo3D
 }) {
   return (
-    <div className="w-1/3 flex flex-col border border-gray/20 relative h-full">
+    <div className="w-1/3 flex flex-col border-l border-gray/20 relative h-full">
       <div className="flex-1 flex items-center justify-center overflow-hidden">
         {loadingCombinacion ? (
           <div className="display flex flex-col items-center gap-2">
@@ -34,21 +28,21 @@ function Panel({
           <div className="w-full h-full flex items-center justify-center p-0 relative">
             {!modeloUrl && (
               <button
-                onClick={onGenerarModelo3D}
+                // onClick={onGenerarModelo3D}
                 disabled={!resultado || loadingModelo3D}
                 className="absolute top-2 right-2 z-10 flex group bg-gray/50 hover:bg-gray/70 backdrop-blur-sm rounded-full transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-default overflow-hidden hover:px-4"
               >
                 <div className="hidden group-hover:flex items-center justify-center transition-all duration-300">
                   <span className="text-white text-sm font-medium whitespace-nowrap">
-                    Generar modelo 3D
+                    Proxímamente: Probador 3D
                   </span>
                 </div>
 
-                <div className="flex items-center justify-center p-3 transition-all duration-300">
+                <div className="flex items-center justify-center p-2 transition-all duration-300">
                   {loadingModelo3D ? (
                     <LoaderCircle className="w-5 h-5 text-white animate-spin" />
                   ) : (
-                    <Box className="w-5 h-5 text-white animate-bounce" />
+                    <Box className="w-4 h-4 text-white" />
                   )}
                 </div>
               </button>
@@ -60,14 +54,26 @@ function Panel({
                 className="max-w-full max-h-full"
               />
             ) : (
-              <img
-                src={resultado?.imageUrl}
-                alt="Combinación de outfit"
-                className="max-w-full max-h-full object-contain"
-                onError={(e) => {
-                  e.target.src = '/placeholder-outfit.svg';
-                }}
-              />
+              <div className="w-full h-full flex items-center justify-center">
+                <img
+                  src={resultado?.imageUrl}
+                  alt="Combinación de outfit"
+                  className="max-w-full max-h-full object-contain"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    const parent = e.target.parentElement;
+                    if (!parent.querySelector('.error-message')) {
+                      const errorDiv = document.createElement('div');
+                      errorDiv.className = 'error-message text-center p-8';
+                      errorDiv.innerHTML = `
+                        <div class="text-gray text-lg mb-2">No pudimos generar la imagen</div>
+                        <div class="text-gray/70 text-sm">Por favor elige otra combinación</div>
+                      `;
+                      parent.appendChild(errorDiv);
+                    }
+                  }}
+                />
+              </div>
             )}
           </div>
         ) : errorCombinacion || errorModelo3D ? (
@@ -89,40 +95,6 @@ function Panel({
         )}
       </div>
 
-      {canCombine && (
-        <div className="absolute bottom-15 left-0 right-0 p-2 bg-black/50 backdrop-blur-sm border-t border-gray/20">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray">Tipo de avatar:</span>
-            <Button
-              onClick={() => setEsHombre(true)}
-              variant='outline'
-              color='gray'
-              width='fit'
-              className={esHombre ? 'text-white text-sm border-gray' : 'text-sm'}
-            >
-              Hombre
-            </Button>
-            <Button
-              onClick={() => setEsHombre(false)}
-              variant='outline'
-              color='gray'
-              width='fit'
-              className={!esHombre ? 'text-white text-sm border-gray' : 'text-sm'}
-            >
-              Mujer
-            </Button>
-          </div>
-        </div>
-      )}
-
-      <div className="relative group p-4 flex-shrink-0">
-        <Button
-          onClick={onCombinarPrendas}
-          disabled={!canCombine || loadingCombinacion}
-        >
-          {getButtonText()}
-        </Button>
-      </div>
     </div>
   );
 }

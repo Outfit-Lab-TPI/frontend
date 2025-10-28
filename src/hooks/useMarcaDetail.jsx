@@ -25,6 +25,7 @@ export const useMarcaDetail = (codigoMarca) => {
       } else {
         // Usar servicio real
         response = await marcaService.getMarcaByCode(codigoMarca);
+        console.log('Respuesta del servicio marcaService.getMarcaByCode:', response);
       }
       setMarcaDetail(response.data);
     } catch (err) {

@@ -30,22 +30,7 @@ function Header() {
       </Link>
 
       <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-        {/* <Link to="/test-connection" style={{ textDecoration: 'none' }}>
-          <div style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '50%',
-            backgroundColor: '#2196f3',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            transition: 'background-color 0.3s'
-          }}>
-            <Wifi size={20} color="white" />
-          </div>
-        </Link> */}
-
+{/* 
         <Link to="/profile">
           <div
             className="w-10 h-10 rounded-full 
@@ -57,7 +42,7 @@ function Header() {
           >
             <User size={20} color="var(--white)" />
           </div>
-        </Link>
+        </Link> */}
       </div>
     </header>
   );
