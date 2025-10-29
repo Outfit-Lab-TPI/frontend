@@ -27,9 +27,11 @@ apiClient.interceptors.response.use(
 );
 
 // API endpoints
+/*
 export const userAPI = {
   getUserById: (id) => apiClient.get(`/users/${id}`),
 };
+*/
 
 
 export default apiClient;

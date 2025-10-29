@@ -1,6 +1,6 @@
 import apiClient from './api.js';
 
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false;
 
 // URLs mockeadas para modelos 3D - usando archivos existentes del proyecto
 const MODELOS_MOCK = [
