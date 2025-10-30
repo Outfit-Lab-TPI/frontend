@@ -143,6 +143,7 @@ function MarcaDetalle() {
         loadingCombinacion={loadingCombinacion}
       />
 
+      {marcaDetail.prendas && marcaDetail.prendas.length > 0 && (
       <Panel
         loadingCombinacion={loadingCombinacion}
         resultado={resultado}
@@ -152,6 +153,7 @@ function MarcaDetalle() {
         loadingModelo3D={loadingModelo3D}
         onGenerarModelo3D={handleGenerarModelo3D}
       />
+      )}
     </div>
   );
 }

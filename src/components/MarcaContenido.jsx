@@ -64,7 +64,7 @@ function MarcaContenido({
               </div>
             </div>
 
-            <div className="flex not-lg:w-full items-center gap-4">
+            <div className="flex not-sm:flex-col not-sm:items-start not-lg:w-full items-center gap-4">
               {selectedSuperior && selectedInferior ? (
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray whitespace-nowrap">Avatar:</span>
@@ -114,7 +114,7 @@ function MarcaContenido({
         {marcaDetail.prendas && marcaDetail.prendas.length > 0 ? (
           <div className="space-y-6 max-w-5xl mx-auto">
             <div>
-              <h5 className="bg-gray/5 py-1 px-2 rounded-sm font-semibold my-2">Prendas Superiores</h5>
+              <h5 className="bg-gray/5 py-1 px-2 rounded-sm font-semibold mb-4">Prendas Superiores</h5>
               <div className="flex flex-wrap gap-4">
                 {prendasCategorizadas.superiores.map((prenda, index) => (
                   <PrendaGalleryCard
@@ -133,7 +133,7 @@ function MarcaContenido({
             </div>
 
             <div>
-              <h5 className="bg-gray/5 py-1 px-2 rounded-sm font-semibold my-2">Prendas Inferiores</h5>
+              <h5 className="bg-gray/5 py-1 px-2 rounded-sm font-semibold mb-4">Prendas Inferiores</h5>
               <div className="flex flex-wrap gap-4">
                 {prendasCategorizadas.inferiores.map((prenda, index) => (
                   <PrendaGalleryCard
