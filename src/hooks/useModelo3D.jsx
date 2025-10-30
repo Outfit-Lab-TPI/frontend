@@ -15,7 +15,7 @@ export const useModelo3D = () => {
     }
 
     if (isGenerating) {
-      return; // Evitar múltiples solicitudes simultáneas
+      return; // 
     }
 
     try {
@@ -28,7 +28,7 @@ export const useModelo3D = () => {
       if (resultado && resultado.modeloUrl) {
         setModeloUrl(resultado.modeloUrl);
       } else {
-        throw new Error('Respuesta inválida del servidor');
+        throw new Error('Respuesta invÃ¡lida del servidor');
       }
     } catch (err) {
       console.error('Error generando modelo 3D:', err);
@@ -45,10 +45,6 @@ export const useModelo3D = () => {
     setError(null);
   }, []);
 
-  const limpiarError = useCallback(() => {
-    setError(null);
-  }, []);
-
   return {
     loading,
     error,
@@ -56,6 +52,5 @@ export const useModelo3D = () => {
     isGenerating,
     generarModelo3D,
     limpiarModelo,
-    limpiarError
   };
 };

@@ -56,6 +56,7 @@ export function useNuevaPrenda() {
   return {
     register,
     handleSubmit: handleSubmit(onSubmit),
+    onSubmit,
     errors,
     isSubmitting,
     watch
