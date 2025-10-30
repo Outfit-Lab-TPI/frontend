@@ -130,7 +130,7 @@ function MarcaDetalle() {
   }
 
   return (
-    <div className="flex-1 flex px-24 gap-8" style={{height: 'calc(100vh - 70px)'}}>
+    <div className="flex-1 flex flex-col md:flex-row px-4 sm:px-6 lg:px-24 gap-4 lg:gap-8" style={{height: 'calc(100vh - 70px)'}}>
       <MarcaContenido
         marcaDetail={marcaDetail}
         selectedSuperior={selectedSuperior}
