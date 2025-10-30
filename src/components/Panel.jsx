@@ -12,7 +12,7 @@ function Panel({
   onGenerarModelo3D
 }) {
   return (
-    <div className="w-1/3 flex flex-col border-l border-gray/20 relative h-full">
+    <div className="w-full lg:w-1/3 flex flex-col border-t lg:border-t-0 lg:border-l border-gray/20 relative h-64 lg:h-full">
       <div className="flex-1 flex items-center justify-center overflow-hidden">
         {loadingCombinacion ? (
           <div className="display flex flex-col items-center gap-2">
@@ -87,7 +87,7 @@ function Panel({
           </div>
         ) : (
           <div className="text-center">
-            <VscPerson className="w-60 h-60 text-gray mx-auto mb-6 animate-pulse" />
+            <VscPerson className="w-32 h-32 lg:w-60 lg:h-60 text-gray mx-auto mb-6 animate-pulse" />
             <div className="text-lg text-gray leading-relaxed">
               Selecciona dos prendas y combina tu outfit
             </div>
