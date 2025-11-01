@@ -1,6 +1,13 @@
-import { Check } from "lucide-react";
+import { Check, Heart } from "lucide-react";
 
-function PrendaGalleryCard({ prenda, isSelected, onSelect }) {
+function PrendaGalleryCard({ prenda, isSelected, onSelect, onToggleFavorita, showFavoritos = false }) {
+
+  const handleFavoritoClick = (e) => {
+    e.stopPropagation();
+    if (onToggleFavorita) {
+      onToggleFavorita(prenda);
+    }
+  };
   return (
     <div
       className={`relative w-40 h-48 rounded-md overflow-hidden cursor-pointer group transition-all duration-300 ${
@@ -20,6 +27,22 @@ function PrendaGalleryCard({ prenda, isSelected, onSelect }) {
           }}
         />
       </div>
+      {/* Botón de favorito (siempre visible si showFavoritos es true) */}
+      {showFavoritos && (
+        <button
+          onClick={handleFavoritoClick}
+          className="absolute top-2 right-2 z-10 w-6 h-6 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center transition-colors"
+        >
+          <Heart
+            className={`w-3 h-3 transition-colors ${
+              prenda.esFavorita
+                ? 'text-red-500 fill-red-500'
+                : 'text-white hover:text-red-300'
+            }`}
+          />
+        </button>
+      )}
+
       {isSelected ? (
         <div className="absolute inset-0 bg-black/30 flex flex-col justify-between px-2 py-4">
           <div className="flex justify-end">
