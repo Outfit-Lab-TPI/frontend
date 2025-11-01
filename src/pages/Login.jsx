@@ -1,9 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLogin } from "../hooks/auth/useLogin";
 import Button from "../components/shared/Button";
 
 function Login() {
   const { register, handleSubmit, errors, isValid, isSubmitting } = useLogin();
+  const navigate = useNavigate();
+
+  const handleLoginClick = () => {
+    navigate("/home");
+  };
 
   return (
     <div className="flex items-center justify-center px-4">
@@ -65,10 +70,8 @@ function Login() {
               <p className="text-error text-sm">{errors.submit.message}</p>
             )}
             {/* Botón Iniciar sesión */}
-            <Button
-              type="submit"
-              disabled={isSubmitting || !isValid}
-            >
+            {/* <Button type="submit" disabled={isSubmitting || !isValid}> */}
+            <Button onClick={handleLoginClick}>
               {isSubmitting ? "Iniciando sesión..." : "Iniciar sesión"}
             </Button>
 

@@ -30,8 +30,8 @@ function Header() {
       </Link>
 
       <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-{/* 
-        <Link to="/profile">
+ 
+        <Link to="/perfil">
           <div
             className="w-10 h-10 rounded-full 
               bg-[var(--secondary)] 
@@ -42,7 +42,7 @@ function Header() {
           >
             <User size={20} color="var(--white)" />
           </div>
-        </Link> */}
+        </Link>
       </div>
     </header>
   );

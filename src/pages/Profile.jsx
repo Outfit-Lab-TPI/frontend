@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { CircleUserRound, ChevronRight, Edit3, LogOut, ShoppingBag, X } from "lucide-react";
 import Button from "../components/shared/Button";
 import { useProfile } from "../hooks/auth/useProfile";
@@ -7,6 +8,7 @@ import { useAuth } from "../hooks/auth/useAuth";
 function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   const onSubmitSuccess = () => {
     setIsEditing(false);
@@ -158,7 +160,10 @@ function Profile() {
       </div>
 
       {/* Card Mis outfits */}
-      <div className="w-full max-w-xl bg-gray/10 flex items-center justify-between rounded-sm p-6 shadow-xl cursor-pointer hover:bg-gray/20 transition-colors">
+      <div
+        onClick={() => navigate('/mis-combinaciones')}
+        className="w-full max-w-xl bg-gray/10 flex items-center justify-between rounded-sm p-6 shadow-xl cursor-pointer hover:bg-gray/20 transition-colors"
+      >
         <div className="flex items-center gap-2 text-white">
           <ShoppingBag  />
           <span className="text-lg font-medium">Mis outfits</span>
