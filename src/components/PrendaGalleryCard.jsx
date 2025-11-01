@@ -31,7 +31,7 @@ function PrendaGalleryCard({ prenda, isSelected, onSelect, onToggleFavorita, sho
       {showFavoritos && (
         <button
           onClick={handleFavoritoClick}
-          className="absolute top-2 right-2 z-10 w-6 h-6 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center transition-colors"
+          className="absolute top-2 right-2 z-10 w-6 h-6 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center transition-colors cursor-pointer"
         >
           <Heart
             className={`w-3 h-3 transition-colors ${

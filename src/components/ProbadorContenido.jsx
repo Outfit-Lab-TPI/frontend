@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import PrendaGalleryCard from "./PrendaGalleryCard.jsx";
 import FilterDropdown from "./FilterDropdown.jsx";
 import Button from "./shared/Button.jsx";

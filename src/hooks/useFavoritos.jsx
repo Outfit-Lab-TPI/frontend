@@ -10,13 +10,7 @@ export const useFavoritos = () => {
       setLoading(true);
       setError(null);
 
-      const resultado = await favoritosService.togglePrendaFavorita(codigoPrenda);
-
-      if (onSuccess) {
-        onSuccess(resultado);
-      }
-
-      return resultado;
+      await favoritosService.togglePrendaFavorita(codigoPrenda);
     } catch (err) {
       setError(err.message);
       throw err;

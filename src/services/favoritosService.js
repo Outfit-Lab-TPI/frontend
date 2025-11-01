@@ -2,7 +2,7 @@ import apiClient from './api.js';
 import { mockTogglePrendaFavorita, mockToggleCombinacionFavorita } from './mockData.js';
 
 // Configuración para usar mock data temporalmente
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false;
 
 export const favoritosService = {
   togglePrendaFavorita: async (codigoPrenda) => {

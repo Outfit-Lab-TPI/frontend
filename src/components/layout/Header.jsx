@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { User, Wifi } from "lucide-react";
+import Button from "../shared/Button";
 
 function Header() {
   return (
@@ -14,7 +15,7 @@ function Header() {
       }}
     >
       <Link
-        to="/"
+        to="/home"
         style={{
           textDecoration: "none",
           height: "fit-content",
@@ -29,7 +30,13 @@ function Header() {
         />
       </Link>
 
-      <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+      <div className="flex items-center gap-4">
+
+        <Link to='/marcas'>
+          <Button size='sm' className='bg-transparent border-white/40'>
+          Ver marcas
+        </Button>
+        </Link>
  
         <Link to="/perfil">
           <div
