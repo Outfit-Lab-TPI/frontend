@@ -65,12 +65,12 @@ function MarcaDetalle() {
         esHombre: esHombre
       });
 
-      const sexoAvatar = esHombre ? 'h' : 'm';
-      const nombreCombinacion = `${codigoMarca}-${sexoAvatar}-${selectedSuperior.codigo}-${selectedInferior.codigo}`;
-
-      console.log('Buscando combinación:', nombreCombinacion);
-      // await combinarPrendas(esHombre, selectedSuperior, selectedInferior);
-      await getCombinacion(nombreCombinacion)
+      console.log('Combinando prendas:', {
+        esHombre,
+        superior: selectedSuperior.nombre,
+        inferior: selectedInferior.nombre
+      });
+      await combinarPrendas(esHombre, selectedSuperior, selectedInferior);
     }
   };
 
