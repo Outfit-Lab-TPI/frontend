@@ -1,5 +1,4 @@
 import apiClient from './api.js';
-import { fetchMockMarcas, fetchMockMarcaDetail } from './mockData.js';
 
 const isCriticalError = (error) => {
   // Errores de servidor 5xx

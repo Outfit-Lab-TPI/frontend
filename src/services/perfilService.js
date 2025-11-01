@@ -1,5 +1,5 @@
 import apiClient from './api.js';
-import { fetchMockCombinacionesFavoritas } from './mockData.js';
+import { fetchMockCombinacionesFavoritas } from '../utils/mockData.js';
 
 // Configuración para usar mock data temporalmente
 const USE_MOCK_DATA = true;

@@ -9,12 +9,12 @@ describe('useMarcas', () => {
   })
 
   it('debe cargar las marcas exitosamente al inicializar', async () => {
-    const mockData = [
+    const expected = [
       { codigo: 'nike', nombre: 'Nike' },
       { codigo: 'adidas', nombre: 'Adidas' }
     ]
 
-    vi.spyOn(marcaService, 'getAllMarcas').mockResolvedValueOnce({ data: mockData })
+    vi.spyOn(marcaService, 'getAllMarcas').mockResolvedValueOnce({ data: expected })
 
     // Se ejecuta fetchMarcas gracias al useEffect dentro del hook
     const { result } = renderHook(() => useMarcas())
@@ -28,7 +28,7 @@ describe('useMarcas', () => {
     await waitFor(() => expect(result.current.loading).toBe(false))
 
     // Luego de obtener un resultado
-    expect(result.current.marcas).toEqual(mockData)
+    expect(result.current.marcas).toEqual(expected)
     expect(result.current.error).toBeNull()
     expect(result.current.criticalError).toBeNull()
   })

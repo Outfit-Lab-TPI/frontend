@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { useAuth } from './useAuth'
-import { mockUser, simulateNetworkDelay, validateMockLogin } from '../../utils/mockData'
+// import { mockUser, simulateNetworkDelay, validateMockLogin } from '../../utils/mockData'
 import axios from 'axios'
 
 export function useLogin() {
