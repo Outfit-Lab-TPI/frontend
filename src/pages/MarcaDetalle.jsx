@@ -3,8 +3,11 @@ import { useEffect, useState, useMemo } from "react";
 import { useMarcaDetail } from "../hooks/useMarcaDetail.jsx";
 import { useCombinacion } from "../hooks/useCombinacion.jsx";
 import { useModelo3D } from "../hooks/useModelo3D.jsx";
+import { useSugerencias } from "../hooks/useSugerencias.jsx";
+import { useFavoritos } from "../hooks/useFavoritos.jsx";
 import MarcaContenido from "../components/MarcaContenido.jsx";
 import Panel from "../components/Panel.jsx";
+import SugerenciasModal from "../components/shared/SugerenciasModal.jsx";
 
 function MarcaDetalle() {
   const { codigoMarca } = useParams();
@@ -14,12 +17,16 @@ function MarcaDetalle() {
     useCombinacion();
   const { generarModelo3D, loading: loadingModelo3D, error: errorModelo3D, modeloUrl, limpiarModelo } =
     useModelo3D();
+  const { obtenerSugerencias, sugerencias, loading: loadingSugerencias, error: errorSugerencias, limpiarSugerencias } = useSugerencias();
+  const { togglePrendaFavorita } = useFavoritos();
 
   // Estados para selección de prendas
   const [selectedSuperior, setSelectedSuperior] = useState(null);
   const [selectedInferior, setSelectedInferior] = useState(null);
   const [esHombre, setEsHombre] = useState(true);
   const [lastCombination, setLastCombination] = useState(null);
+  const [modalSugerenciasAbierto, setModalSugerenciasAbierto] = useState(false);
+  const [prendaParaSugerencias, setPrendaParaSugerencias] = useState(null);
 
 
   // Manejar selección de prendas
@@ -73,6 +80,57 @@ function MarcaDetalle() {
   const handleGenerarModelo3D = async () => {
     if (resultado) {
       await generarModelo3D(resultado);
+    }
+  };
+
+  // Manejar solicitud de sugerencias
+  const handleSugerencias = async (prenda) => {
+    try {
+      setPrendaParaSugerencias(prenda);
+      setModalSugerenciasAbierto(true);
+      await obtenerSugerencias(prenda.garmentCode || prenda.codigo);
+    } catch (error) {
+      console.error('Error al obtener sugerencias:', error);
+    }
+  };
+
+  // Manejar solicitud de combinación desde sugerencias
+  const handleSolicitarCombinacion = async (sugerencia) => {
+    try {
+      // Limpiar resultado anterior
+      limpiarResultado();
+      limpiarModelo();
+
+      // Establecer prendas seleccionadas basadas en la sugerencia
+      setSelectedSuperior(sugerencia.topGarment);
+      setSelectedInferior(sugerencia.bottomGarment);
+
+      // Guardar combinación y ejecutar
+      setLastCombination({
+        superior: sugerencia.topGarment.nombre,
+        inferior: sugerencia.bottomGarment.nombre,
+        esHombre: esHombre
+      });
+
+      await combinarPrendas(esHombre, sugerencia.topGarment, sugerencia.bottomGarment);
+    } catch (error) {
+      console.error('Error al aplicar sugerencia:', error);
+    }
+  };
+
+  // Cerrar modal de sugerencias
+  const handleCerrarModalSugerencias = () => {
+    setModalSugerenciasAbierto(false);
+    setPrendaParaSugerencias(null);
+    limpiarSugerencias();
+  };
+
+  // Manejar toggle de favoritos
+  const handleToggleFavorita = async (prenda) => {
+    try {
+      await togglePrendaFavorita(prenda.garmentCode || prenda.codigo);
+    } catch (error) {
+      console.error('Error al cambiar favorito:', error);
     }
   };
 
@@ -136,6 +194,8 @@ function MarcaDetalle() {
         selectedSuperior={selectedSuperior}
         selectedInferior={selectedInferior}
         onSelectPrenda={handleSelectPrenda}
+        onToggleFavorita={handleToggleFavorita}
+        onSugerencias={handleSugerencias}
         canCombine={canCombine}
         esHombre={esHombre}
         setEsHombre={setEsHombre}
@@ -154,6 +214,17 @@ function MarcaDetalle() {
         onGenerarModelo3D={handleGenerarModelo3D}
       />
       )}
+
+      {/* Modal de Sugerencias */}
+      <SugerenciasModal
+        isOpen={modalSugerenciasAbierto}
+        onClose={handleCerrarModalSugerencias}
+        onSolicitarCombinacion={handleSolicitarCombinacion}
+        sugerencias={sugerencias}
+        loading={loadingSugerencias}
+        error={errorSugerencias}
+        prendaOriginal={prendaParaSugerencias}
+      />
     </div>
   );
 }

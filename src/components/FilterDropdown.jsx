@@ -80,7 +80,7 @@ function FilterDropdown({
               </div>
 
               {/* Filtro por color */}
-              <div>
+              {/* <div>
                 <label className="block text-xs text-gray mb-2">Color</label>
                 <select
                   value={filtros.color}
@@ -92,7 +92,7 @@ function FilterDropdown({
                     <option key={color} value={color}>{color}</option>
                   ))}
                 </select>
-              </div>
+              </div> */}
 
               {/* Filtro favoritas */}
               <div>

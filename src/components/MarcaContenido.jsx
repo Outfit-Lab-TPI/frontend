@@ -9,6 +9,8 @@ function MarcaContenido({
   selectedSuperior,
   selectedInferior,
   onSelectPrenda,
+  onToggleFavorita,
+  onSugerencias,
   canCombine,
   esHombre,
   setEsHombre,
@@ -122,6 +124,8 @@ function MarcaContenido({
                     prenda={prenda}
                     isSelected={selectedSuperior?.nombre === prenda.nombre}
                     onSelect={onSelectPrenda}
+                    onToggleFavorita={onToggleFavorita}
+                    onSugerencias={onSugerencias}
                   />
                 ))}
               </div>
@@ -141,6 +145,8 @@ function MarcaContenido({
                     prenda={prenda}
                     isSelected={selectedInferior?.nombre === prenda.nombre}
                     onSelect={onSelectPrenda}
+                    onToggleFavorita={onToggleFavorita}
+                    onSugerencias={onSugerencias}
                   />
                 ))}
               </div>

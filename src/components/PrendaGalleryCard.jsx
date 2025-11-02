@@ -1,11 +1,18 @@
-import { Check, Heart } from "lucide-react";
+import { Check, Heart, Sparkles } from "lucide-react";
 
-function PrendaGalleryCard({ prenda, isSelected, onSelect, onToggleFavorita, showFavoritos = false }) {
+function PrendaGalleryCard({ prenda, isSelected, onSelect, onToggleFavorita, onSugerencias }) {
 
   const handleFavoritoClick = (e) => {
     e.stopPropagation();
     if (onToggleFavorita) {
       onToggleFavorita(prenda);
+    }
+  };
+
+  const handleSugerenciasClick = (e) => {
+    e.stopPropagation();
+    if (onSugerencias) {
+      onSugerencias(prenda);
     }
   };
   return (
@@ -27,11 +34,20 @@ function PrendaGalleryCard({ prenda, isSelected, onSelect, onToggleFavorita, sho
           }}
         />
       </div>
-      {/* Botón de favorito (siempre visible si showFavoritos es true) */}
-      {showFavoritos && (
+      {/* Botones de acción - Visibles solo al hover */}
+      <div className="absolute top-2 right-2 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        {/* Botón de sugerencias */}
+        <button
+          onClick={handleSugerenciasClick}
+          className="w-6 h-6 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center  hover:text-tertiary transition-colors cursor-pointer"
+        >
+          <Sparkles className="w-3 h-3" />
+        </button>
+
+        {/* Botón de favorito */}
         <button
           onClick={handleFavoritoClick}
-          className="absolute top-2 right-2 z-10 w-6 h-6 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center transition-colors cursor-pointer"
+          className="w-6 h-6 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center transition-colors cursor-pointer"
         >
           <Heart
             className={`w-3 h-3 transition-colors ${
@@ -41,7 +57,7 @@ function PrendaGalleryCard({ prenda, isSelected, onSelect, onToggleFavorita, sho
             }`}
           />
         </button>
-      )}
+      </div>
 
       {isSelected ? (
         <div className="absolute inset-0 bg-black/30 flex flex-col justify-between px-2 py-4">

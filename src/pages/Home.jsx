@@ -4,9 +4,11 @@ import { useProbador } from "../hooks/useProbador.jsx";
 import { useCombinacion } from "../hooks/useCombinacion.jsx";
 import { useModelo3D } from "../hooks/useModelo3D.jsx";
 import { useFavoritos } from "../hooks/useFavoritos.jsx";
+import { useSugerencias } from "../hooks/useSugerencias.jsx";
 import ProbadorContenido from "../components/ProbadorContenido.jsx";
 import Panel from "../components/Panel.jsx";
 import Button from '../components/shared/Button';
+import SugerenciasModal from '../components/shared/SugerenciasModal';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -30,12 +32,15 @@ export default function Home() {
   const { generarModelo3D, loading: loadingModelo3D, error: errorModelo3D, modeloUrl, limpiarModelo } =
     useModelo3D();
   const { togglePrendaFavorita } = useFavoritos();
+  const { obtenerSugerencias, sugerencias, loading: loadingSugerencias, error: errorSugerencias, limpiarSugerencias } = useSugerencias();
 
   // Estados para selección de prendas
   const [selectedSuperior, setSelectedSuperior] = useState(null);
   const [selectedInferior, setSelectedInferior] = useState(null);
   const [esHombre, setEsHombre] = useState(true);
   const [lastCombination, setLastCombination] = useState(null);
+  const [modalSugerenciasAbierto, setModalSugerenciasAbierto] = useState(false);
+  const [prendaParaSugerencias, setPrendaParaSugerencias] = useState(null);
 
   // Manejar selección de prendas
   const handleSelectPrenda = prenda => {
@@ -64,6 +69,48 @@ export default function Home() {
       // Si falla, revertir el cambio local
       actualizarFavoritoLocal(prenda.codigo || prenda.id, prenda.esFavorita);
     }
+  };
+
+  // Manejar solicitud de sugerencias
+  const handleSugerencias = async (prenda) => {
+    try {
+      setPrendaParaSugerencias(prenda);
+      setModalSugerenciasAbierto(true);
+      await obtenerSugerencias(prenda.garmentCode || prenda.codigo);
+    } catch (error) {
+      console.error('Error al obtener sugerencias:', error);
+    }
+  };
+
+  // Manejar solicitud de combinación desde sugerencias
+  const handleSolicitarCombinacion = async (sugerencia) => {
+    try {
+      // Limpiar resultado anterior
+      limpiarResultado();
+      limpiarModelo();
+
+      // Establecer prendas seleccionadas basadas en la sugerencia
+      setSelectedSuperior(sugerencia.topGarment);
+      setSelectedInferior(sugerencia.bottomGarment);
+
+      // Guardar combinación y ejecutar
+      setLastCombination({
+        superior: sugerencia.topGarment.nombre,
+        inferior: sugerencia.bottomGarment.nombre,
+        esHombre: esHombre
+      });
+
+      await combinarPrendas(esHombre, sugerencia.topGarment, sugerencia.bottomGarment);
+    } catch (error) {
+      console.error('Error al aplicar sugerencia:', error);
+    }
+  };
+
+  // Cerrar modal de sugerencias
+  const handleCerrarModalSugerencias = () => {
+    setModalSugerenciasAbierto(false);
+    setPrendaParaSugerencias(null);
+    limpiarSugerencias();
   };
 
   // Verificar si se puede combinar
@@ -143,6 +190,7 @@ export default function Home() {
         onActualizarFiltros={actualizarFiltros}
         onLimpiarFiltros={limpiarFiltros}
         onToggleFavorita={handleToggleFavorita}
+        onSugerencias={handleSugerencias}
         selectedSuperior={selectedSuperior}
         selectedInferior={selectedInferior}
         onSelectPrenda={handleSelectPrenda}
@@ -164,6 +212,17 @@ export default function Home() {
         onGenerarModelo3D={handleGenerarModelo3D}
       />
       )}
+
+      {/* Modal de Sugerencias */}
+      <SugerenciasModal
+        isOpen={modalSugerenciasAbierto}
+        onClose={handleCerrarModalSugerencias}
+        onSolicitarCombinacion={handleSolicitarCombinacion}
+        sugerencias={sugerencias}
+        loading={loadingSugerencias}
+        error={errorSugerencias}
+        prendaOriginal={prendaParaSugerencias}
+      />
     </div>
   );
 }

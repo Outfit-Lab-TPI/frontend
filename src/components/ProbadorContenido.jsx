@@ -11,6 +11,7 @@ function ProbadorContenido({
   onActualizarFiltros,
   onLimpiarFiltros,
   onToggleFavorita,
+  onSugerencias,
   selectedSuperior,
   selectedInferior,
   onSelectPrenda,
@@ -110,7 +111,7 @@ function ProbadorContenido({
                     isSelected={selectedSuperior?.nombre === prenda.nombre}
                     onSelect={onSelectPrenda}
                     onToggleFavorita={onToggleFavorita}
-                    showFavoritos={true}
+                    onSugerencias={onSugerencias}
                   />
                 ))}
               </div>
@@ -133,7 +134,7 @@ function ProbadorContenido({
                     isSelected={selectedInferior?.nombre === prenda.nombre}
                     onSelect={onSelectPrenda}
                     onToggleFavorita={onToggleFavorita}
-                    showFavoritos={true}
+                    onSugerencias={onSugerencias}
                   />
                 ))}
               </div>
