@@ -12,9 +12,11 @@ export const useMarcas = () => {
     setError(null);
     setCriticalError(null);
     try {
-      let response;
-      response = await marcaService.getAllMarcas();
-      setMarcas(response.data);
+      const response = await marcaService.getAllMarcas();
+      const data = response.data;
+
+      // Extraer las marcas del array content
+      setMarcas(data.content || []);
     } catch (err) {
       if (err.isCritical) {
         // Para errores críticos, los guardamos para ser lanzados en el componente

@@ -14,7 +14,16 @@ describe('useMarcas', () => {
       { codigo: 'adidas', nombre: 'Adidas' }
     ]
 
-    vi.spyOn(marcaService, 'getAllMarcas').mockResolvedValueOnce({ data: expected })
+    const mockResponse = {
+      content: mockMarcas,
+      size: 10,
+      page: 0,
+      totalPages: 1,
+      totalElements: 2,
+      last: true
+    }
+
+    vi.spyOn(marcaService, 'getAllMarcas').mockResolvedValueOnce({ data: mockResponse })
 
     // Se ejecuta fetchMarcas gracias al useEffect dentro del hook
     const { result } = renderHook(() => useMarcas())
@@ -64,10 +73,28 @@ describe('useMarcas', () => {
     const mockData1 = [{ codigo: 'nike', nombre: 'Nike' }]
     const mockData2 = [{ codigo: 'puma', nombre: 'Puma' }]
 
+    const mockResponse1 = {
+      content: mockData1,
+      size: 10,
+      page: 0,
+      totalPages: 1,
+      totalElements: 1,
+      last: true
+    }
+
+    const mockResponse2 = {
+      content: mockData2,
+      size: 10,
+      page: 0,
+      totalPages: 1,
+      totalElements: 1,
+      last: true
+    }
+
     // Se controla la respuesta del servicio
     const mock = vi.spyOn(marcaService, 'getAllMarcas')
-    mock.mockResolvedValueOnce({ data: mockData1 }) // primera carga
-    mock.mockResolvedValueOnce({ data: mockData2 }) // refetch
+    mock.mockResolvedValueOnce({ data: mockResponse1 }) // primera carga
+    mock.mockResolvedValueOnce({ data: mockResponse2 }) // refetch
 
     const { result } = renderHook(() => useMarcas())
 
