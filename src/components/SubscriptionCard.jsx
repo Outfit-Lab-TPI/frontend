@@ -1,51 +1,119 @@
 import React from 'react';
 
-const SubscriptionCard = ({ subscription, onSubscribe }) => {
+const SubscriptionCard = ({ subscription = {}, onSubscribe, customColor }) => {
 
-  const handleSubscribeClick = () => {
-    if (onSubscribe && subscription?.id) {
-      onSubscribe(subscription.id);
-    }
-  };
+    const handleSubscribeClick = () => {
+        if (onSubscribe && subscription?.id) {
+            onSubscribe(subscription.id);
+        }
+    };
 
-  return (
-    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 flex flex-col items-center text-center max-w-sm mx-auto transition-shadow hover:shadow-xl">
-      
-      <h2 className="text-3xl font-bold text-indigo-700 mb-2">
-        {subscription.name || 'Plan Básico'}
-      </h2>
-      
-      <p className="text-5xl font-extrabold text-gray-900 mb-4">
-        ${subscription.price || '9.99'}
-        <span className="text-lg font-medium text-gray-500"> / {subscription.frequency || 'mes'}</span>
-      </p>
-      
-      <hr className="w-full border-t border-gray-200 mb-6" />
+    const getCurrencySymbol = (currencyCode) => {
+        switch (currencyCode) {
+            case 'ARS': return 'AR$';
+            default: return 'AR$';
+        }
+    };
+    
+    const formattedPrice = (subscription.price || 0).toLocaleString('es-AR', {
+        minimumFractionDigits: (subscription.price % 1 === 0) ? 0 : 2, 
+        maximumFractionDigits: 2
+    });
+    
+    const getHeaderStyles = () => {
+        if (customColor && customColor.startsWith('#')) {
+            return {
+                style: { backgroundColor: customColor },
+                className: ''
+            };
+        } 
+        else if (customColor) {
+            return {
+                style: {},
+                className: `bg-gradient-to-br ${customColor}`
+            };
+        }
+        return { style: {}, className: 'bg-gradient-to-br from-gray-400 to-gray-600' };
+    };
 
-      <div className="text-left mb-8 w-full">
-        {subscription.features && Array.isArray(subscription.features) ? (
-          <ul className="space-y-3 text-gray-600">
-            {subscription.features.map((feature, index) => (
-              <li key={index} className="flex items-start">
-                <span className="text-green-500 mr-2 text-lg">✔</span>
-                <span>{feature}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-gray-500">Acceso a funciones estándar del probador virtual y combinaciones.</p>
-        )}
-      </div>
+    const headerStyles = getHeaderStyles();
+    
+    const accentColor = (customColor && customColor.startsWith('#')) 
+        ? customColor 
+        : (customColor ? customColor.split(' ').pop() : 'gray-600'); 
+    
+    const accentClassName = accentColor.startsWith('#') ? '' : `bg-gradient-to-r ${customColor}`;
 
-      <button
-        onClick={handleSubscribeClick}
-        className="mt-auto w-full py-3 px-6 text-white font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 transition duration-150 ease-in-out shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-      >
-        Suscribirse con Mercado Pago
-      </button>
 
-    </div>
-  );
+    return (
+        <div className="bg-white rounded-2xl shadow-xl p-0 flex flex-col justify-between items-center text-center 
+                        max-w-xs mx-auto transition-transform hover:scale-[1.03] duration-300 relative min-h-[400px]">
+            
+            <div className={`relative w-full text-white pt-6 pb-12 rounded-t-2xl ${headerStyles.className}`} style={headerStyles.style}>
+                
+                <h2 className="text-xl font-bold uppercase mb-1">
+                    {subscription.name || 'PLAN'}
+                </h2>
+                
+                <p className="text-4xl font-extrabold flex items-baseline justify-center mb-1">
+                    <span className="text-xl align-top mr-1 font-semibold opacity-90">
+                        {getCurrencySymbol(subscription.currency)}
+                    </span>
+                    {formattedPrice}
+                </p>
+                
+                <p className="text-sm font-medium opacity-80 max-w-[80%] mx-auto">
+                    {subscription.description}
+                </p>
+
+                <div 
+                    className={`absolute bottom-0 left-0 w-full h-8 bg-white z-10`} 
+                    style={{ 
+                        clipPath: 'polygon(0% 0%, 100% 0%, 50% 100%)', 
+                        transform: 'translateY(50%)' 
+                    }}
+                ></div>
+            </div>
+
+            <div className="text-left w-full p-6 pt-10 flex flex-col justify-between flex-grow">
+                
+                {subscription.frequency && (
+                    <p className="text-center text-sm font-medium text-gray-500 mb-6 uppercase">
+                        / {subscription.frequency}
+                    </p>
+                )}
+
+                <div className="text-left mb-8 w-full">
+                    {subscription.features && Array.isArray(subscription.features) ? (
+                        <ul className="space-y-3 text-gray-700">
+                            {subscription.features.map((feature, index) => (
+                                <li key={index} className="flex items-start">
+                                    <span className={`text-sm mr-2 mt-1 inline-block h-2 w-2 rounded-full flex-shrink-0 ${accentClassName}`} 
+                                          style={accentColor.startsWith('#') ? { backgroundColor: accentColor } : {}}></span> 
+                                    <span className="text-sm">{feature}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="text-sm text-gray-500 text-center">Sin características definidas.</p>
+                    )}
+                </div>
+
+                <button
+                    onClick={handleSubscribeClick}
+                    className={`mt-auto w-full py-2 px-4 text-white font-bold rounded-full 
+                                transition duration-150 ease-in-out shadow-lg 
+                                hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white`}
+                    style={headerStyles.style} 
+                    {...(!accentColor.startsWith('#') && {className: `mt-auto w-full py-2 px-4 text-white font-bold rounded-full bg-gradient-to-r ${customColor} transition duration-150 ease-in-out shadow-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white`})}
+                >
+                    Suscribirse
+                </button>
+
+            </div>
+
+        </div>
+    );
 };
 
 export default SubscriptionCard;
