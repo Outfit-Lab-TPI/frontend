@@ -12,6 +12,7 @@ import Signup from "./pages/Signup";
 import NuevaPrenda from "./pages/NuevaPrenda";
 import Marcas from "./pages/Marcas";
 import MarcaDetalle from "./pages/MarcaDetalle";
+import SubscriptionPage from "./pages/Subscription";
 
 export default function AppContent() {
   const location = useLocation();
@@ -33,6 +34,7 @@ export default function AppContent() {
           <Route path="/nueva-prenda" element={<NuevaPrenda />} />
           <Route path="/marcas" element={<Marcas />} />
           <Route path="/marcas/:codigoMarca" element={<MarcaDetalle />} />
+          <Route path="/suscripcion" element={<SubscriptionPage />} />
           <Route path="/" element={<Landing />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
