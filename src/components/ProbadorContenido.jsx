@@ -28,19 +28,10 @@ function ProbadorContenido({
       <div className="flex gap-2">
         <div className="p-2 bg-gray/10 w-full">
           <div className="flex flex-col lg:flex-row flex-wrap justify-between items-start lg:items-center gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-gray rounded-xl flex items-center justify-center p-1">
-                <img
-                  src="/isotipo.svg"
-                  alt="Probador Virtual"
-                  className="max-w-full max-h-full object-contain"
-                />
-              </div>
               <div className="h-14 flex flex-col justify-center">
                 <h4>Probador Virtual</h4>
                 <p className="text-sm text-gray">Combina prendas de todas las marcas</p>
               </div>
-            </div>
 
             <div className="flex not-sm:flex-col not-sm:items-start not-lg:w-full items-center gap-4">
               {/* Filtros dropdown */}
