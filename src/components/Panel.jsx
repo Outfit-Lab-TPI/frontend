@@ -1,4 +1,4 @@
-import { Blend, Box, LoaderCircle } from "lucide-react";
+import { Blend, Box, LoaderCircle, Heart } from "lucide-react";
 import { VscPerson } from 'react-icons/vsc';
 import ModeloViewer from "./ModeloViewer.jsx";
 
@@ -9,7 +9,8 @@ function Panel({
   errorModelo3D,
   modeloUrl,
   loadingModelo3D,
-  onGenerarModelo3D
+  onGenerarModelo3D,
+  onToggleFavoritoCombinacion
 }) {
   return (
     <div className="w-full lg:w-1/3 flex flex-col border-t lg:border-t-0 lg:border-l border-gray/20 relative h-64 lg:h-full">
@@ -26,27 +27,45 @@ function Panel({
           </div>
         ) : resultado ? (
           <div className="w-full h-full flex items-center justify-center p-0 relative">
-            {!modeloUrl && (
+            <div className="absolute top-2 right-2 z-10 flex gap-2">
+              {/* Botón de favorito */}
               <button
-                // onClick={onGenerarModelo3D}
-                disabled={!resultado || loadingModelo3D}
-                className="absolute top-2 right-2 z-10 flex group bg-gray/50 hover:bg-gray/70 backdrop-blur-sm rounded-full transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-default overflow-hidden hover:px-4"
+                onClick={() => onToggleFavoritoCombinacion && onToggleFavoritoCombinacion(resultado)}
+                className="w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center transition-colors cursor-pointer"
+                title={resultado?.esFavorita ? "Quitar de favoritos" : "Agregar a favoritos"}
               >
-                <div className="hidden group-hover:flex items-center justify-center transition-all duration-300">
-                  <span className="text-white text-sm font-medium whitespace-nowrap">
-                    Proxímamente: Probador 3D
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-center p-2 transition-all duration-300">
-                  {loadingModelo3D ? (
-                    <LoaderCircle className="w-5 h-5 text-white animate-spin" />
-                  ) : (
-                    <Box className="w-4 h-4 text-white" />
-                  )}
-                </div>
+                <Heart
+                  className={`w-4 h-4 transition-colors ${
+                    resultado?.esFavorita
+                      ? 'text-red-500 fill-red-500'
+                      : 'text-white hover:text-red-300'
+                  }`}
+                />
               </button>
-            )}
+
+              {/* Botón de modelo 3D */}
+              {!modeloUrl && (
+                <button
+                  // onClick={onGenerarModelo3D}
+                  disabled={!resultado || loadingModelo3D}
+                  className="flex group bg-gray/50 hover:bg-gray/70 backdrop-blur-sm rounded-full transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-default overflow-hidden hover:px-4"
+                >
+                  <div className="hidden group-hover:flex items-center justify-center transition-all duration-300">
+                    <span className="text-white text-sm font-medium whitespace-nowrap">
+                      Proxímamente: Probador 3D
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-center p-2 transition-all duration-300">
+                    {loadingModelo3D ? (
+                      <LoaderCircle className="w-5 h-5 text-white animate-spin" />
+                    ) : (
+                      <Box className="w-4 h-4 text-white" />
+                    )}
+                  </div>
+                </button>
+              )}
+            </div>
 
             {modeloUrl ? (
               <ModeloViewer

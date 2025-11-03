@@ -31,7 +31,7 @@ export default function Home() {
     useCombinacion();
   const { generarModelo3D, loading: loadingModelo3D, error: errorModelo3D, modeloUrl, limpiarModelo } =
     useModelo3D();
-  const { togglePrendaFavorita } = useFavoritos();
+  const { togglePrendaFavorita, toggleCombinacionFavorita } = useFavoritos();
   const { obtenerSugerencias, sugerencias, loading: loadingSugerencias, error: errorSugerencias, limpiarSugerencias } = useSugerencias();
 
   // Estados para selección de prendas
@@ -55,7 +55,7 @@ export default function Home() {
     }
   };
 
-  // Manejar toggle de favoritos
+  // Manejar toggle de favoritos de prendas
   const handleToggleFavorita = async (prenda) => {
     try {
       // Actualizar inmediatamente en el estado local para UX instantánea
@@ -68,6 +68,15 @@ export default function Home() {
       console.error('Error al cambiar favorito:', error);
       // Si falla, revertir el cambio local
       actualizarFavoritoLocal(prenda.codigo || prenda.id, prenda.esFavorita);
+    }
+  };
+
+  // Manejar toggle de favoritos de combinaciones
+  const handleToggleFavoritoCombinacion = async (combinacion) => {
+    try {
+      await toggleCombinacionFavorita(combinacion.codigoCombinacion || combinacion.id);
+    } catch (error) {
+      console.error('Error al cambiar favorito de combinación:', error);
     }
   };
 
@@ -210,6 +219,7 @@ export default function Home() {
         modeloUrl={modeloUrl}
         loadingModelo3D={loadingModelo3D}
         onGenerarModelo3D={handleGenerarModelo3D}
+        onToggleFavoritoCombinacion={handleToggleFavoritoCombinacion}
       />
       )}
 

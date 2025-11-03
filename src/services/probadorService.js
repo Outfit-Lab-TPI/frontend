@@ -11,7 +11,7 @@ export const probadorService = {
         return await fetchMockProbadorPrendas();
       }
 
-      const response = await apiClient.get('/api/probador');
+      const response = await apiClient.get('/prendas');
       return response.data;
     } catch (error) {
       throw new Error(

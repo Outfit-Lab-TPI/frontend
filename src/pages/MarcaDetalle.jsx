@@ -18,7 +18,7 @@ function MarcaDetalle() {
   const { generarModelo3D, loading: loadingModelo3D, error: errorModelo3D, modeloUrl, limpiarModelo } =
     useModelo3D();
   const { obtenerSugerencias, sugerencias, loading: loadingSugerencias, error: errorSugerencias, limpiarSugerencias } = useSugerencias();
-  const { togglePrendaFavorita } = useFavoritos();
+  const { togglePrendaFavorita, toggleCombinacionFavorita } = useFavoritos();
 
   // Estados para selección de prendas
   const [selectedSuperior, setSelectedSuperior] = useState(null);
@@ -125,12 +125,21 @@ function MarcaDetalle() {
     limpiarSugerencias();
   };
 
-  // Manejar toggle de favoritos
+  // Manejar toggle de favoritos de prendas
   const handleToggleFavorita = async (prenda) => {
     try {
       await togglePrendaFavorita(prenda.garmentCode || prenda.codigo);
     } catch (error) {
       console.error('Error al cambiar favorito:', error);
+    }
+  };
+
+  // Manejar toggle de favoritos de combinaciones
+  const handleToggleFavoritoCombinacion = async (combinacion) => {
+    try {
+      await toggleCombinacionFavorita(combinacion.codigoCombinacion || combinacion.id);
+    } catch (error) {
+      console.error('Error al cambiar favorito de combinación:', error);
     }
   };
 
@@ -212,6 +221,7 @@ function MarcaDetalle() {
         modeloUrl={modeloUrl}
         loadingModelo3D={loadingModelo3D}
         onGenerarModelo3D={handleGenerarModelo3D}
+        onToggleFavoritoCombinacion={handleToggleFavoritoCombinacion}
       />
       )}
 
