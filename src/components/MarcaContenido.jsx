@@ -18,17 +18,11 @@ function MarcaContenido({
   loadingCombinacion,
 }) {
   const prendasCategorizadas = useMemo(() => {
-    if (!marcaDetail?.prendas) return { superiores: [], inferiores: [] };
-
     return {
-      superiores: marcaDetail.prendas.filter(
-        prenda => prenda.tipo === "superior"
-      ),
-      inferiores: marcaDetail.prendas.filter(
-        prenda => prenda.tipo === "inferior"
-      ),
+      superiores: marcaDetail?.garmentTop?.content || [],
+      inferiores: marcaDetail?.garmentBottom?.content || [],
     };
-  }, [marcaDetail?.prendas]);
+  }, [marcaDetail]);
 
   return (
     <div className="w-full lg:w-2/3 flex flex-col">
@@ -42,8 +36,8 @@ function MarcaContenido({
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 bg-gray rounded-xl flex items-center justify-center p-1">
                 <img
-                  src={marcaDetail.logoUrl || "/isotipo.svg"}
-                  alt={marcaDetail.nombre}
+                  src={marcaDetail.brandDTO?.logoUrl || "/isotipo.svg"}
+                  alt={marcaDetail.brandDTO?.nombre}
                   className="max-w-full max-h-full object-contain"
                   onError={e => {
                     e.target.src = "/isotipo.svg";
@@ -51,10 +45,10 @@ function MarcaContenido({
                 />
               </div>
               <div className="h-14 flex flex-col justify-center">
-                <h4>{marcaDetail.nombre}</h4>
-                {marcaDetail.sitioUrl && (
+                <h4>{marcaDetail.brandDTO?.nombre}</h4>
+                {marcaDetail.brandDTO?.sitioUrl && (
                   <a
-                    href={marcaDetail.sitioUrl}
+                    href={marcaDetail.brandDTO.sitioUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm inline-flex items-center gap-2 text-gray hover:text-white transition-colors"
@@ -113,7 +107,7 @@ function MarcaContenido({
 
       {/* Galería de prendas */}
       <div className="flex-1 overflow-y-auto mt-4 modern-scrollbar">
-        {marcaDetail.prendas && marcaDetail.prendas.length > 0 ? (
+        {(prendasCategorizadas.superiores.length > 0 || prendasCategorizadas.inferiores.length > 0) ? (
           <div className="space-y-6 max-w-5xl mx-auto">
             <div>
               <h5 className="bg-gray/5 py-1 px-2 rounded-sm font-semibold mb-4">Prendas Superiores</h5>

@@ -212,7 +212,7 @@ function MarcaDetalle() {
         loadingCombinacion={loadingCombinacion}
       />
 
-      {marcaDetail.prendas && marcaDetail.prendas.length > 0 && (
+      {((marcaDetail.garmentTop?.content?.length > 0) || (marcaDetail.garmentBottom?.content?.length > 0)) && (
       <Panel
         loadingCombinacion={loadingCombinacion}
         resultado={resultado}
