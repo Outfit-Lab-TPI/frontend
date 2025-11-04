@@ -13,54 +13,25 @@ describe('combinacionService', () => {
   })
 
   describe('combinarPrendas', () => {
-    it('debe llamar al endpoint con los parámetros correctos y devolver imageUrl cuando status es OK', async () => {
-      const mockData = { status: 'OK', imageUrl: 'https://example.com/combinacion1.png', errorMessage: null }
+    it('debe llamar al endpoint con los parámetros correctos y devolver response.data', async () => {
+      const mockData = { imageUrl: 'https://example.com/combinacion1.png' }
       apiClient.post.mockResolvedValueOnce({ data: mockData })
 
-      const top = 'camisa azul'
-      const bottom = 'pantalón negro'
-      const isMan = true
-      const avatarType = 'MAN'
+      const esHombre = true
+      const superior = 'camisa azul'
+      const inferior = 'pantalón negro'
 
-      const result = await combinacionService.combinarPrendas(top, bottom, isMan, avatarType)
+      const result = await combinacionService.combinarPrendas(esHombre, superior, inferior)
 
       // Verifica que el endpoint se llamó correctamente
       expect(apiClient.post).toHaveBeenCalledWith(
-        '/api/fashion/combinar-prendas',
-        { top, bottom, isMan, avatarType },
+        '/fashion/combinar-prendas',
+        { esHombre, superior, inferior },
         { timeout: 60000 }
       )
 
-      // Verifica que devuelve solo la imageUrl
-      expect(result).toEqual('https://example.com/combinacion1.png')
-    })
-
-    it('debe lanzar error cuando status es FAILED', async () => {
-      const mockData = { status: 'FAILED', imageUrl: null, errorMessage: 'Error en la generación de imagen' }
-      apiClient.post.mockResolvedValueOnce({ data: mockData })
-
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-
-      await expect(
-        combinacionService.combinarPrendas('camisa azul', 'pantalón negro', true, 'MAN')
-      ).rejects.toThrow('Error en la generación de imagen')
-
-      expect(consoleSpy).toHaveBeenCalledWith('Error combinando prendas:', expect.any(Error))
-      consoleSpy.mockRestore()
-    })
-
-    it('debe lanzar error cuando status es ERROR', async () => {
-      const mockData = { status: 'ERROR', imageUrl: null, errorMessage: 'Error interno del servidor' }
-      apiClient.post.mockResolvedValueOnce({ data: mockData })
-
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-
-      await expect(
-        combinacionService.combinarPrendas('camisa azul', 'pantalón negro', true, 'MAN')
-      ).rejects.toThrow('Error interno del servidor')
-
-      expect(consoleSpy).toHaveBeenCalledWith('Error combinando prendas:', expect.any(Error))
-      consoleSpy.mockRestore()
+      // Verifica que tu servicio devuelve exactamente lo que Axios entrega
+      expect(result).toEqual(mockData)
     })
 
     it('debe lanzar error si apiClient.post falla', async () => {
@@ -70,32 +41,11 @@ describe('combinacionService', () => {
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
       await expect(
-        combinacionService.combinarPrendas('camisa azul', 'pantalón negro', true, 'MAN')
+        combinacionService.combinarPrendas(true, 'camisa azul', 'pantalón negro')
       ).rejects.toThrow('Servidor caído')
 
       // Verifica que el error se registró en consola
-      expect(consoleSpy).toHaveBeenCalledWith('Error combinando prendas:', error)
-      consoleSpy.mockRestore()
-    })
-
-    it('debe manejar errores de respuesta con estructura de error', async () => {
-      const errorResponse = {
-        response: {
-          data: {
-            status: 'TIMEOUT',
-            errorMessage: 'Timeout en la generación'
-          }
-        }
-      }
-      apiClient.post.mockRejectedValueOnce(errorResponse)
-
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-
-      await expect(
-        combinacionService.combinarPrendas('camisa azul', 'pantalón negro', true, 'MAN')
-      ).rejects.toThrow('Timeout en la generación')
-
-      expect(consoleSpy).toHaveBeenCalledWith('Error combinando prendas:', errorResponse)
+      expect(consoleSpy).toHaveBeenCalledWith('error:', error)
       consoleSpy.mockRestore()
     })
   })
