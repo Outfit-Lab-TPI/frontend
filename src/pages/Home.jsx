@@ -74,7 +74,7 @@ export default function Home() {
   // Manejar toggle de favoritos de combinaciones
   const handleToggleFavoritoCombinacion = async (combinacion) => {
     try {
-      await toggleCombinacionFavorita(combinacion.codigoCombinacion || combinacion.id, combinacion.esFavorita);
+      await toggleCombinacionFavorita(combinacion, combinacion.esFavorita);
     } catch (error) {
       console.error('Error al cambiar favorito de combinación:', error);
     }

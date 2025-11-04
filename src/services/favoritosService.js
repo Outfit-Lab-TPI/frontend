@@ -51,9 +51,11 @@ export const favoritosService = {
   },
 
   // Combinaciones favoritas
-  agregarCombinacionFavorita: async (combinationCode) => {
+  agregarCombinacionFavorita: async (combinationUrl) => {
     try {
-      const response = await apiClient.get(`/combinations/favorite/add/${combinationCode}`);
+      // Encode the URL to handle special characters like dots, slashes, etc.
+      const encodedUrl = encodeURIComponent(combinationUrl);
+      const response = await apiClient.get(`/combinations/favorite/add/${encodedUrl}`);
       return response.data;
     } catch (error) {
       throw new Error(
@@ -63,9 +65,11 @@ export const favoritosService = {
     }
   },
 
-  quitarCombinacionFavorita: async (combinationCode) => {
+  quitarCombinacionFavorita: async (combinationUrl) => {
     try {
-      const response = await apiClient.get(`/combinations/favorite/delete/${combinationCode}`);
+      // Encode the URL to handle special characters like dots, slashes, etc.
+      const encodedUrl = encodeURIComponent(combinationUrl);
+      const response = await apiClient.get(`/combinations/favorite/delete/${encodedUrl}`);
       return response.data;
     } catch (error) {
       throw new Error(
@@ -87,12 +91,12 @@ export const favoritosService = {
     }
   },
 
-  toggleCombinacionFavorita: async (combinationCode, esFavorita) => {
+  toggleCombinacionFavorita: async (combinationUrl, esFavorita) => {
     try {
       if (esFavorita) {
-        return await favoritosService.quitarCombinacionFavorita(combinationCode);
+        return await favoritosService.quitarCombinacionFavorita(combinationUrl);
       } else {
-        return await favoritosService.agregarCombinacionFavorita(combinationCode);
+        return await favoritosService.agregarCombinacionFavorita(combinationUrl);
       }
     } catch (error) {
       throw error;
