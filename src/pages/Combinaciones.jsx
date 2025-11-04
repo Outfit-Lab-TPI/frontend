@@ -29,10 +29,10 @@ function Combinaciones() {
   // Manejar toggle de favoritos con confirmación para eliminación
   const handleToggleFavorita = async (combinacion) => {
     const codigoCombinacion = combinacion.codigo || combinacion.id;
-    const esActualmenteFavorita = combinacion.esFavorita;
+    const esFavorita = combinacion.esFavorita;
 
     // Si está marcada como favorita y se va a desmarcar (eliminar)
-    if (esActualmenteFavorita) {
+    if (esFavorita) {
       // Mostrar dialog de confirmación
       setCombinacionAEliminar(combinacion);
       setShowConfirmDialog(true);
@@ -43,7 +43,7 @@ function Combinaciones() {
         actualizarFavoritoLocal(codigoCombinacion, true);
 
         // Hacer la llamada al backend en segundo plano
-        await toggleCombinacionFavorita(codigoCombinacion);
+        await toggleCombinacionFavorita(codigoCombinacion, esFavorita);
       } catch (error) {
         console.error('Error al marcar combinación como favorita:', error);
         // Si falla, revertir el cambio local
@@ -67,7 +67,7 @@ function Combinaciones() {
       setCombinacionAEliminar(null);
 
       // Hacer la llamada al backend en segundo plano
-      await toggleCombinacionFavorita(codigoCombinacion);
+      await toggleCombinacionFavorita(codigoCombinacion, combinacionAEliminar.esFavorita);
     } catch (error) {
       console.error('Error al eliminar combinación de favoritos:', error);
       // Si falla, restaurar la combinación en la UI

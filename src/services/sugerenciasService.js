@@ -7,8 +7,6 @@ export const sugerenciasService = {
         throw new Error('El código de prenda es requerido')
       }
 
-      console.log('Obteniendo sugerencias para prenda:', garmentCode)
-
       const response = await apiClient.get(`/garment-recomendation/${garmentCode}`)
 
       return response

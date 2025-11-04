@@ -23,13 +23,6 @@ export const prendaService = {
         throw new Error('El tipo debe ser "superior" o "inferior"')
       }
 
-      console.log('Enviando FormData para crear prenda:', {
-        codigoMarca: formData.get('codigoMarca'),
-        nombre: formData.get('nombre'),
-        tipo: formData.get('tipo'),
-        imagen: formData.get('imagen')?.name || 'imagen'
-      })
-
       const response = await apiClient.post('/crear-prenda', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',

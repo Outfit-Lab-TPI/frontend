@@ -50,8 +50,6 @@ export const subscriptionAPI = {
       currency
     };
 
-    console.log("Enviando payload a Java:", payload);
-
     return apiClient.post(
       '/mp/crear-suscripcion',
       payload

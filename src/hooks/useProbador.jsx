@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { probadorService } from '../services/probadorService.js';
+import { favoritosService } from '../services/favoritosService.js';
 
 export const useProbador = () => {
   // Estados simplificados
@@ -23,13 +24,29 @@ export const useProbador = () => {
       setError(null);
       setCriticalError(null);
 
-      const [responseSuperiores, responseInferiores] = await Promise.all([
+      // Cargar prendas y favoritas en paralelo
+      const [responseSuperiores, responseInferiores, responseFavoritas] = await Promise.all([
         probadorService.obtenerPrendasSuperiores(filtros),
-        probadorService.obtenerPrendasInferiores(filtros)
+        probadorService.obtenerPrendasInferiores(filtros),
+        favoritosService.obtenerPrendasFavoritas().catch(() => ({ data: { content: [] } })) // Si falla, continuar sin favoritas
       ]);
 
-      setPrendasSuperiores(responseSuperiores.data.content || []);
-      setPrendasInferiores(responseInferiores.data.content || []);
+      const prendasFavoritas = responseFavoritas.data?.content || responseFavoritas.data || [];
+      const codigosFavoritas = new Set(prendasFavoritas.map(prenda => prenda.garmentCode));
+
+      // Marcar prendas como favoritas
+      const prendasSuperioresConFavoritas = (responseSuperiores.data.content || []).map(prenda => ({
+        ...prenda,
+        esFavorita: codigosFavoritas.has(prenda.garmentCode)
+      }));
+
+      const prendasInferioresConFavoritas = (responseInferiores.data.content || []).map(prenda => ({
+        ...prenda,
+        esFavorita: codigosFavoritas.has(prenda.garmentCode)
+      }));
+
+      setPrendasSuperiores(prendasSuperioresConFavoritas);
+      setPrendasInferiores(prendasInferioresConFavoritas);
     } catch (err) {
       if (err.isCritical) {
         setCriticalError(err);
