@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Filter, ChevronDown, X, Heart } from 'lucide-react';
+import { Check, Filter, ChevronDown, X, Heart } from 'lucide-react';
 import Button from './shared/Button';
 
 function FilterDropdown({
@@ -109,7 +109,7 @@ function FilterDropdown({
                       : 'border-gray/40 hover:border-gray'
                   }`}>
                     {filtros.soloFavoritas && (
-                      <Heart className="h-2.5 w-2.5 text-white fill-current" />
+                      <Check className="h-2.5 w-2.5" />
                     )}
                   </div>
                   <span className="text-sm text-white">Solo favoritas</span>
