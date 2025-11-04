@@ -1,23 +1,37 @@
 import apiClient from './api.js';
-import { fetchMockProbadorPrendas } from '../utils/mockData.js';
 
-// Configuración para usar mock data temporalmente
-const USE_MOCK_DATA = true;
+const isCriticalError = (error) => {
+  // Errores de servidor 5xx
+  if (error.response && error.response.status >= 500) return true;
+
+  // Sin respuesta del servidor
+  if (error.request && !error.response) return true;
+
+  return false;
+};
 
 export const probadorService = {
-  obtenerPrendas: async () => {
+  obtenerPrendasSuperiores: async (filtros = {}) => {
     try {
-      if (USE_MOCK_DATA) {
-        return await fetchMockProbadorPrendas();
-      }
-
-      const response = await apiClient.get('/prendas');
-      return response.data;
+      const params = new URLSearchParams(filtros);
+      const url = `/garments/superior${Object.keys(filtros).length ? `?${params}` : ''}`;
+      const response = await apiClient.get(url);
+      return response;
     } catch (error) {
-      throw new Error(
-        error.response?.data?.message ||
-        'Error al obtener las prendas del probador'
-      );
+      error.isCritical = isCriticalError(error);
+      throw error;
+    }
+  },
+
+  obtenerPrendasInferiores: async (filtros = {}) => {
+    try {
+      const params = new URLSearchParams(filtros);
+      const url = `/garments/inferior${Object.keys(filtros).length ? `?${params}` : ''}`;
+      const response = await apiClient.get(url);
+      return response;
+    } catch (error) {
+      error.isCritical = isCriticalError(error);
+      throw error;
     }
   }
 };

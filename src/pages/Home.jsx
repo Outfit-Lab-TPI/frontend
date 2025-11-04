@@ -19,6 +19,7 @@ export default function Home() {
     prendasCategorizadas,
     loading,
     error,
+    criticalError,
     filtros,
     marcasDisponibles,
     coloresDisponibles,
@@ -60,14 +61,14 @@ export default function Home() {
     try {
       // Actualizar inmediatamente en el estado local para UX instantánea
       const nuevoEstadoFavorita = !prenda.esFavorita;
-      actualizarFavoritoLocal(prenda.codigo || prenda.id, nuevoEstadoFavorita);
+      actualizarFavoritoLocal(prenda.garmentCode || prenda.codigo || prenda.id, nuevoEstadoFavorita);
 
       // Hacer la llamada al backend en segundo plano
-      await togglePrendaFavorita(prenda.codigo || prenda.id);
+      await togglePrendaFavorita(prenda.garmentCode || prenda.codigo || prenda.id);
     } catch (error) {
       console.error('Error al cambiar favorito:', error);
       // Si falla, revertir el cambio local
-      actualizarFavoritoLocal(prenda.codigo || prenda.id, prenda.esFavorita);
+      actualizarFavoritoLocal(prenda.garmentCode || prenda.codigo || prenda.id, prenda.esFavorita);
     }
   };
 
@@ -156,10 +157,14 @@ export default function Home() {
 
   // Lanzar excepción para errores críticos
   useEffect(() => {
-    if (error) {
-      console.error('Error en probador:', error);
+    if (criticalError) {
+      throw new Error(
+        `Error crítico del servidor: ${
+          criticalError.message || "No se pudo conectar con el servidor"
+        }`
+      );
     }
-  }, [error]);
+  }, [criticalError]);
 
   if (loading) {
     return (
