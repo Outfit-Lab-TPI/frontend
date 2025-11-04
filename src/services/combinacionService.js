@@ -1,12 +1,14 @@
 import apiClient from './api.js';
 
 export const combinacionService = {
-  combinarPrendas: async (esHombre, superior, inferior) => {
+  combinarPrendas: async (esHombre, top, bottom) => {
+    let avatarType = esHombre ? 'man' : 'woman';
+
     try {
       const response = await apiClient.post('/fashion/combinar-prendas', {
-        esHombre,
-        superior,
-        inferior
+        avatarType,
+        top,
+        bottom
       },
       {
         timeout: 60000

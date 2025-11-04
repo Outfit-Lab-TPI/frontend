@@ -7,19 +7,7 @@ export const useCombinacion = () => {
   const [resultado, setResultado] = useState(null);
 
   const combinarPrendas = async (esHombre, prendaSuperior, prendaInferior) => {
-    // Validaciones
-    if (typeof esHombre !== 'boolean') {
-      setError('El tipo de avatar debe ser especificado');
-      return null;
-    }
-
-    if (!prendaSuperior?.imagenUrl) {
-      setError('Debe seleccionar una prenda superior');
-      return null;
-    }
-
-    if (!prendaInferior?.imagenUrl) {
-      setError('Debe seleccionar una prenda inferior');
+    if (!validarCombinacion(esHombre, prendaSuperior, prendaInferior)) {
       return null;
     }
 
@@ -49,34 +37,25 @@ export const useCombinacion = () => {
     }
   };
 
-  const validarParametros = (
-    isMan,
-    prendaSuperior,
-    prendaInferior,
-    avatarType
-  ) => {
-    if (typeof isMan !== "boolean") {
-      setError("El tipo de avatar debe ser especificado");
+  const validarCombinacion = (esHombre, prendaSuperior, prendaInferior) => {
+    if (typeof esHombre !== 'boolean') {
+      setError('El tipo de avatar debe ser especificado');
       return false;
     }
 
     if (!prendaSuperior?.imagenUrl) {
-      setError("Debe seleccionar una prenda superior");
+      setError('Debe seleccionar una prenda superior');
       return false;
     }
 
     if (!prendaInferior?.imagenUrl) {
-      setError("Debe seleccionar una prenda inferior");
-      return false;
-    }
-
-    if (!avatarType) {
-      setError("El tipo de avatar debe ser especificado");
+      setError('Debe seleccionar una prenda inferior');
       return false;
     }
 
     return true;
   };
+
 
   const limpiarResultado = () => {
     setResultado(null);
