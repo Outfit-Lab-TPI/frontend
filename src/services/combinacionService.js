@@ -1,19 +1,34 @@
 import apiClient from './api.js';
 
 export const combinacionService = {
-  combinarPrendas: async (esHombre, superior, inferior) => {
+  combinarPrendas: async (top, bottom, isMan, avatarType) => {
     try {
       const response = await apiClient.post('/fashion/combinar-prendas', {
-        esHombre,
-        superior,
-        inferior
-      },
-      {
-        timeout: 60000
+        top,
+        bottom,
+        isMan,
+        avatarType
       });
-      return response.data;
+
+      const data = response.data;
+
+      if (data.status === 'OK') {
+        return data.imageUrl;
+      } else {
+        // Handle error status responses
+        throw new Error(data.errorMessage || 'Error combinando prendas');
+      }
     } catch (error) {
-      console.error("error:", error);
+      console.error("Error combinando prendas:", error);
+
+      // If it's a response error, check for error structure
+      if (error.response?.data) {
+        const errorData = error.response.data;
+        if (errorData.status && errorData.errorMessage) {
+          throw new Error(errorData.errorMessage);
+        }
+      }
+
       throw error;
     }
   }

@@ -6,9 +6,13 @@ export const useCombinacion = () => {
   const [error, setError] = useState(null);
   const [resultado, setResultado] = useState(null);
 
-  const combinarPrendas = async (esHombre, prendaSuperior, prendaInferior) => {
+  const combinarPrendas = async (isMan, prendaSuperior, prendaInferior, avatarType) => {
+    // Set avatarType based on isMan if not provided
+    if (!avatarType) {
+      avatarType = isMan ? 'MAN' : 'WOMAN';
+    }
     // Validaciones
-    if (typeof esHombre !== 'boolean') {
+    if (typeof isMan !== 'boolean') {
       setError('El tipo de avatar debe ser especificado');
       return null;
     }
@@ -23,25 +27,27 @@ export const useCombinacion = () => {
       return null;
     }
 
+    if (!avatarType) {
+      setError('El tipo de avatar debe ser especificado');
+      return null;
+    }
+
     setLoading(true);
     setError(null);
     setResultado(null);
 
     try {
-      let response;
-
-      response = await combinacionService.combinarPrendas(
-        esHombre,
+      const imageUrl = await combinacionService.combinarPrendas(
         prendaSuperior.imagenUrl,
-        prendaInferior.imagenUrl
+        prendaInferior.imagenUrl,
+        isMan,
+        avatarType
       );
 
-      setResultado(response);
-      return response;
+      setResultado({ imageUrl });
+      return { imageUrl };
     } catch (err) {
-      const errorMessage = err.response?.data?.message ||
-                          err.message ||
-                          'Error al combinar las prendas';
+      const errorMessage = err.message || 'Error al combinar las prendas';
       setError(errorMessage);
       return null;
     } finally {

@@ -50,15 +50,51 @@ describe("useCombinacion", () => {
             const { result } = renderHook(() => useCombinacion());
 
             await act(async () => {
-            await result.current.combinarPrendas(true, prendaSuperior, null);
+            await result.current.combinarPrendas(true, prendaSuperior, null, 'default');
             });
 
             expect(result.current.error).toBe("Debe seleccionar una prenda inferior");
         });
 
+        it("debe auto-determinar avatarType basado en isMan cuando es true", async () => {
+            const mockImageUrl = "result.jpg";
+            combinacionService.combinarPrendas.mockResolvedValueOnce(mockImageUrl);
+
+            const { result } = renderHook(() => useCombinacion());
+
+            await act(async () => {
+            await result.current.combinarPrendas(true, prendaSuperior, prendaInferior);
+            });
+
+            expect(combinacionService.combinarPrendas).toHaveBeenCalledWith(
+            "url-superior.jpg",
+            "url-inferior.jpg",
+            true,
+            'MAN'
+            );
+        });
+
+        it("debe auto-determinar avatarType basado en isMan cuando es false", async () => {
+            const mockImageUrl = "result.jpg";
+            combinacionService.combinarPrendas.mockResolvedValueOnce(mockImageUrl);
+
+            const { result } = renderHook(() => useCombinacion());
+
+            await act(async () => {
+            await result.current.combinarPrendas(false, prendaSuperior, prendaInferior);
+            });
+
+            expect(combinacionService.combinarPrendas).toHaveBeenCalledWith(
+            "url-superior.jpg",
+            "url-inferior.jpg",
+            false,
+            'WOMAN'
+            );
+        });
+
         it("debe llamar a combinacionService y settear resultado en caso de éxito", async () => {
-            const mockResponse = { data: { imageUrl: "result.jpg" } };
-            combinacionService.combinarPrendas.mockResolvedValueOnce(mockResponse);
+            const mockImageUrl = "result.jpg";
+            combinacionService.combinarPrendas.mockResolvedValueOnce(mockImageUrl);
 
             const { result } = renderHook(() => useCombinacion());
 
@@ -68,16 +104,17 @@ describe("useCombinacion", () => {
                 prendaSuperior,
                 prendaInferior
             );
-            expect(response).toEqual(mockResponse);
+            expect(response).toEqual({ imageUrl: mockImageUrl });
             });
 
             await waitFor(() => expect(result.current.loading).toBe(false));
-            expect(result.current.resultado).toEqual(mockResponse);
+            expect(result.current.resultado).toEqual({ imageUrl: mockImageUrl });
             expect(result.current.error).toBe(null);
             expect(combinacionService.combinarPrendas).toHaveBeenCalledWith(
-            true,
             "url-superior.jpg",
-            "url-inferior.jpg"
+            "url-inferior.jpg",
+            true,
+            'MAN'
             );
         });
 
