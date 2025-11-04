@@ -40,7 +40,7 @@ function FilterDropdown({
 
       {/* Dropdown de filtros */}
       {isExpanded && (
-        <div className="absolute top-full right-0 mt-2 w-80 bg-black border border-gray/20 rounded-lg shadow-xl z-50">
+        <div className="absolute top-full left-0 mt-2 w-80 bg-black border border-gray/20 rounded-lg shadow-xl z-50">
           <div className="p-4">
             {/* Header del dropdown */}
             <div className="flex items-center justify-between mb-4">
