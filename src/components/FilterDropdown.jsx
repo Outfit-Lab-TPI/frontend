@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Filter, ChevronDown, X, Heart } from "lucide-react";
+import { Check, Filter, ChevronDown, X, Heart } from "lucide-react";
 import Button from "./shared/Button";
 
 function FilterDropdown({
@@ -44,11 +44,9 @@ function FilterDropdown({
         />
       </button>
 
-      {/* Dropdown de filtros */}
       {isExpanded && (
         <div className="absolute top-full right-[-150px] mt-2 w-72 bg-black border border-gray/20 rounded-lg shadow-xl z-50">
           <div className="p-4">
-            {/* Header del dropdown */}
             <div className="flex items-center justify-between mb-4">
               <span className="text-sm font-medium text-white">
                 Filtrar prendas
@@ -70,9 +68,7 @@ function FilterDropdown({
               )}
             </div>
 
-            {/* Filtros */}
             <div className="space-y-4">
-              {/* Filtro por marca */}
               <div>
                 <label className="block text-xs text-gray mb-2">Marca</label>
                 <select
@@ -106,7 +102,6 @@ function FilterDropdown({
                 </select>
               </div> */}
 
-              {/* Filtro favoritas */}
               <div>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -124,9 +119,7 @@ function FilterDropdown({
                         : "border-gray/40 hover:border-gray"
                     }`}
                   >
-                    {filtros.soloFavoritas && (
-                      <Heart className="h-2.5 w-2.5 text-white fill-current" />
-                    )}
+                    {filtros.soloFavoritas && <Check className="h-2.5 w-2.5" />}
                   </div>
                   <span className="text-sm text-white">Solo favoritas</span>
                 </label>
@@ -136,7 +129,6 @@ function FilterDropdown({
         </div>
       )}
 
-      {/* Overlay para cerrar al hacer click afuera */}
       {isExpanded && (
         <div
           className="fixed inset-0 z-40"

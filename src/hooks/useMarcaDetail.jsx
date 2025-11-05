@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { marcaService } from '../services/marcaService.js';
+import { favoritosService } from '../services/favoritosService.js';
 
 export const useMarcaDetail = (codigoMarca) => {
   const [marcaDetail, setMarcaDetail] = useState(null);
@@ -14,9 +15,39 @@ export const useMarcaDetail = (codigoMarca) => {
     setError(null);
     setCriticalError(null);
     try {
-      let response;
-      response = await marcaService.getMarcaByCode(codigoMarca);
-      setMarcaDetail(response.data);
+      // Cargar marca y favoritas en paralelo
+      const [responseMarca, responseFavoritas] = await Promise.all([
+        marcaService.getMarcaByCode(codigoMarca),
+        favoritosService.obtenerPrendasFavoritas().catch(() => ({ data: { content: [] } })) // Si falla, continuar sin favoritas
+      ]);
+
+      const marcaData = responseMarca.data;
+      const prendasFavoritas = responseFavoritas.data?.content || responseFavoritas.data || [];
+      const codigosFavoritas = new Set(prendasFavoritas.map(prenda => prenda.garmentCode));
+
+      // Función helper para marcar prendas como favoritas
+      const marcarPrendasComoFavoritas = (prendas) => {
+        if (!prendas || !Array.isArray(prendas)) return prendas;
+        return prendas.map(prenda => ({
+          ...prenda,
+          esFavorita: codigosFavoritas.has(prenda.garmentCode)
+        }));
+      };
+
+      // Marcar prendas como favoritas en todas las categorías
+      const marcaConFavoritas = {
+        ...marcaData,
+        garmentTop: {
+          ...marcaData.garmentTop,
+          content: marcarPrendasComoFavoritas(marcaData.garmentTop?.content)
+        },
+        garmentBottom: {
+          ...marcaData.garmentBottom,
+          content: marcarPrendasComoFavoritas(marcaData.garmentBottom?.content)
+        }
+      };
+
+      setMarcaDetail(marcaConFavoritas);
     } catch (err) {
       if (err.isCritical) {
         setCriticalError(err);
@@ -28,6 +59,34 @@ export const useMarcaDetail = (codigoMarca) => {
     }
   };
 
+  // Función para actualizar favorito localmente
+  const actualizarFavoritoLocal = (codigoPrenda, esFavorita) => {
+    setMarcaDetail(prev => {
+      if (!prev) return prev;
+
+      const actualizarPrendas = (prendas) => {
+        if (!prendas || !Array.isArray(prendas)) return prendas;
+        return prendas.map(prenda =>
+          prenda.garmentCode === codigoPrenda
+            ? { ...prenda, esFavorita }
+            : prenda
+        );
+      };
+
+      return {
+        ...prev,
+        garmentTop: {
+          ...prev.garmentTop,
+          content: actualizarPrendas(prev.garmentTop?.content)
+        },
+        garmentBottom: {
+          ...prev.garmentBottom,
+          content: actualizarPrendas(prev.garmentBottom?.content)
+        }
+      };
+    });
+  };
+
   useEffect(() => {
     fetchMarcaDetail();
   }, [codigoMarca]);
@@ -37,6 +96,7 @@ export const useMarcaDetail = (codigoMarca) => {
     loading,
     error,
     criticalError,
-    refetch: fetchMarcaDetail
+    refetch: fetchMarcaDetail,
+    actualizarFavoritoLocal
   };
 };

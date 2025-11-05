@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { SquareArrowOutUpRight } from "lucide-react";
+import { useMemo, useState } from "react";
+import { SquareArrowOutUpRight, Check } from "lucide-react";
 import PrendaGalleryCard from "./PrendaGalleryCard.jsx";
 import Button from "./shared/Button.jsx";
 import Panel from "../components/Panel.jsx";
@@ -30,12 +30,22 @@ function MarcaContenido({
   loadingModelo3D,
   handleGenerarModelo3D,
 }) {
+  const [soloFavoritosSuperiores, setSoloFavoritosSuperiores] = useState(false);
+  const [soloFavoritosInferiores, setSoloFavoritosInferiores] = useState(false);
+
   const prendasCategorizadas = useMemo(() => {
+    const superiores = marcaDetail?.garmentTop?.content || [];
+    const inferiores = marcaDetail?.garmentBottom?.content || [];
+
     return {
-      superiores: marcaDetail?.garmentTop?.content || [],
-      inferiores: marcaDetail?.garmentBottom?.content || [],
+      superiores: soloFavoritosSuperiores
+        ? superiores.filter((prenda) => prenda.esFavorita)
+        : superiores,
+      inferiores: soloFavoritosInferiores
+        ? inferiores.filter((prenda) => prenda.esFavorita)
+        : inferiores,
     };
-  }, [marcaDetail]);
+  }, [marcaDetail, soloFavoritosSuperiores, soloFavoritosInferiores]);
 
   return (
     <div className="w-full lg:w-2/3 flex flex-col px-2">
@@ -155,11 +165,34 @@ function MarcaContenido({
         {prendasCategorizadas.superiores.length > 0 ||
         prendasCategorizadas.inferiores.length > 0 ? (
           <div className="space-y-6 max-w-5xl mx-auto">
+            {/* Checkbox para filtrar favoritos */}
             <div>
-              <h5 className="bg-gray/5 py-1 px-2 rounded-sm font-semibold mb-4">
-                Prendas Superiores
-              </h5>
-              <div className="flex flex-wrap gap-4 mx-8">
+              <div className="flex justify-between items-center bg-gray/5 py-1 px-2 rounded-sm mb-4">
+                <h5 className=" font-semibold">Prendas Superiores</h5>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={soloFavoritosSuperiores}
+                    onChange={(e) =>
+                      setSoloFavoritosSuperiores(e.target.checked)
+                    }
+                    className="sr-only"
+                  />
+                  <div
+                    className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors ${
+                      soloFavoritosSuperiores
+                        ? "bg-primary border-primary"
+                        : "border-gray/40 hover:border-gray"
+                    }`}
+                  >
+                    {soloFavoritosSuperiores && (
+                      <Check className="h-2.5 w-2.5" />
+                    )}
+                  </div>
+                  <span className="text-sm text-white">Solo favoritos</span>
+                </label>
+              </div>
+              <div className="flex flex-wrap gap-4 mx-8 items-center">
                 {prendasCategorizadas.superiores.map((prenda, index) => (
                   <PrendaGalleryCard
                     key={`superior-${index}`}
@@ -179,10 +212,32 @@ function MarcaContenido({
             </div>
 
             <div>
-              <h5 className="bg-gray/5 py-1 px-2 rounded-sm font-semibold mb-4">
-                Prendas Inferiores
-              </h5>
-              <div className="flex flex-wrap gap-4 mx-8">
+              <div className="flex justify-between items-center bg-gray/5 py-1 px-2 rounded-sm mb-4">
+                <h5 className="font-semibold">Prendas Inferiores</h5>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={soloFavoritosInferiores}
+                    onChange={(e) =>
+                      setSoloFavoritosInferiores(e.target.checked)
+                    }
+                    className="sr-only"
+                  />
+                  <div
+                    className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors ${
+                      soloFavoritosInferiores
+                        ? "bg-primary border-primary"
+                        : "border-gray/40 hover:border-gray"
+                    }`}
+                  >
+                    {soloFavoritosInferiores && (
+                      <Check className="h-2.5 w-2.5" />
+                    )}
+                  </div>
+                  <span className="text-sm text-white">Solo favoritos</span>
+                </label>
+              </div>
+              <div className="flex flex-wrap gap-4 mx-8 items-center">
                 {prendasCategorizadas.inferiores.map((prenda, index) => (
                   <PrendaGalleryCard
                     key={`inferior-${index}`}

@@ -77,7 +77,8 @@ export default function Home() {
       );
 
       await togglePrendaFavorita(
-        prenda.garmentCode || prenda.codigo || prenda.id
+        prenda.garmentCode || prenda.codigo || prenda.id,
+        prenda.esFavorita
       );
     } catch (error) {
       console.error("Error al cambiar favorito:", error);
@@ -90,9 +91,7 @@ export default function Home() {
 
   const handleToggleFavoritoCombinacion = async (combinacion) => {
     try {
-      await toggleCombinacionFavorita(
-        combinacion.codigoCombinacion || combinacion.id
-      );
+      await toggleCombinacionFavorita(combinacion, combinacion.esFavorita);
     } catch (error) {
       console.error("Error al cambiar favorito de combinación:", error);
     }

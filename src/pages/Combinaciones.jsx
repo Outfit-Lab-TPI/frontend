@@ -48,16 +48,16 @@ export default function Combinaciones() {
 
   const handleToggleFavorita = async (combinacion) => {
     const codigoCombinacion = combinacion.codigo || combinacion.id;
-    const esActualmenteFavorita = combinacion.esFavorita;
+    const esFavorita = combinacion.esFavorita;
 
-    if (esActualmenteFavorita) {
+    if (esFavorita) {
       setCombinacionAEliminar(combinacion);
       setShowConfirmDialog(true);
     } else {
       try {
         actualizarFavoritoLocal(codigoCombinacion, true);
 
-        await toggleCombinacionFavorita(codigoCombinacion);
+        await toggleCombinacionFavorita(codigoCombinacion, esFavorita);
       } catch (error) {
         console.error("Error al marcar combinación como favorita:", error);
         actualizarFavoritoLocal(codigoCombinacion, false);
@@ -77,7 +77,10 @@ export default function Combinaciones() {
       setShowConfirmDialog(false);
       setCombinacionAEliminar(null);
 
-      await toggleCombinacionFavorita(codigoCombinacion);
+      await toggleCombinacionFavorita(
+        codigoCombinacion,
+        combinacionAEliminar.esFavorita
+      );
     } catch (error) {
       console.error("Error al eliminar combinación de favoritos:", error);
       // Si falla, restaurar la combinación en la UI
@@ -179,7 +182,7 @@ export default function Combinaciones() {
                 </div>
               </div>
 
-              <div className="flex not-sm:flex-col not-sm:items-start not-lg:w-full items-center gap-4">
+              <div className="flex not-sm:flex-col not-lg:w-full items-center gap-4">
                 <>
                   <div className="hidden lg:inline-flex">
                     <Button

@@ -1,4 +1,4 @@
-import { Check, Heart, Sparkles } from "lucide-react";
+import { Check, Heart, Sparkle } from "lucide-react";
 
 function PrendaGalleryCard({
   prenda,
@@ -42,9 +42,12 @@ function PrendaGalleryCard({
       <div className="absolute top-2 right-2 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         <button
           onClick={handleSugerenciasClick}
-          className="w-6 h-6 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center  hover:text-tertiary transition-colors cursor-pointer"
+          className="group/sparkle w-6 h-6 hover:w-auto rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center hover:text-tertiary transition-all duration-300 cursor-pointer hover:px-2"
         >
-          <Sparkles className="w-3 h-3" />
+          <span className="overflow-hidden max-w-0 group-hover/sparkle:max-w-xs transition-all duration-300 whitespace-nowrap text-xs text-white">
+            Ver sugerencias
+          </span>
+          <Sparkle className="w-3 h-3 flex-shrink-0 ml-0 group-hover/sparkle:ml-1" />
         </button>
 
         <button

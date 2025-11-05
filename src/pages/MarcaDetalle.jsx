@@ -11,8 +11,13 @@ import SugerenciasModal from "../components/shared/SugerenciasModal.jsx";
 
 function MarcaDetalle() {
   const { codigoMarca } = useParams();
-  const { marcaDetail, loading, error, criticalError } =
-    useMarcaDetail(codigoMarca);
+  const {
+    marcaDetail,
+    loading,
+    error,
+    criticalError,
+    actualizarFavoritoLocal,
+  } = useMarcaDetail(codigoMarca);
   const {
     combinarPrendas,
     loading: loadingCombinacion,
@@ -130,16 +135,31 @@ function MarcaDetalle() {
 
   const handleToggleFavorita = async (prenda) => {
     try {
-      await togglePrendaFavorita(prenda.garmentCode || prenda.codigo);
+      const nuevoEstadoFavorita = !prenda.esFavorita;
+      actualizarFavoritoLocal(
+        prenda.garmentCode || prenda.codigo || prenda.id,
+        nuevoEstadoFavorita
+      );
+
+      await togglePrendaFavorita(
+        prenda.garmentCode || prenda.codigo || prenda.id,
+        prenda.esFavorita
+      );
     } catch (error) {
       console.error("Error al cambiar favorito:", error);
+      // Si falla, revertir el cambio local
+      actualizarFavoritoLocal(
+        prenda.garmentCode || prenda.codigo || prenda.id,
+        prenda.esFavorita
+      );
     }
   };
 
   const handleToggleFavoritoCombinacion = async (combinacion) => {
     try {
       await toggleCombinacionFavorita(
-        combinacion.codigoCombinacion || combinacion.id
+        combinacion.codigoCombinacion || combinacion.id,
+        combinacion.esFavorita
       );
     } catch (error) {
       console.error("Error al cambiar favorito de combinación:", error);

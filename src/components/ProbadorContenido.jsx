@@ -49,7 +49,7 @@ function ProbadorContenido({
               </p>
             </div>
 
-            <div className="flex not-sm:flex-wrap not-sm:items-start w-full items-center md:justify-around gap-4">
+            <div className="flex not-sm:flex-wrap w-full items-center md:justify-around gap-4">
               {/* Filtros dropdown */}
               <FilterDropdown
                 filtros={filtros}

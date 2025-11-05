@@ -32,8 +32,8 @@ function ModeloViewer({ modeloUrl, className = "" }) {
         {/* Modelo 3D del outfit */}
         <Model
           url={modeloUrl}
-          scale={[1, 1, 1]}
-          position={[0, -1, 0]}
+          scale={[2.5, 2.5, 2.5]}
+          position={[0, 0, 0]}
         />
       </Canvas>
     </div>

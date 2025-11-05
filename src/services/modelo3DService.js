@@ -6,13 +6,17 @@ const getRandomModel = () => {
 };
 
 export const modelo3DService = {
-  generarModelo: async (conjuntoUrl) => {
+  generarModelo: async (imageUrl) => {
 
     try {
-      const response = await apiClient.post('/generar-modelo', {
-        conjuntoUrl
+      const response = await apiClient.post('/tripo/upload/image', {
+        imageUrl
       });
-      return response.data;
+      console.log('Respuesta backend:', response.data);
+      //return response.data;
+      return {
+        modeloUrl: response.data.tripoModelUrl
+      };
     } catch (error) {
       console.error('Error en modelo3DService.generarModelo:', error);
       throw new Error('Error de conexión al generar modelo 3D');

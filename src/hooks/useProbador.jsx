@@ -1,10 +1,11 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { probadorService } from '../services/probadorService.js';
+import { favoritosService } from '../services/favoritosService.js';
 
 export const useProbador = () => {
   // Estados simplificados
-  const [prendasSuperiores, setPrendasSuperiores] = useState([]);
-  const [prendasInferiores, setPrendasInferiores] = useState([]);
+  const [prendasSuperioresOriginales, setPrendasSuperioresOriginales] = useState([]);
+  const [prendasInferioresOriginales, setPrendasInferioresOriginales] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [criticalError, setCriticalError] = useState(null);
@@ -16,20 +17,36 @@ export const useProbador = () => {
     soloFavoritas: false
   });
 
-  // Función para cargar todas las prendas
+  // Función para cargar todas las prendas (sin filtros, solo una vez)
   const fetchPrendas = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       setCriticalError(null);
 
-      const [responseSuperiores, responseInferiores] = await Promise.all([
-        probadorService.obtenerPrendasSuperiores(filtros),
-        probadorService.obtenerPrendasInferiores(filtros)
+      // Cargar prendas y favoritas en paralelo (sin filtros)
+      const [responseSuperiores, responseInferiores, responseFavoritas] = await Promise.all([
+        probadorService.obtenerPrendasSuperiores(),
+        probadorService.obtenerPrendasInferiores(),
+        favoritosService.obtenerPrendasFavoritas().catch(() => ({ data: { content: [] } })) // Si falla, continuar sin favoritas
       ]);
 
-      setPrendasSuperiores(responseSuperiores.data.content || []);
-      setPrendasInferiores(responseInferiores.data.content || []);
+      const prendasFavoritas = responseFavoritas.data?.content || responseFavoritas.data || [];
+      const codigosFavoritas = new Set(prendasFavoritas.map(prenda => prenda.garmentCode));
+
+      // Marcar prendas como favoritas
+      const prendasSuperioresConFavoritas = (responseSuperiores.data.content || []).map(prenda => ({
+        ...prenda,
+        esFavorita: codigosFavoritas.has(prenda.garmentCode)
+      }));
+
+      const prendasInferioresConFavoritas = (responseInferiores.data.content || []).map(prenda => ({
+        ...prenda,
+        esFavorita: codigosFavoritas.has(prenda.garmentCode)
+      }));
+
+      setPrendasSuperioresOriginales(prendasSuperioresConFavoritas);
+      setPrendasInferioresOriginales(prendasInferioresConFavoritas);
     } catch (err) {
       if (err.isCritical) {
         setCriticalError(err);
@@ -39,27 +56,63 @@ export const useProbador = () => {
     } finally {
       setLoading(false);
     }
-  }, [filtros]);
+  }, []);
 
-  // Efecto para cargar datos iniciales y cuando cambien los filtros
+  // Efecto para cargar datos iniciales (solo una vez)
   useEffect(() => {
     fetchPrendas();
   }, [fetchPrendas]);
 
-  // Marcas y colores disponibles (combinando ambas listas)
+  // Función para aplicar filtros
+  const aplicarFiltros = useCallback((prendas) => {
+    return prendas.filter(prenda => {
+      // Filtro por marca
+      if (filtros.marca && prenda.marcaNombre !== filtros.marca) {
+        return false;
+      }
+
+      // Filtro por color
+      if (filtros.color && prenda.color !== filtros.color) {
+        return false;
+      }
+
+      // Filtro solo favoritas
+      if (filtros.soloFavoritas && !prenda.esFavorita) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [filtros]);
+
+  // Prendas filtradas
+  const prendasSuperiores = useMemo(() => {
+    return aplicarFiltros(prendasSuperioresOriginales);
+  }, [prendasSuperioresOriginales, aplicarFiltros]);
+
+  const prendasInferiores = useMemo(() => {
+    return aplicarFiltros(prendasInferioresOriginales);
+  }, [prendasInferioresOriginales, aplicarFiltros]);
+
+  // Marcas y colores disponibles (de todas las prendas originales, no filtradas)
+  const todasLasPrendasOriginales = useMemo(() => {
+    return [...prendasSuperioresOriginales, ...prendasInferioresOriginales];
+  }, [prendasSuperioresOriginales, prendasInferioresOriginales]);
+
+  // Todas las prendas filtradas
   const todasLasPrendas = useMemo(() => {
     return [...prendasSuperiores, ...prendasInferiores];
   }, [prendasSuperiores, prendasInferiores]);
 
   const marcasDisponibles = useMemo(() => {
-    const marcas = [...new Set(todasLasPrendas.map(prenda => prenda.marca).filter(Boolean))];
+    const marcas = [...new Set(todasLasPrendasOriginales.map(prenda => prenda.marcaNombre).filter(Boolean))];
     return marcas.sort();
-  }, [todasLasPrendas]);
+  }, [todasLasPrendasOriginales]);
 
   const coloresDisponibles = useMemo(() => {
-    const colores = [...new Set(todasLasPrendas.map(prenda => prenda.color).filter(Boolean))];
+    const colores = [...new Set(todasLasPrendasOriginales.map(prenda => prenda.color).filter(Boolean))];
     return colores.sort();
-  }, [todasLasPrendas]);
+  }, [todasLasPrendasOriginales]);
 
   // Estructura de prendas categorizadas
   const prendasCategorizadas = useMemo(() => {
@@ -85,14 +138,14 @@ export const useProbador = () => {
 
   // Función para actualizar favorito localmente
   const actualizarFavoritoLocal = (codigoPrenda, esFavorita) => {
-    setPrendasSuperiores(prev =>
+    setPrendasSuperioresOriginales(prev =>
       prev.map(prenda =>
         prenda.garmentCode === codigoPrenda
           ? { ...prenda, esFavorita }
           : prenda
       )
     );
-    setPrendasInferiores(prev =>
+    setPrendasInferioresOriginales(prev =>
       prev.map(prenda =>
         prenda.garmentCode === codigoPrenda
           ? { ...prenda, esFavorita }

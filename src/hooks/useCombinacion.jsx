@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { combinacionService } from '../services/combinacionService.js';
+import { useState } from "react";
+import { combinacionService } from "../services/combinacionService.js";
 
 export const useCombinacion = () => {
   const [loading, setLoading] = useState(false);
@@ -7,19 +7,7 @@ export const useCombinacion = () => {
   const [resultado, setResultado] = useState(null);
 
   const combinarPrendas = async (esHombre, prendaSuperior, prendaInferior) => {
-    // Validaciones
-    if (typeof esHombre !== 'boolean') {
-      setError('El tipo de avatar debe ser especificado');
-      return null;
-    }
-
-    if (!prendaSuperior?.imagenUrl) {
-      setError('Debe seleccionar una prenda superior');
-      return null;
-    }
-
-    if (!prendaInferior?.imagenUrl) {
-      setError('Debe seleccionar una prenda inferior');
+    if (!validarCombinacion(esHombre, prendaSuperior, prendaInferior)) {
       return null;
     }
 
@@ -49,6 +37,26 @@ export const useCombinacion = () => {
     }
   };
 
+  const validarCombinacion = (esHombre, prendaSuperior, prendaInferior) => {
+    if (typeof esHombre !== 'boolean') {
+      setError('El tipo de avatar debe ser especificado');
+      return false;
+    }
+
+    if (!prendaSuperior?.imagenUrl) {
+      setError('Debe seleccionar una prenda superior');
+      return false;
+    }
+
+    if (!prendaInferior?.imagenUrl) {
+      setError('Debe seleccionar una prenda inferior');
+      return false;
+    }
+
+    return true;
+  };
+
+
   const limpiarResultado = () => {
     setResultado(null);
     setError(null);
@@ -59,6 +67,6 @@ export const useCombinacion = () => {
     loading,
     error,
     resultado,
-    limpiarResultado
+    limpiarResultado,
   };
 };
