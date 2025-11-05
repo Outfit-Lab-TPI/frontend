@@ -46,13 +46,13 @@ function Panel({
               {/* Botón de modelo 3D */}
               {!modeloUrl && (
                 <button
-                  // onClick={onGenerarModelo3D}
+                  onClick={onGenerarModelo3D}
                   disabled={!resultado || loadingModelo3D}
                   className="flex group bg-gray/50 hover:bg-gray/70 backdrop-blur-sm rounded-full transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-default overflow-hidden hover:px-4"
                 >
                   <div className="hidden group-hover:flex items-center justify-center transition-all duration-300">
                     <span className="text-white text-sm font-medium whitespace-nowrap">
-                      Proxímamente: Probador 3D
+                      Generar 3D{/*Proxímamente: Probador 3D*/}
                     </span>
                   </div>
 

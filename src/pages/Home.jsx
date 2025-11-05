@@ -62,9 +62,8 @@ export default function Home() {
       // Actualizar inmediatamente en el estado local para UX instantánea
       const nuevoEstadoFavorita = !prenda.esFavorita;
       actualizarFavoritoLocal(prenda.garmentCode || prenda.codigo || prenda.id, nuevoEstadoFavorita);
-
       // Hacer la llamada al backend en segundo plano
-      await togglePrendaFavorita(prenda.garmentCode || prenda.codigo || prenda.id);
+      await togglePrendaFavorita(prenda.garmentCode || prenda.codigo || prenda.id, prenda.esFavorita);
     } catch (error) {
       console.error('Error al cambiar favorito:', error);
       // Si falla, revertir el cambio local
@@ -75,7 +74,7 @@ export default function Home() {
   // Manejar toggle de favoritos de combinaciones
   const handleToggleFavoritoCombinacion = async (combinacion) => {
     try {
-      await toggleCombinacionFavorita(combinacion.codigoCombinacion || combinacion.id);
+      await toggleCombinacionFavorita(combinacion, combinacion.esFavorita);
     } catch (error) {
       console.error('Error al cambiar favorito de combinación:', error);
     }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Filter, ChevronDown, X, Heart } from 'lucide-react';
+import { Check, Filter, ChevronDown, X, Heart } from 'lucide-react';
 import Button from './shared/Button';
 
 function FilterDropdown({
@@ -40,7 +40,7 @@ function FilterDropdown({
 
       {/* Dropdown de filtros */}
       {isExpanded && (
-        <div className="absolute top-full right-0 mt-2 w-80 bg-black border border-gray/20 rounded-lg shadow-xl z-50">
+        <div className="absolute top-full left-0 mt-2 w-80 bg-black border border-gray/20 rounded-lg shadow-xl z-50">
           <div className="p-4">
             {/* Header del dropdown */}
             <div className="flex items-center justify-between mb-4">
@@ -109,7 +109,7 @@ function FilterDropdown({
                       : 'border-gray/40 hover:border-gray'
                   }`}>
                     {filtros.soloFavoritas && (
-                      <Heart className="h-2.5 w-2.5 text-white fill-current" />
+                      <Check className="h-2.5 w-2.5" />
                     )}
                   </div>
                   <span className="text-sm text-white">Solo favoritas</span>

@@ -11,7 +11,7 @@ import SugerenciasModal from "../components/shared/SugerenciasModal.jsx";
 
 function MarcaDetalle() {
   const { codigoMarca } = useParams();
-  const { marcaDetail, loading, error, criticalError } =
+  const { marcaDetail, loading, error, criticalError, actualizarFavoritoLocal } =
     useMarcaDetail(codigoMarca);
   const { combinarPrendas, loading: loadingCombinacion, error: errorCombinacion, resultado, limpiarResultado } =
     useCombinacion();
@@ -128,16 +128,22 @@ function MarcaDetalle() {
   // Manejar toggle de favoritos de prendas
   const handleToggleFavorita = async (prenda) => {
     try {
-      await togglePrendaFavorita(prenda.garmentCode || prenda.codigo);
+      // Actualizar inmediatamente en el estado local para UX instantánea
+      const nuevoEstadoFavorita = !prenda.esFavorita;
+      actualizarFavoritoLocal(prenda.garmentCode || prenda.codigo || prenda.id, nuevoEstadoFavorita);
+      // Hacer la llamada al backend en segundo plano
+      await togglePrendaFavorita(prenda.garmentCode || prenda.codigo || prenda.id, prenda.esFavorita);
     } catch (error) {
       console.error('Error al cambiar favorito:', error);
+      // Si falla, revertir el cambio local
+      actualizarFavoritoLocal(prenda.garmentCode || prenda.codigo || prenda.id, prenda.esFavorita);
     }
   };
 
   // Manejar toggle de favoritos de combinaciones
   const handleToggleFavoritoCombinacion = async (combinacion) => {
     try {
-      await toggleCombinacionFavorita(combinacion.codigoCombinacion || combinacion.id);
+      await toggleCombinacionFavorita(combinacion.codigoCombinacion || combinacion.id, combinacion.esFavorita);
     } catch (error) {
       console.error('Error al cambiar favorito de combinación:', error);
     }
