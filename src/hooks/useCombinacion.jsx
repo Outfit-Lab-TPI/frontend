@@ -68,5 +68,6 @@ export const useCombinacion = () => {
     error,
     resultado,
     limpiarResultado,
+    setResultado,
   };
 };

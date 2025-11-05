@@ -33,6 +33,7 @@ export default function Combinaciones() {
     error: errorCombinacion,
     resultado,
     limpiarResultado,
+    setResultado,
   } = useCombinacion();
   const {
     generarModelo3D,
@@ -103,21 +104,14 @@ export default function Combinaciones() {
       limpiarResultado();
       limpiarModelo();
 
-      // Simular el "probado" de la combinación usando la imagen existente
-      // En una implementación real, aquí llamarías al endpoint correspondiente
-      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Establecer resultado directamente con la imagen de la combinación
-      limpiarResultado();
-      setTimeout(() => {
-        // Simular resultado usando la imagen de la combinación
-        const resultadoSimulado = {
-          imageUrl: combinacionSeleccionada.imageUrl,
-          nombre: combinacionSeleccionada.nombre,
-        };
-        // Aquí necesitarías llamar a una función que establezca el resultado
-        // Por ahora solo limpiamos
-      }, 1500);
+      // Establecer resultado usando la imagen de la combinación favorita
+      const resultadoCombinacion = {
+        imageUrl: combinacionSeleccionada.combinationUrl,
+        esFavorita: true, // Ya es favorita por estar en esta página
+      };
+
+      setResultado(resultadoCombinacion);
     }
   };
 
