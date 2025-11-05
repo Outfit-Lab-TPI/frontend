@@ -91,7 +91,9 @@ export const favoritosService = {
     }
   },
 
-  toggleCombinacionFavorita: async (combinationUrl, esFavorita) => {
+  toggleCombinacionFavorita: async (combinationUrl) => {
+    const combinacionesFavoritas = await favoritosService.obtenerCombinacionesFavoritas();
+    const esFavorita = combinacionesFavoritas.content.some((combinacion) => combinacion.combinationUrl === combinationUrl);
     try {
       if (esFavorita) {
         return await favoritosService.quitarCombinacionFavorita(combinationUrl);

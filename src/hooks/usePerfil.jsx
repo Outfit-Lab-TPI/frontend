@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { perfilService } from '../services/perfilService.js';
+import { favoritosService } from '@/services/favoritosService.js';
 
 export const usePerfil = () => {
   const [combinaciones, setCombinaciones] = useState([]);
@@ -10,8 +10,8 @@ export const usePerfil = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await perfilService.obtenerCombinacionesFavoritas();
-      setCombinaciones(response.data || []);
+      const response = await favoritosService.obtenerCombinacionesFavoritas();
+      setCombinaciones(response.content || []);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -27,7 +27,7 @@ export const usePerfil = () => {
   const actualizarFavoritoLocal = (codigoCombinacion, esFavorita) => {
     setCombinaciones(prevCombinaciones =>
       prevCombinaciones.map(combinacion =>
-        combinacion.codigo === codigoCombinacion
+        combinacion.combinationUrl === codigoCombinacion
           ? { ...combinacion, esFavorita }
           : combinacion
       )
@@ -37,7 +37,7 @@ export const usePerfil = () => {
   // Función para eliminar combinación localmente (cuando se desmarca definitivamente)
   const eliminarCombinacionLocal = (codigoCombinacion) => {
     setCombinaciones(prevCombinaciones =>
-      prevCombinaciones.filter(combinacion => combinacion.codigo !== codigoCombinacion)
+      prevCombinaciones.filter(combinacion => combinacion.combinationUrl !== codigoCombinacion)
     );
   };
 

@@ -25,12 +25,11 @@ export const useFavoritos = () => {
     }
   };
 
-  const toggleCombinacionFavorita = async (codigoCombinacion, esFavorita, onSuccess) => {
+  const toggleCombinacionFavorita = async (codigoCombinacion, onSuccess) => {
     try {
       setLoading(true);
       setError(null);
-
-      const resultado = await favoritosService.toggleCombinacionFavorita(codigoCombinacion, esFavorita);
+      const resultado = await favoritosService.toggleCombinacionFavorita(codigoCombinacion);
 
       if (onSuccess) {
         onSuccess(resultado);
