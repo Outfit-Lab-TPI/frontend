@@ -55,7 +55,7 @@ export const favoritosService = {
     try {
       // Encode the URL to handle special characters like dots, slashes, etc.
       const encodedUrl = encodeURIComponent(combinationUrl);
-      const response = await apiClient.get(`/combinations/favorite/add/${encodedUrl}`);
+      const response = await apiClient.get(`/combinations/favorite/add?combinationUrl=${encodedUrl}`);
       return response.data;
     } catch (error) {
       throw new Error(
@@ -69,7 +69,7 @@ export const favoritosService = {
     try {
       // Encode the URL to handle special characters like dots, slashes, etc.
       const encodedUrl = encodeURIComponent(combinationUrl);
-      const response = await apiClient.get(`/combinations/favorite/delete/${encodedUrl}`);
+      const response = await apiClient.get(`/combinations/favorite/delete?combinationUrl=${encodedUrl}`);
       return response.data;
     } catch (error) {
       throw new Error(
