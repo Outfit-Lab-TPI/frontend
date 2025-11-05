@@ -94,7 +94,12 @@ export default function Combinaciones() {
   };
 
   const handleVerDetalle = (combinacion) => {
-    setCombinacionSeleccionada(combinacion);
+    if (combinacion == combinacionSeleccionada) {
+      setCombinacionSeleccionada(null);
+    } else {
+      setCombinacionSeleccionada(combinacion);
+    }
+
     limpiarResultado();
     limpiarModelo();
   };
@@ -248,9 +253,9 @@ export default function Combinaciones() {
                   {combinaciones.map((combinacion, index) => (
                     <div
                       key={`combinacion-${index}`}
-                      className={`${
+                      className={`rounded-md ${
                         combinacionSeleccionada?.id === combinacion.id
-                          ? "ring-2 ring-primary"
+                          ? "ring-2 ring-transparent bg-tertiary"
                           : ""
                       }`}
                     >
