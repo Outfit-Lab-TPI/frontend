@@ -1,8 +1,15 @@
-import { Link } from "react-router-dom";
 import { useMemo } from "react";
-import { MoveLeft, ChevronLeft, SquareArrowOutUpRight } from "lucide-react";
+import { SquareArrowOutUpRight } from "lucide-react";
 import PrendaGalleryCard from "./PrendaGalleryCard.jsx";
 import Button from "./shared/Button.jsx";
+import Panel from "../components/Panel.jsx";
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerClose,
+} from "@/components/ui/drawer";
+import GoBackButton from "./shared/GoBackButton.jsx";
 
 function MarcaContenido({
   marcaDetail,
@@ -16,6 +23,12 @@ function MarcaContenido({
   setEsHombre,
   onCombinarPrendas,
   loadingCombinacion,
+  resultado,
+  errorCombinacion,
+  errorModelo3D,
+  modeloUrl,
+  loadingModelo3D,
+  handleGenerarModelo3D,
 }) {
   const prendasCategorizadas = useMemo(() => {
     return {
@@ -25,13 +38,10 @@ function MarcaContenido({
   }, [marcaDetail]);
 
   return (
-    <div className="w-full lg:w-2/3 flex flex-col">
-      {/* Detalles de marca */}
-      <div className="flex gap-2">
-        <Link to="/marcas">
-          <ChevronLeft className="h-5 w-5 m-1" color="gray" />
-        </Link>
-        <div className="p-2 bg-gray/10 w-full">
+    <div className="w-full lg:w-2/3 flex flex-col px-2">
+      <div className="flex flex-col gap-2">
+        <GoBackButton url={"/marcas"} />
+        <div className="p-4 bg-gray/10 w-full rounded-md max-w-[600px]">
           <div className="flex flex-col lg:flex-row flex-wrap justify-between items-start lg:items-center gap-6">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 bg-gray rounded-xl flex items-center justify-center p-1">
@@ -39,7 +49,7 @@ function MarcaContenido({
                   src={marcaDetail.brandDTO?.logoUrl || "/isotipo.svg"}
                   alt={marcaDetail.brandDTO?.nombre}
                   className="max-w-full max-h-full object-contain"
-                  onError={e => {
+                  onError={(e) => {
                     e.target.src = "/isotipo.svg";
                   }}
                 />
@@ -57,21 +67,23 @@ function MarcaContenido({
                     Visitar sitio web
                   </a>
                 )}
+                <p className="text-sm text-gray">Genera tu outfit favorito</p>
               </div>
             </div>
 
-            <div className="flex not-sm:flex-col not-sm:items-start not-lg:w-full items-center gap-4">
-              {selectedSuperior && selectedInferior ? (
+            <div className="flex flex-wrap not-lg:w-full items-center gap-6">
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray whitespace-nowrap">Avatar:</span>
-                {/* Toggle moderno para selección de género */}
+                <span className="text-sm text-gray whitespace-nowrap">
+                  Avatar:
+                </span>
+
                 <div className="relative inline-flex items-center bg-dark-gray rounded-full p-1 transition-colors">
                   <button
                     onClick={() => setEsHombre(true)}
                     className={`cursor-pointer relative z-10 px-3 py-1 text-xs font-medium rounded-l-full transition-all duration-200 border border-gray ${
                       esHombre
-                        ? 'text-black bg-white/80 shadow-sm'
-                        : 'text-gray hover:text-white'
+                        ? "text-black bg-white/80 shadow-sm"
+                        : "text-gray hover:text-white"
                     }`}
                   >
                     Hombre
@@ -80,38 +92,74 @@ function MarcaContenido({
                     onClick={() => setEsHombre(false)}
                     className={`cursor-pointer relative z-10 px-3 py-1 text-xs font-medium rounded-r-full transition-all duration-200 border border-gray ${
                       !esHombre
-                        ? 'text-black bg-white/80 shadow-sm'
-                        : 'text-gray hover:text-white'
+                        ? "text-black bg-white/80 shadow-sm"
+                        : "text-gray hover:text-white"
                     }`}
                   >
                     Mujer
                   </button>
                 </div>
               </div>
-              ) : (
-                <span className="text-sm text-gray whitespace-nowrap">Selecciona 2 prendas</span>
-              )}
+              <div className="hidden lg:inline-flex">
+                <Button
+                  onClick={onCombinarPrendas}
+                  disabled={!canCombine || loadingCombinacion}
+                  width="full"
+                  className="text-nowrap"
+                >
+                  {loadingCombinacion ? "Combinando..." : "Combinar prendas"}
+                </Button>
+              </div>
 
-              <Button
-                onClick={onCombinarPrendas}
-                disabled={!canCombine || loadingCombinacion}
-                width="full"
-                className="text-nowrap"
-              >
-                Combinar prendas
-              </Button>
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <Button
+                    onClick={onCombinarPrendas}
+                    className="lg:hidden text-nowrap"
+                    width="fit"
+                    disabled={!canCombine || loadingCombinacion}
+                  >
+                    {loadingCombinacion ? "Combinando..." : "Combinar prendas"}
+                  </Button>
+                </DrawerTrigger>
+                <DrawerContent className="h-[90dvh] flex flex-col bg-black/95 lg:hidden">
+                  <div className="flex-1 overflow-y-auto pb-2">
+                    <Panel
+                      loadingCombinacion={loadingCombinacion}
+                      resultado={resultado}
+                      errorCombinacion={errorCombinacion}
+                      errorModelo3D={errorModelo3D}
+                      modeloUrl={modeloUrl}
+                      loadingModelo3D={loadingModelo3D}
+                      onGenerarModelo3D={handleGenerarModelo3D}
+                    />
+                  </div>
+
+                  <div className="p-4 border-t text-white border-gray/20 bg-background flex justify-end">
+                    <DrawerClose asChild>
+                      <Button>Cerrar</Button>
+                    </DrawerClose>
+                  </div>
+                </DrawerContent>
+              </Drawer>
             </div>
           </div>
         </div>
+        <p className="text-sm text-gray">
+          * Selecciona una prenda superior e inferior para poder combinarlas
+        </p>
       </div>
 
       {/* Galería de prendas */}
       <div className="flex-1 overflow-y-auto mt-4 modern-scrollbar">
-        {(prendasCategorizadas.superiores.length > 0 || prendasCategorizadas.inferiores.length > 0) ? (
+        {prendasCategorizadas.superiores.length > 0 ||
+        prendasCategorizadas.inferiores.length > 0 ? (
           <div className="space-y-6 max-w-5xl mx-auto">
             <div>
-              <h5 className="bg-gray/5 py-1 px-2 rounded-sm font-semibold mb-4">Prendas Superiores</h5>
-              <div className="flex flex-wrap gap-4">
+              <h5 className="bg-gray/5 py-1 px-2 rounded-sm font-semibold mb-4">
+                Prendas Superiores
+              </h5>
+              <div className="flex flex-wrap gap-4 mx-8">
                 {prendasCategorizadas.superiores.map((prenda, index) => (
                   <PrendaGalleryCard
                     key={`superior-${index}`}
@@ -131,8 +179,10 @@ function MarcaContenido({
             </div>
 
             <div>
-              <h5 className="bg-gray/5 py-1 px-2 rounded-sm font-semibold mb-4">Prendas Inferiores</h5>
-              <div className="flex flex-wrap gap-4">
+              <h5 className="bg-gray/5 py-1 px-2 rounded-sm font-semibold mb-4">
+                Prendas Inferiores
+              </h5>
+              <div className="flex flex-wrap gap-4 mx-8">
                 {prendasCategorizadas.inferiores.map((prenda, index) => (
                   <PrendaGalleryCard
                     key={`inferior-${index}`}

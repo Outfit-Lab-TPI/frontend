@@ -1,7 +1,12 @@
 import { Check, Heart, Sparkles } from "lucide-react";
 
-function PrendaGalleryCard({ prenda, isSelected, onSelect, onToggleFavorita, onSugerencias }) {
-
+function PrendaGalleryCard({
+  prenda,
+  isSelected,
+  onSelect,
+  onToggleFavorita,
+  onSugerencias,
+}) {
   const handleFavoritoClick = (e) => {
     e.stopPropagation();
     if (onToggleFavorita) {
@@ -19,24 +24,22 @@ function PrendaGalleryCard({ prenda, isSelected, onSelect, onToggleFavorita, onS
     <div
       className={`relative w-40 h-48 rounded-md overflow-hidden cursor-pointer group transition-all duration-300 ${
         isSelected
-          ? 'bg-primary ring-2 ring-primary shadow-lg scale-105'
-          : 'bg-gray hover:bg-gray/80'
+          ? "bg-primary ring-2 ring-primary shadow-lg scale-105"
+          : "bg-gray hover:bg-gray/80"
       }`}
       onClick={() => onSelect(prenda)}
     >
       <div className="w-full h-full flex items-center justify-center">
         <img
-          src={prenda.imagenUrl || '/isotipo.svg'}
+          src={prenda.imagenUrl || "/isotipo.svg"}
           alt={prenda.nombre}
           className="w-full h-full object-cover"
           onError={(e) => {
-            e.target.src = '/isotipo.svg';
+            e.target.src = "/isotipo.svg";
           }}
         />
       </div>
-      {/* Botones de acción - Visibles solo al hover */}
       <div className="absolute top-2 right-2 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-        {/* Botón de sugerencias */}
         <button
           onClick={handleSugerenciasClick}
           className="w-6 h-6 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center  hover:text-tertiary transition-colors cursor-pointer"
@@ -44,7 +47,6 @@ function PrendaGalleryCard({ prenda, isSelected, onSelect, onToggleFavorita, onS
           <Sparkles className="w-3 h-3" />
         </button>
 
-        {/* Botón de favorito */}
         <button
           onClick={handleFavoritoClick}
           className="w-6 h-6 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center transition-colors cursor-pointer"
@@ -52,8 +54,8 @@ function PrendaGalleryCard({ prenda, isSelected, onSelect, onToggleFavorita, onS
           <Heart
             className={`w-3 h-3 transition-colors ${
               prenda.esFavorita
-                ? 'text-red-500 fill-red-500'
-                : 'text-white hover:text-red-300'
+                ? "text-red-500 fill-red-500"
+                : "text-white hover:text-red-300"
             }`}
           />
         </button>
@@ -67,12 +69,16 @@ function PrendaGalleryCard({ prenda, isSelected, onSelect, onToggleFavorita, onS
             </div>
           </div>
           <div className="flex items-center justify-center">
-            <h5 className="text-white font-semibold text-base text-center">{prenda.nombre}</h5>
+            <h5 className="text-white font-semibold text-base text-center">
+              {prenda.nombre}
+            </h5>
           </div>
         </div>
       ) : (
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent px-2 py-4 flex items-end transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-          <h5 className="text-white font-semibold text-base text-center w-full">{prenda.nombre}</h5>
+          <h5 className="text-white font-semibold text-base text-center w-full">
+            {prenda.nombre}
+          </h5>
         </div>
       )}
     </div>

@@ -1,5 +1,5 @@
-import { Blend, Box, LoaderCircle, Heart } from "lucide-react";
-import { VscPerson } from 'react-icons/vsc';
+import { Blend, Box, LoaderCircle } from "lucide-react";
+import { VscPerson } from "react-icons/vsc";
 import ModeloViewer from "./ModeloViewer.jsx";
 
 function Panel({
@@ -10,11 +10,10 @@ function Panel({
   modeloUrl,
   loadingModelo3D,
   onGenerarModelo3D,
-  onToggleFavoritoCombinacion
 }) {
   return (
-    <div className="w-full lg:w-1/3 flex flex-col border-t lg:border-t-0 lg:border-l border-gray/20 relative h-64 lg:h-full">
-      <div className="flex-1 flex items-center justify-center overflow-hidden">
+    <div className="w-full flex flex-col lg:border-l border-gray/20 relative h-[70dvh] lg:h-full">
+      <div className="flex-1 flex items-center justify-center overflow-hidden pt-2">
         {loadingCombinacion ? (
           <div className="display flex flex-col items-center gap-2">
             <Blend className="animate-spin self-center h-20 w-20 mb-4" />
@@ -27,45 +26,27 @@ function Panel({
           </div>
         ) : resultado ? (
           <div className="w-full h-full flex items-center justify-center p-0 relative">
-            <div className="absolute top-2 right-2 z-10 flex gap-2">
-              {/* Botón de favorito */}
+            {!modeloUrl && (
               <button
-                onClick={() => onToggleFavoritoCombinacion && onToggleFavoritoCombinacion(resultado)}
-                className="w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center transition-colors cursor-pointer"
-                title={resultado?.esFavorita ? "Quitar de favoritos" : "Agregar a favoritos"}
+                // onClick={onGenerarModelo3D}
+                disabled={!resultado || loadingModelo3D}
+                className="absolute top-2 right-2 z-10 flex group bg-gray/50 hover:bg-gray/70 backdrop-blur-sm rounded-full transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-default overflow-hidden hover:px-4"
               >
-                <Heart
-                  className={`w-4 h-4 transition-colors ${
-                    resultado?.esFavorita
-                      ? 'text-red-500 fill-red-500'
-                      : 'text-white hover:text-red-300'
-                  }`}
-                />
+                <div className="hidden group-hover:flex items-center justify-center transition-all duration-300">
+                  <span className="text-white text-sm font-medium whitespace-nowrap">
+                    Proxímamente: Probador 3D
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-center p-2 transition-all duration-300">
+                  {loadingModelo3D ? (
+                    <LoaderCircle className="w-5 h-5 text-white animate-spin" />
+                  ) : (
+                    <Box className="w-4 h-4 text-white" />
+                  )}
+                </div>
               </button>
-
-              {/* Botón de modelo 3D */}
-              {!modeloUrl && (
-                <button
-                  // onClick={onGenerarModelo3D}
-                  disabled={!resultado || loadingModelo3D}
-                  className="flex group bg-gray/50 hover:bg-gray/70 backdrop-blur-sm rounded-full transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-default overflow-hidden hover:px-4"
-                >
-                  <div className="hidden group-hover:flex items-center justify-center transition-all duration-300">
-                    <span className="text-white text-sm font-medium whitespace-nowrap">
-                      Proxímamente: Probador 3D
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-center p-2 transition-all duration-300">
-                    {loadingModelo3D ? (
-                      <LoaderCircle className="w-5 h-5 text-white animate-spin" />
-                    ) : (
-                      <Box className="w-4 h-4 text-white" />
-                    )}
-                  </div>
-                </button>
-              )}
-            </div>
+            )}
 
             {modeloUrl ? (
               <ModeloViewer
@@ -77,13 +58,13 @@ function Panel({
                 <img
                   src={resultado?.imageUrl}
                   alt="Combinación de outfit"
-                  className="max-w-full max-h-full object-contain"
+                  className="size-full object-contain"
                   onError={(e) => {
-                    e.target.style.display = 'none';
+                    e.target.style.display = "none";
                     const parent = e.target.parentElement;
-                    if (!parent.querySelector('.error-message')) {
-                      const errorDiv = document.createElement('div');
-                      errorDiv.className = 'error-message text-center p-8';
+                    if (!parent.querySelector(".error-message")) {
+                      const errorDiv = document.createElement("div");
+                      errorDiv.className = "error-message text-center p-8";
                       errorDiv.innerHTML = `
                         <div class="text-gray text-lg mb-2">No pudimos generar la imagen</div>
                         <div class="text-gray/70 text-sm">Por favor elige otra combinación</div>
@@ -105,15 +86,14 @@ function Panel({
             </div>
           </div>
         ) : (
-          <div className="text-center">
-            <VscPerson className="w-32 h-32 lg:w-60 lg:h-60 text-gray mx-auto mb-6 animate-pulse" />
+          <div className="text-center ml-2">
+            <VscPerson className="size-32 lg:size-60 text-gray mx-auto mb-6 animate-pulse" />
             <div className="text-lg text-gray leading-relaxed">
               Selecciona dos prendas y combina tu outfit
             </div>
           </div>
         )}
       </div>
-
     </div>
   );
 }

@@ -69,7 +69,7 @@ export default function LandingNavbar() {
             <button
               key={id}
               onClick={() => scrollToSection(id)}
-              className="relative tracking-widest text-[var(--white)]/80 hover:text-[#e3c18a] text-sm font-medium cursor-pointer transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-0 after:h-[1px] after:bg-[#e3c18a] after:transition-all after:duration-300 hover:after:w-full"
+              className="relative tracking-widest text-(--white)/80 hover:text-[#e3c18a] text-sm font-medium cursor-pointer transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-0 after:h-[1px] after:bg-[#e3c18a] after:transition-all after:duration-300 hover:after:w-full"
             >
               {name}
             </button>
@@ -79,7 +79,7 @@ export default function LandingNavbar() {
         <div className="hidden lg:flex items-center gap-3">
           <button
             onClick={() => navigate("/login")}
-            className="tracking-widest cursor-pointer text-sm text-[var(--white)] hover:text-[#e3c18a] border border-[var(--white)]/50 hover:border-[#e3c18a] hover:bg-[#e3c18a]/10 px-5 py-2 rounded-full transition-all duration-300 font-semibold"
+            className="tracking-widest cursor-pointer text-sm text-(--white) hover:text-[#e3c18a] border border-[var(--white)]/50 hover:border-[#e3c18a] hover:bg-[#e3c18a]/10 px-5 py-2 rounded-full transition-all duration-300 font-semibold"
           >
             Iniciar sesión
           </button>
@@ -87,7 +87,7 @@ export default function LandingNavbar() {
 
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="lg:hidden text-[var(--white)] focus:outline-none z-200"
+          className="lg:hidden text-(--white) focus:outline-none z-200"
         >
           {menuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
@@ -106,15 +106,15 @@ export default function LandingNavbar() {
             <button
               key={id}
               onClick={() => scrollToSection(id)}
-              className="tracking-widest hover-pointer text-[var(--white)]/80 hover:text-[#e3c18a] text-lg font-medium"
+              className="tracking-widest hover-pointer text-(--white)/80 hover:text-[#e3c18a] text-lg font-medium"
             >
               {name}
             </button>
           ))}
-          <div className="w-10/12 h-[1px] bg-gradient-to-r from-transparent via-[var(--white)]/50 to-transparent my-4" />
+          <div className="w-10/12 h-px bg-linear-to-r from-transparent via-(--white)/50 to-transparent my-4" />
           <button
             onClick={() => navigate("/login")}
-            className="tracking-widest hover-pointer text-[var(--white)] hover:bg-[#926490]/10 px-6 py-2 rounded-full font-semibold transition-all duration-300"
+            className="tracking-widest hover-pointer text-(--white) hover:bg-[#926490]/10 px-6 py-2 rounded-full font-semibold transition-all duration-300"
           >
             Iniciar sesión
           </button>
