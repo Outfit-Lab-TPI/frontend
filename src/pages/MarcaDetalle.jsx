@@ -11,16 +11,35 @@ import SugerenciasModal from "../components/shared/SugerenciasModal.jsx";
 
 function MarcaDetalle() {
   const { codigoMarca } = useParams();
-  const { marcaDetail, loading, error, criticalError, actualizarFavoritoLocal } =
-    useMarcaDetail(codigoMarca);
-  const { combinarPrendas, loading: loadingCombinacion, error: errorCombinacion, resultado, limpiarResultado } =
-    useCombinacion();
-  const { generarModelo3D, loading: loadingModelo3D, error: errorModelo3D, modeloUrl, limpiarModelo } =
-    useModelo3D();
-  const { obtenerSugerencias, sugerencias, loading: loadingSugerencias, error: errorSugerencias, limpiarSugerencias } = useSugerencias();
+  const {
+    marcaDetail,
+    loading,
+    error,
+    criticalError,
+    actualizarFavoritoLocal,
+  } = useMarcaDetail(codigoMarca);
+  const {
+    combinarPrendas,
+    loading: loadingCombinacion,
+    error: errorCombinacion,
+    resultado,
+    limpiarResultado,
+  } = useCombinacion();
+  const {
+    generarModelo3D,
+    loading: loadingModelo3D,
+    error: errorModelo3D,
+    modeloUrl,
+    limpiarModelo,
+  } = useModelo3D();
+  const {
+    obtenerSugerencias,
+    sugerencias,
+    loading: loadingSugerencias,
+    error: errorSugerencias,
+    limpiarSugerencias,
+  } = useSugerencias();
   const { togglePrendaFavorita, toggleCombinacionFavorita } = useFavoritos();
-
-  // Estados para selección de prendas
   const [selectedSuperior, setSelectedSuperior] = useState(null);
   const [selectedInferior, setSelectedInferior] = useState(null);
   const [esHombre, setEsHombre] = useState(true);
@@ -28,9 +47,7 @@ function MarcaDetalle() {
   const [modalSugerenciasAbierto, setModalSugerenciasAbierto] = useState(false);
   const [prendaParaSugerencias, setPrendaParaSugerencias] = useState(null);
 
-
-  // Manejar selección de prendas
-  const handleSelectPrenda = prenda => {
+  const handleSelectPrenda = (prenda) => {
     if (prenda.tipo === "superior") {
       setSelectedSuperior(
         selectedSuperior?.nombre === prenda.nombre ? null : prenda
@@ -42,114 +59,113 @@ function MarcaDetalle() {
     }
   };
 
-  // Verificar si se puede combinar
   const canCombine = useMemo(() => {
-    // Debe haber AMBAS prendas seleccionadas (superior Y inferior)
     if (!selectedSuperior || !selectedInferior) return false;
 
-    // Si no hay combinación previa, permitir combinar
     if (!lastCombination) return true;
 
-    // Si cambió el avatar, permitir combinar
     if (esHombre !== lastCombination.esHombre) return true;
 
-    // Si las prendas actuales son diferentes a la última combinación, permitir combinar
-    return !(selectedSuperior.nombre === lastCombination.superior &&
-             selectedInferior.nombre === lastCombination.inferior);
+    return !(
+      selectedSuperior.nombre === lastCombination.superior &&
+      selectedInferior.nombre === lastCombination.inferior
+    );
   }, [selectedSuperior, selectedInferior, esHombre, lastCombination]);
 
-  // Limpiar resultado solo al iniciar una nueva combinación
   const handleCombinarPrendas = async () => {
     if (canCombine) {
-      // Limpiar resultado anterior antes de generar uno nuevo
       limpiarResultado();
-      limpiarModelo(); // También limpiar modelo 3D anterior
+      limpiarModelo();
 
-      // Guardar la combinación actual antes de enviarla
       setLastCombination({
         superior: selectedSuperior?.nombre,
         inferior: selectedInferior?.nombre,
-        esHombre: esHombre
+        esHombre: esHombre,
       });
 
       await combinarPrendas(esHombre, selectedSuperior, selectedInferior);
     }
   };
 
-  // Manejar generación de modelo 3D
   const handleGenerarModelo3D = async () => {
     if (resultado) {
       await generarModelo3D(resultado);
     }
   };
 
-  // Manejar solicitud de sugerencias
   const handleSugerencias = async (prenda) => {
     try {
       setPrendaParaSugerencias(prenda);
       setModalSugerenciasAbierto(true);
       await obtenerSugerencias(prenda.garmentCode || prenda.codigo);
     } catch (error) {
-      console.error('Error al obtener sugerencias:', error);
+      console.error("Error al obtener sugerencias:", error);
     }
   };
 
-  // Manejar solicitud de combinación desde sugerencias
   const handleSolicitarCombinacion = async (sugerencia) => {
     try {
-      // Limpiar resultado anterior
       limpiarResultado();
       limpiarModelo();
 
-      // Establecer prendas seleccionadas basadas en la sugerencia
       setSelectedSuperior(sugerencia.topGarment);
       setSelectedInferior(sugerencia.bottomGarment);
 
-      // Guardar combinación y ejecutar
       setLastCombination({
         superior: sugerencia.topGarment.nombre,
         inferior: sugerencia.bottomGarment.nombre,
-        esHombre: esHombre
+        esHombre: esHombre,
       });
 
-      await combinarPrendas(esHombre, sugerencia.topGarment, sugerencia.bottomGarment);
+      await combinarPrendas(
+        esHombre,
+        sugerencia.topGarment,
+        sugerencia.bottomGarment
+      );
     } catch (error) {
-      console.error('Error al aplicar sugerencia:', error);
+      console.error("Error al aplicar sugerencia:", error);
     }
   };
 
-  // Cerrar modal de sugerencias
   const handleCerrarModalSugerencias = () => {
     setModalSugerenciasAbierto(false);
     setPrendaParaSugerencias(null);
     limpiarSugerencias();
   };
 
-  // Manejar toggle de favoritos de prendas
   const handleToggleFavorita = async (prenda) => {
     try {
-      // Actualizar inmediatamente en el estado local para UX instantánea
       const nuevoEstadoFavorita = !prenda.esFavorita;
-      actualizarFavoritoLocal(prenda.garmentCode || prenda.codigo || prenda.id, nuevoEstadoFavorita);
-      // Hacer la llamada al backend en segundo plano
-      await togglePrendaFavorita(prenda.garmentCode || prenda.codigo || prenda.id, prenda.esFavorita);
+      actualizarFavoritoLocal(
+        prenda.garmentCode || prenda.codigo || prenda.id,
+        nuevoEstadoFavorita
+      );
+
+      await togglePrendaFavorita(
+        prenda.garmentCode || prenda.codigo || prenda.id,
+        prenda.esFavorita
+      );
     } catch (error) {
-      console.error('Error al cambiar favorito:', error);
+      console.error("Error al cambiar favorito:", error);
       // Si falla, revertir el cambio local
-      actualizarFavoritoLocal(prenda.garmentCode || prenda.codigo || prenda.id, prenda.esFavorita);
+      actualizarFavoritoLocal(
+        prenda.garmentCode || prenda.codigo || prenda.id,
+        prenda.esFavorita
+      );
     }
   };
 
-  // Manejar toggle de favoritos de combinaciones
   const handleToggleFavoritoCombinacion = async (combinacion) => {
     try {
-      await toggleCombinacionFavorita(combinacion.codigoCombinacion || combinacion.id, combinacion.esFavorita);
+      await toggleCombinacionFavorita(
+        combinacion.codigoCombinacion || combinacion.id,
+        combinacion.esFavorita
+      );
     } catch (error) {
-      console.error('Error al cambiar favorito de combinación:', error);
+      console.error("Error al cambiar favorito de combinación:", error);
     }
   };
 
-  // Lanzar excepción para errores críticos para que sea capturada por ErrorBoundary
   useEffect(() => {
     if (criticalError) {
       throw new Error(
@@ -203,7 +219,10 @@ function MarcaDetalle() {
   }
 
   return (
-    <div className="flex-1 flex flex-col md:flex-row px-4 sm:px-6 lg:px-24 gap-4 lg:gap-8" style={{height: 'calc(100vh - 70px)'}}>
+    <div
+      className="flex-1 flex flex-col md:flex-row py-2 px-4 sm:px-6 gap-2"
+      style={{ height: "calc(100vh - 70px)" }}
+    >
       <MarcaContenido
         marcaDetail={marcaDetail}
         selectedSuperior={selectedSuperior}
@@ -216,19 +235,28 @@ function MarcaDetalle() {
         setEsHombre={setEsHombre}
         onCombinarPrendas={handleCombinarPrendas}
         loadingCombinacion={loadingCombinacion}
-      />
-
-      {((marcaDetail.garmentTop?.content?.length > 0) || (marcaDetail.garmentBottom?.content?.length > 0)) && (
-      <Panel
-        loadingCombinacion={loadingCombinacion}
         resultado={resultado}
         errorCombinacion={errorCombinacion}
         errorModelo3D={errorModelo3D}
         modeloUrl={modeloUrl}
         loadingModelo3D={loadingModelo3D}
-        onGenerarModelo3D={handleGenerarModelo3D}
-        onToggleFavoritoCombinacion={handleToggleFavoritoCombinacion}
+        handleGenerarModelo3D={handleGenerarModelo3D}
       />
+
+      {(marcaDetail.garmentTop?.content?.length > 0 ||
+        marcaDetail.garmentBottom?.content?.length > 0) && (
+        <div className="hidden flex-1 lg:flex items-center justify-center overflow-hidden">
+          <Panel
+            loadingCombinacion={loadingCombinacion}
+            resultado={resultado}
+            errorCombinacion={errorCombinacion}
+            errorModelo3D={errorModelo3D}
+            modeloUrl={modeloUrl}
+            loadingModelo3D={loadingModelo3D}
+            onGenerarModelo3D={handleGenerarModelo3D}
+            onToggleFavoritoCombinacion={handleToggleFavoritoCombinacion}
+          />
+        </div>
       )}
 
       {/* Modal de Sugerencias */}

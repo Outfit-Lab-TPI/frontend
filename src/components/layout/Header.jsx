@@ -5,7 +5,7 @@ import Button from "../shared/Button";
 function Header() {
   return (
     <header
-      className="header"
+      className="header bg-[#0a050e]/90 backdrop-blur-md border-b border-[#926490]/20"
       style={{
         display: "flex",
         justifyContent: "space-between",
@@ -31,21 +31,20 @@ function Header() {
       </Link>
 
       <div className="flex items-center gap-4">
-
-        <Link to='/marcas'>
-          <Button size='sm' className='bg-transparent border-white/40'>
-          Ver marcas
-        </Button>
+        <Link to="/marcas">
+          <Button size="sm" className="bg-transparent border-white/40">
+            Ver marcas
+          </Button>
         </Link>
- 
+
         <Link to="/perfil">
           <div
-            className="w-10 h-10 rounded-full 
-              bg-[var(--secondary)] 
+            className="size-10 rounded-full 
+              bg-(--secondary) 
               flex items-center justify-center 
               cursor-pointer 
               transition-colors duration-300 
-              hover:bg-[var(--primary)]"
+              hover:bg-(--primary)"
           >
             <User size={20} color="var(--white)" />
           </div>

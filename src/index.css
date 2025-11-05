@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 :root {
   /* Color Palette */
@@ -10,11 +11,13 @@
   --black: #0a050e;
 
   /* Typography */
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
 
   /* Font families */
   --font-primary: "Bebas Neue", system-ui, Avenir, Helvetica, Arial, sans-serif;
-  --font-secondary: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-secondary: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
   line-height: 1.5;
   letter-spacing: normal;
   font-weight: 400;
@@ -110,7 +113,13 @@ h6 {
 }
 
 /* Bebas Neue font for headings and labels */
-h1, h2, h3, h4, h5, h6, label {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+label {
   font-family: var(--font-primary);
   letter-spacing: 1.2px;
 }
@@ -121,13 +130,15 @@ h1, h2, h3, h4, h5, h6, label {
   letter-spacing: normal;
 }
 
-input, select {
+input,
+select {
   background-color: rgba(133, 129, 130, 0.2);
   color: var(--white);
   border-radius: 4px;
 }
 
-input, select {
+input,
+select {
   background-color: var(--black);
   color: var(--white);
   border-radius: 4px;
@@ -287,4 +298,3 @@ input, select {
   scrollbar-width: thin;
   scrollbar-color: var(--gray) var(--black);
 }
-
