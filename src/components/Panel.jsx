@@ -1,6 +1,8 @@
-import { Blend, Box, LoaderCircle } from "lucide-react";
+import { Blend, Box, LoaderCircle, Heart } from "lucide-react";
 import { VscPerson } from "react-icons/vsc";
+import { useState, useEffect } from "react";
 import ModeloViewer from "./ModeloViewer.jsx";
+import { useFavoritos } from "../hooks/useFavoritos.jsx";
 
 function Panel({
   loadingCombinacion,
@@ -11,6 +13,30 @@ function Panel({
   loadingModelo3D,
   onGenerarModelo3D,
 }) {
+  const { toggleCombinacionFavorita, loading: loadingFavorito } = useFavoritos();
+  const [esFavorita, setEsFavorita] = useState(false);
+
+  useEffect(() => {
+    setEsFavorita(resultado?.esFavorita || false);
+  }, [resultado]);
+
+  const handleToggleFavorita = async (e) => {
+    e.stopPropagation();
+    if (!resultado?.imageUrl) return;
+
+    try {
+      const nuevoEstado = !esFavorita;
+      setEsFavorita(nuevoEstado);
+
+      await toggleCombinacionFavorita(
+        resultado.imageUrl,
+        nuevoEstado
+      );
+    } catch (error) {
+      console.error('Error al cambiar favorito:', error);
+      setEsFavorita(!nuevoEstado);
+    }
+  };
   return (
     <div className="w-full flex flex-col lg:border-l border-gray/20 relative h-[70dvh] lg:h-full">
       <div className="flex-1 flex items-center justify-center overflow-hidden pt-2">
@@ -26,27 +52,35 @@ function Panel({
           </div>
         ) : resultado ? (
           <div className="w-full h-full flex items-center justify-center p-0 relative">
-            {!modeloUrl && (
+            <div className="absolute top-4 right-4 z-20 flex gap-2">
               <button
-                onClick={onGenerarModelo3D}
-                disabled={!resultado || loadingModelo3D}
-                className="flex group bg-gray/50 hover:bg-gray/70 backdrop-blur-sm rounded-full transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-default overflow-hidden hover:px-4"
+                onClick={handleToggleFavorita}
+                disabled={loadingFavorito}
+                className="w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center transition-colors cursor-pointer disabled:opacity-50"
               >
-                <div className="hidden group-hover:flex items-center justify-center transition-all duration-300">
-                  <span className="text-white text-sm font-medium whitespace-nowrap">
-                    Generar 3D{/*Proxímamente: Probador 3D*/}
-                  </span>
-                </div>
+                <Heart
+                  className={`w-5 h-5 transition-colors ${
+                    esFavorita
+                      ? "text-red-500 fill-red-500"
+                      : "text-white hover:text-red-300"
+                  }`}
+                />
+              </button>
 
-                <div className="flex items-center justify-center p-2 transition-all duration-300">
+              {!modeloUrl && (
+                <button
+                  onClick={onGenerarModelo3D}
+                  disabled={!resultado || loadingModelo3D}
+                  className="w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center transition-colors cursor-pointer disabled:opacity-50"
+                >
                   {loadingModelo3D ? (
                     <LoaderCircle className="w-5 h-5 text-white animate-spin" />
                   ) : (
-                    <Box className="w-4 h-4 text-white" />
+                    <Box className="w-5 h-5 text-white" />
                   )}
-                </div>
-              </button>
-            )}
+                </button>
+              )}
+            </div>
 
             {modeloUrl ? (
               <ModeloViewer

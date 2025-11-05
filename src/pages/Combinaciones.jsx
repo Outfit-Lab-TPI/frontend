@@ -47,44 +47,38 @@ export default function Combinaciones() {
   const navigate = useNavigate();
 
   const handleToggleFavorita = async (combinacion) => {
-    const codigoCombinacion = combinacion.codigo || combinacion.id;
-    const esFavorita = combinacion.esFavorita;
-
-    if (esFavorita) {
       setCombinacionAEliminar(combinacion);
       setShowConfirmDialog(true);
-    } else {
-      try {
-        actualizarFavoritoLocal(codigoCombinacion, true);
-
-        await toggleCombinacionFavorita(codigoCombinacion, esFavorita);
-      } catch (error) {
-        console.error("Error al marcar combinación como favorita:", error);
-        actualizarFavoritoLocal(codigoCombinacion, false);
-      }
-    }
   };
 
   const confirmarEliminacion = async () => {
     if (!combinacionAEliminar) return;
 
     const codigoCombinacion =
-      combinacionAEliminar.codigo || combinacionAEliminar.id;
+      combinacionAEliminar.combinationUrl;
 
     try {
+      // Primero hacer la llamada al servidor
+      await toggleCombinacionFavorita(
+        codigoCombinacion,
+      );
+
+      // Solo si la operación fue exitosa, actualizar el estado local
       eliminarCombinacionLocal(codigoCombinacion);
+
+      // Si la combinación eliminada era la seleccionada, deseleccionarla
+      if (combinacionSeleccionada?.id === combinacionAEliminar.id) {
+        setCombinacionSeleccionada(null);
+      }
 
       setShowConfirmDialog(false);
       setCombinacionAEliminar(null);
 
-      await toggleCombinacionFavorita(
-        codigoCombinacion,
-        combinacionAEliminar.esFavorita
-      );
     } catch (error) {
       console.error("Error al eliminar combinación de favoritos:", error);
-      // Si falla, restaurar la combinación en la UI
-      refetch(); // En este caso necesitamos refetch para restaurar
+      // Si falla, cerrar el diálogo pero mantener el estado
+      setShowConfirmDialog(false);
+      setCombinacionAEliminar(null);
     }
   };
 
