@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CircleUserRound, ChevronRight, Edit3, LogOut, ShoppingBag, X } from "lucide-react";
+import {
+  CircleUserRound,
+  ChevronRight,
+  Edit3,
+  LogOut,
+  ShoppingBag,
+  X,
+  CreditCard,
+} from "lucide-react";
 import Button from "../components/shared/Button";
 import { useProfile } from "../hooks/auth/useProfile";
 import { useAuth } from "../hooks/auth/useAuth";
@@ -22,7 +30,7 @@ function Profile() {
     isDirty,
     isSubmitting,
     validationRules,
-    cancelEdit
+    cancelEdit,
   } = useProfile(onSubmitSuccess);
 
   const handleCancelEdit = () => {
@@ -31,7 +39,7 @@ function Profile() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center px-4 gap-6">
+    <div className="flex flex-col items-center justify-center p-4 gap-6">
       {/* Card Principal de Profile */}
       <div className="w-full max-w-xl bg-gray/10 rounded-md p-8 shadow-xl">
         {/* Header con foto de perfil y icono de edición */}
@@ -41,7 +49,9 @@ function Profile() {
             <div className="relative cursor-pointer">
               <CircleUserRound size={64} className="stroke-1 stroke-gray " />
             </div>
-            <h2 className="text-2xl text-white font-medium">{user?.name || 'Usuario'}</h2>
+            <h2 className="text-2xl text-white font-medium">
+              {user?.name || "Usuario"}
+            </h2>
           </div>
 
           {/* Icono de edición/cancelar */}
@@ -65,7 +75,7 @@ function Profile() {
             <input
               id="name"
               type="text"
-              {...register('name', validationRules.name)}
+              {...register("name", validationRules.name)}
               disabled={!isEditing}
               className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray disabled:opacity-60"
             />
@@ -82,7 +92,7 @@ function Profile() {
             <input
               id="email"
               type="email"
-              {...register('email', validationRules.email)}
+              {...register("email", validationRules.email)}
               disabled={!isEditing}
               className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray disabled:opacity-60"
             />
@@ -95,34 +105,47 @@ function Profile() {
           {isEditing && (
             <>
               <div>
-                <label htmlFor="password" className="block text-sm text-gray mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-sm text-gray mb-2"
+                >
                   Nueva contraseña (opcional)
                 </label>
                 <input
                   id="password"
                   type="password"
-                  {...register('password', validationRules.password)}
+                  {...register("password", validationRules.password)}
                   placeholder="Dejar vacío para mantener la actual"
                   className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
                 />
                 {errors.password && (
-                  <p className="text-error text-sm mt-1">{errors.password.message}</p>
+                  <p className="text-error text-sm mt-1">
+                    {errors.password.message}
+                  </p>
                 )}
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm text-gray mb-2">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm text-gray mb-2"
+                >
                   Confirmar nueva contraseña
                 </label>
                 <input
                   id="confirmPassword"
                   type="password"
-                  {...register('confirmPassword', validationRules.confirmPassword)}
+                  {...register(
+                    "confirmPassword",
+                    validationRules.confirmPassword
+                  )}
                   placeholder="Confirmar nueva contraseña"
                   className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
                 />
                 {errors.confirmPassword && (
-                  <p className="text-error text-sm mt-1">{errors.confirmPassword.message}</p>
+                  <p className="text-error text-sm mt-1">
+                    {errors.confirmPassword.message}
+                  </p>
                 )}
               </div>
             </>
@@ -138,16 +161,13 @@ function Profile() {
           {/* Botón Cerrar sesión / Guardar cambios */}
           <div className="mt-8">
             {isEditing ? (
-              <Button
-                type="submit"
-                disabled={!isValid || isSubmitting}
-              >
-                {isSubmitting ? 'Guardando...' : 'Guardar cambios'}
+              <Button type="submit" disabled={!isValid || isSubmitting}>
+                {isSubmitting ? "Guardando..." : "Guardar cambios"}
               </Button>
             ) : (
               <Button
                 variant="outline"
-                color='error'
+                color="error"
                 onClick={logout}
                 type="button"
               >
@@ -161,12 +181,22 @@ function Profile() {
 
       {/* Card Mis outfits */}
       <div
-        onClick={() => navigate('/mis-combinaciones')}
+        onClick={() => navigate("/mis-combinaciones")}
         className="w-full max-w-xl bg-gray/10 flex items-center justify-between rounded-sm p-6 shadow-xl cursor-pointer hover:bg-gray/20 transition-colors"
       >
         <div className="flex items-center gap-2 text-white">
-          <ShoppingBag  />
+          <ShoppingBag />
           <span className="text-lg font-medium">Mis outfits</span>
+        </div>
+        <ChevronRight />
+      </div>
+      <div
+        onClick={() => navigate("/suscripcion")}
+        className="w-full max-w-xl bg-gray/10 flex items-center justify-between rounded-sm p-6 shadow-xl cursor-pointer hover:bg-gray/20 transition-colors"
+      >
+        <div className="flex items-center gap-2 text-white">
+          <CreditCard />
+          <span className="text-lg font-medium">Mis subscripciones</span>
         </div>
         <ChevronRight />
       </div>
