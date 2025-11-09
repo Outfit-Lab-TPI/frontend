@@ -28,15 +28,19 @@ describe('API Service', () => {
   })
 
     it('Debe crear una instancia de axios con la configuración correcta', async () => {
+      // given
       // Import the module to trigger axios.create
+
+      // when
       await import('../../src/services/api')
 
+      // then
       expect(mockedAxios.create).toHaveBeenCalledWith({
         baseURL: 'http://localhost:8080/api',
         headers: {
           'Content-Type': 'application/json',
         },
-        timeout: 10000,
+        timeout: 500000,
       })
     })
 

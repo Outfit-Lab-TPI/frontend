@@ -15,7 +15,7 @@ describe('useMarcas', () => {
     ]
 
     const mockResponse = {
-      content: mockMarcas,
+      content: expected,
       size: 10,
       page: 0,
       totalPages: 1,

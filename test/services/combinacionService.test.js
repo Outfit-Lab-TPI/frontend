@@ -14,19 +14,22 @@ describe('combinacionService', () => {
 
   describe('combinarPrendas', () => {
     it('debe llamar al endpoint con los parámetros correctos y devolver response.data', async () => {
+      // given
       const mockData = { imageUrl: 'https://example.com/combinacion1.png' }
       apiClient.post.mockResolvedValueOnce({ data: mockData })
 
       const esHombre = true
-      const superior = 'camisa azul'
-      const inferior = 'pantalón negro'
+      const top = 'camisa azul'
+      const bottom = 'pantalón negro'
 
-      const result = await combinacionService.combinarPrendas(esHombre, superior, inferior)
+      // when
+      const result = await combinacionService.combinarPrendas(esHombre, top, bottom)
 
+      // then
       // Verifica que el endpoint se llamó correctamente
       expect(apiClient.post).toHaveBeenCalledWith(
         '/fashion/combinar-prendas',
-        { esHombre, superior, inferior },
+        { avatarType: 'man', top, bottom },
         { timeout: 60000 }
       )
 
@@ -35,15 +38,17 @@ describe('combinacionService', () => {
     })
 
     it('debe lanzar error si apiClient.post falla', async () => {
+      // given
       const error = new Error('Servidor caído')
       apiClient.post.mockRejectedValueOnce(error)
-
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
+      // when / then
       await expect(
         combinacionService.combinarPrendas(true, 'camisa azul', 'pantalón negro')
       ).rejects.toThrow('Servidor caído')
 
+      // then
       // Verifica que el error se registró en consola
       expect(consoleSpy).toHaveBeenCalledWith('error:', error)
       consoleSpy.mockRestore()

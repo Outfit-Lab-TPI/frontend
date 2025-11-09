@@ -18,21 +18,26 @@ describe('favoritosService', () => {
 
   describe('agregarPrendaFavorita', () => {
     it('debe llamar a la API correctamente y devolver los datos', async () => {
+      // given
       const mockResponse = { data: { success: true } }
-      apiClient.post.mockResolvedValueOnce(mockResponse)
+      apiClient.get.mockResolvedValueOnce(mockResponse)
 
+      // when
       const result = await favoritosService.agregarPrendaFavorita('ABC123')
 
-      expect(apiClient.post).toHaveBeenCalledWith('/api/garments/favourites/add/ABC123')
+      // then
+      expect(apiClient.get).toHaveBeenCalledWith('/garments/favorite/add/ABC123')
       expect(result).toEqual({ success: true })
     })
 
     it('debe lanzar un error con mensaje del servidor si existe', async () => {
+      // given
       const mockError = {
         response: { data: { message: 'Error al agregar prenda a favoritos' } }
       }
-      apiClient.post.mockRejectedValueOnce(mockError)
+      apiClient.get.mockRejectedValueOnce(mockError)
 
+      // when / then
       await expect(favoritosService.agregarPrendaFavorita('ABC123'))
         .rejects.toThrow('Error al agregar prenda a favoritos')
     })
@@ -40,21 +45,26 @@ describe('favoritosService', () => {
 
   describe('quitarPrendaFavorita', () => {
     it('debe llamar a la API correctamente y devolver los datos', async () => {
+      // given
       const mockResponse = { data: { success: true } }
-      apiClient.delete.mockResolvedValueOnce(mockResponse)
+      apiClient.get.mockResolvedValueOnce(mockResponse)
 
+      // when
       const result = await favoritosService.quitarPrendaFavorita('ABC123')
 
-      expect(apiClient.delete).toHaveBeenCalledWith('/api/garments/favourites/delete/ABC123')
+      // then
+      expect(apiClient.get).toHaveBeenCalledWith('/garments/favorite/delete/ABC123')
       expect(result).toEqual({ success: true })
     })
 
     it('debe lanzar un error con mensaje del servidor si existe', async () => {
+      // given
       const mockError = {
         response: { data: { message: 'Error al quitar prenda de favoritos' } }
       }
-      apiClient.delete.mockRejectedValueOnce(mockError)
+      apiClient.get.mockRejectedValueOnce(mockError)
 
+      // when / then
       await expect(favoritosService.quitarPrendaFavorita('ABC123'))
         .rejects.toThrow('Error al quitar prenda de favoritos')
     })
@@ -62,21 +72,26 @@ describe('favoritosService', () => {
 
   describe('obtenerPrendasFavoritas', () => {
     it('debe llamar a la API correctamente y devolver los datos', async () => {
+      // given
       const mockResponse = { data: [{ garmentCode: 'ABC123', name: 'Camiseta' }] }
       apiClient.get.mockResolvedValueOnce(mockResponse)
 
+      // when
       const result = await favoritosService.obtenerPrendasFavoritas()
 
-      expect(apiClient.get).toHaveBeenCalledWith('/api/garments/favourites')
-      expect(result).toEqual([{ garmentCode: 'ABC123', name: 'Camiseta' }])
+      // then
+      expect(apiClient.get).toHaveBeenCalledWith('/garments/favorite')
+      expect(result).toEqual(mockResponse)
     })
 
     it('debe lanzar un error con mensaje del servidor si existe', async () => {
+      // given
       const mockError = {
         response: { data: { message: 'Error al obtener prendas favoritas' } }
       }
       apiClient.get.mockRejectedValueOnce(mockError)
 
+      // when / then
       await expect(favoritosService.obtenerPrendasFavoritas())
         .rejects.toThrow('Error al obtener prendas favoritas')
     })
@@ -84,43 +99,54 @@ describe('favoritosService', () => {
 
   describe('togglePrendaFavorita', () => {
     it('debe quitar favorito cuando esFavorita es true', async () => {
+      // given
       const mockResponse = { data: { success: true } }
-      apiClient.delete.mockResolvedValueOnce(mockResponse)
+      apiClient.get.mockResolvedValueOnce(mockResponse)
 
+      // when
       const result = await favoritosService.togglePrendaFavorita('ABC123', true)
 
-      expect(apiClient.delete).toHaveBeenCalledWith('/api/garments/favourites/delete/ABC123')
+      // then
+      expect(apiClient.get).toHaveBeenCalledWith('/garments/favorite/delete/ABC123')
       expect(result).toEqual({ success: true })
     })
 
     it('debe agregar favorito cuando esFavorita es false', async () => {
+      // given
       const mockResponse = { data: { success: true } }
-      apiClient.post.mockResolvedValueOnce(mockResponse)
+      apiClient.get.mockResolvedValueOnce(mockResponse)
 
+      // when
       const result = await favoritosService.togglePrendaFavorita('ABC123', false)
 
-      expect(apiClient.post).toHaveBeenCalledWith('/api/garments/favourites/add/ABC123')
+      // then
+      expect(apiClient.get).toHaveBeenCalledWith('/garments/favorite/add/ABC123')
       expect(result).toEqual({ success: true })
     })
   })
 
   describe('agregarCombinacionFavorita', () => {
     it('debe llamar a la API correctamente y devolver los datos', async () => {
+      // given
       const mockResponse = { data: { success: true } }
-      apiClient.post.mockResolvedValueOnce(mockResponse)
+      apiClient.get.mockResolvedValueOnce(mockResponse)
 
+      // when
       const result = await favoritosService.agregarCombinacionFavorita('COMB456')
 
-      expect(apiClient.post).toHaveBeenCalledWith('/api/combinations/favourites/add/COMB456')
+      // then
+      expect(apiClient.get).toHaveBeenCalledWith('/combinations/favorite/add?combinationUrl=COMB456')
       expect(result).toEqual({ success: true })
     })
 
     it('debe lanzar un error con mensaje del servidor si existe', async () => {
+      // given
       const mockError = {
         response: { data: { message: 'Error al agregar combinación a favoritos' } }
       }
-      apiClient.post.mockRejectedValueOnce(mockError)
+      apiClient.get.mockRejectedValueOnce(mockError)
 
+      // when / then
       await expect(favoritosService.agregarCombinacionFavorita('COMB456'))
         .rejects.toThrow('Error al agregar combinación a favoritos')
     })
@@ -128,21 +154,26 @@ describe('favoritosService', () => {
 
   describe('quitarCombinacionFavorita', () => {
     it('debe llamar a la API correctamente y devolver los datos', async () => {
+      // given
       const mockResponse = { data: { success: true } }
-      apiClient.delete.mockResolvedValueOnce(mockResponse)
+      apiClient.get.mockResolvedValueOnce(mockResponse)
 
+      // when
       const result = await favoritosService.quitarCombinacionFavorita('COMB456')
 
-      expect(apiClient.delete).toHaveBeenCalledWith('/api/combinations/favourites/delete/COMB456')
+      // then
+      expect(apiClient.get).toHaveBeenCalledWith('/combinations/favorite/delete?combinationUrl=COMB456')
       expect(result).toEqual({ success: true })
     })
 
     it('debe lanzar un error con mensaje del servidor si existe', async () => {
+      // given
       const mockError = {
         response: { data: { message: 'Error al quitar combinación de favoritos' } }
       }
-      apiClient.delete.mockRejectedValueOnce(mockError)
+      apiClient.get.mockRejectedValueOnce(mockError)
 
+      // when / then
       await expect(favoritosService.quitarCombinacionFavorita('COMB456'))
         .rejects.toThrow('Error al quitar combinación de favoritos')
     })
@@ -150,44 +181,61 @@ describe('favoritosService', () => {
 
   describe('obtenerCombinacionesFavoritas', () => {
     it('debe llamar a la API correctamente y devolver los datos', async () => {
+      // given
       const mockResponse = { data: [{ combinationCode: 'COMB456', name: 'Outfit casual' }] }
       apiClient.get.mockResolvedValueOnce(mockResponse)
 
+      // when
       const result = await favoritosService.obtenerCombinacionesFavoritas()
 
-      expect(apiClient.get).toHaveBeenCalledWith('/api/combinations/favourites')
+      // then
+      expect(apiClient.get).toHaveBeenCalledWith('/combinations/favorite')
       expect(result).toEqual([{ combinationCode: 'COMB456', name: 'Outfit casual' }])
     })
 
     it('debe lanzar un error con mensaje del servidor si existe', async () => {
+      // given
       const mockError = {
         response: { data: { message: 'Error al obtener combinaciones favoritas' } }
       }
       apiClient.get.mockRejectedValueOnce(mockError)
 
+      // when / then
       await expect(favoritosService.obtenerCombinacionesFavoritas())
         .rejects.toThrow('Error al obtener combinaciones favoritas')
     })
   })
 
   describe('toggleCombinacionFavorita', () => {
-    it('debe quitar favorito cuando esFavorita es true', async () => {
-      const mockResponse = { data: { success: true } }
-      apiClient.delete.mockResolvedValueOnce(mockResponse)
+    it('debe quitar favorito cuando la combinación ya está en favoritas', async () => {
+      // given
+      const mockFavoritas = { content: [{ combinationUrl: 'COMB456' }] }
+      const mockDeleteResponse = { data: { success: true } }
+      apiClient.get.mockResolvedValueOnce({ data: mockFavoritas }) // obtenerCombinacionesFavoritas
+      apiClient.get.mockResolvedValueOnce(mockDeleteResponse) // quitarCombinacionFavorita
 
-      const result = await favoritosService.toggleCombinacionFavorita('COMB456', true)
+      // when
+      const result = await favoritosService.toggleCombinacionFavorita('COMB456')
 
-      expect(apiClient.delete).toHaveBeenCalledWith('/api/combinations/favourites/delete/COMB456')
+      // then
+      expect(apiClient.get).toHaveBeenCalledWith('/combinations/favorite')
+      expect(apiClient.get).toHaveBeenCalledWith('/combinations/favorite/delete?combinationUrl=COMB456')
       expect(result).toEqual({ success: true })
     })
 
-    it('debe agregar favorito cuando esFavorita es false', async () => {
-      const mockResponse = { data: { success: true } }
-      apiClient.post.mockResolvedValueOnce(mockResponse)
+    it('debe agregar favorito cuando la combinación no está en favoritas', async () => {
+      // given
+      const mockFavoritas = { content: [] }
+      const mockAddResponse = { data: { success: true } }
+      apiClient.get.mockResolvedValueOnce({ data: mockFavoritas }) // obtenerCombinacionesFavoritas
+      apiClient.get.mockResolvedValueOnce(mockAddResponse) // agregarCombinacionFavorita
 
-      const result = await favoritosService.toggleCombinacionFavorita('COMB456', false)
+      // when
+      const result = await favoritosService.toggleCombinacionFavorita('COMB456')
 
-      expect(apiClient.post).toHaveBeenCalledWith('/api/combinations/favourites/add/COMB456')
+      // then
+      expect(apiClient.get).toHaveBeenCalledWith('/combinations/favorite')
+      expect(apiClient.get).toHaveBeenCalledWith('/combinations/favorite/add?combinationUrl=COMB456')
       expect(result).toEqual({ success: true })
     })
   })
