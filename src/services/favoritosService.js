@@ -92,16 +92,14 @@ export const favoritosService = {
   },
 
   toggleCombinacionFavorita: async (combinationUrl) => {
-    const combinacionesFavoritas = await favoritosService.obtenerCombinacionesFavoritas();
-    const esFavorita = combinacionesFavoritas.content.some((combinacion) => combinacion.combinationUrl === combinationUrl);
-    try {
-      if (esFavorita) {
-        return await favoritosService.quitarCombinacionFavorita(combinationUrl);
-      } else {
-        return await favoritosService.agregarCombinacionFavorita(combinationUrl);
+      try {
+        const { content = [] } = await favoritosService.obtenerCombinacionesFavoritas();
+        const esFavorita = content.some(c => c.combinationUrl === combinationUrl);
+        console.log('ESTADO DE FAVORITA: ----- ', esFavorita);
+        
+        return esFavorita? await favoritosService.quitarCombinacionFavorita(combinationUrl) : await favoritosService.agregarCombinacionFavorita(combinationUrl);
+      } catch (error) {
+        throw new Error('Error al alternar favorito: ' + (error.message || error));
       }
-    } catch (error) {
-      throw error;
-    }
   }
 };
