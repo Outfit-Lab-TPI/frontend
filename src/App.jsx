@@ -1,7 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import AppContent from "./AppContent";
 import ErrorBoundary from "./pages/errors/ErrorBoundary";
-import { AuthProvider } from "./hooks/auth/useAuth";
+import { AuthProvider } from "./context/AuthContext";
 import MercadoPagoWrapper from "./components/MercadoPagoWrapper"; 
 
 export default function App() {
