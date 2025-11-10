@@ -213,7 +213,7 @@ function NuevaPrenda() {
                       <div className="flex flex-col items-center justify-center h-full gap-2 text-gray hover:text-white">
                         <Plus className="w-10 h-10" />
                         <span className=" font-medium">
-                          Agregar imágenes
+                          Agregar imágen
                         </span>
                       </div>
                     </label>
@@ -234,7 +234,7 @@ function NuevaPrenda() {
                       <li className="flex items-start gap-3">
                         <span className="text-white mt-0.5 text-lg">•</span>
                         <span className="leading-relaxed">
-                          Elige un lugar iluminado para tomar las fotos
+                          Elige un lugar iluminado para tomar la foto
                         </span>
                       </li>
                       <li className="flex items-start gap-3">
