@@ -18,7 +18,7 @@ function Signup() {
         <h2 className="text-2xl text-white font-medium mb-8">Crear cuenta</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Campo Correo electrónico */}
+          
           <div>
             <label htmlFor="email" className="block text-sm text-gray mb-2">
               Correo electrónico
@@ -35,7 +35,6 @@ function Signup() {
             )}
           </div>
 
-          {/* Campo Nombre */}
           <div>
             <label htmlFor="name" className="block text-sm text-gray mb-2">
               Nombre
@@ -45,14 +44,29 @@ function Signup() {
               type="text"
               {...register("name", validationRules.name)}
               className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
-              placeholder="Tu nombre completo"
+              placeholder="Tu nombre"
             />
             {errors.name && (
               <p className="text-error text-sm mt-1">{errors.name.message}</p>
             )}
           </div>
 
-          {/* Campo Contraseña */}
+          <div>
+            <label htmlFor="lastName" className="block text-sm text-gray mb-2">
+              Apellido
+            </label>
+            <input
+              id="lastName"
+              type="text"
+              {...register("lastName", validationRules.lastName)}
+              className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
+              placeholder="Tu apellido"
+            />
+            {errors.lastName && (
+              <p className="text-error text-sm mt-1">{errors.lastName.message}</p>
+            )}
+          </div>
+
           <div>
             <label htmlFor="password" className="block text-sm text-gray mb-2">
               Contraseña
@@ -71,7 +85,6 @@ function Signup() {
             )}
           </div>
 
-          {/* Campo Confirmar Contraseña */}
           <div>
             <label
               htmlFor="confirmPassword"
@@ -94,12 +107,10 @@ function Signup() {
           </div>
 
           <div className="flex flex-col gap-4 mt-8">
-            {/* Error general de submit */}
             {errors.submit && (
-              <p className="text-error text-sm">{errors.submit.message}</p>
+              <p className="text-error text-sm text-center">{errors.submit.message}</p>
             )}
 
-            {/* Botón Registrarse */}
             <Button
               type="submit"
               disabled={isSubmitting || !isValid}
@@ -107,7 +118,6 @@ function Signup() {
               {isSubmitting ? "Creando cuenta..." : "Registrarse"}
             </Button>
 
-            {/* Link para Login */}
             <div className="text-center">
               <span className="text-gray text-sm">
                 Ya tengo cuenta •{" "}

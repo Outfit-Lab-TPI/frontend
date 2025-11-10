@@ -1,99 +1,119 @@
-import { useState, useCallback } from 'react'
-import { useForm } from 'react-hook-form'
-import { useAuth } from './useAuth'
-import { validationRules, createPasswordConfirmValidation } from '../../utils/validations'
-// import { mockUser, simulateNetworkDelay } from '../../utils/mockData'
-import axios from 'axios'
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
-export function useSignup() {
-  const { login } = useAuth()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+const API_URL = "http://localhost:8080/api/users/register"; 
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isValid },
-    setError,
-    watch
-  } = useForm({ mode: 'onChange' })
+export const useSignup = () => {
+    const navigate = useNavigate();
+    
+    const validationRules = {
+        email: {
+            required: "El correo electrónico es obligatorio.",
+            pattern: {
+                value: /^\S+@\S+\.\S+$/,
+                message: "Correo electrónico inválido.",
+            },
+        },
+        name: {
+            required: "El nombre es obligatorio.",
+            minLength: {
+                value: 2,
+                message: "El nombre debe tener al menos 2 caracteres.",
+            },
+        },
+        lastName: {
+            required: "El apellido es obligatorio.",
+            minLength: {
+                value: 2,
+                message: "El apellido debe tener al menos 2 caracteres.",
+            },
+        },
+        password: {
+            required: "La contraseña es obligatoria.",
+            minLength: {
+                value: 8,
+                message: "La contraseña debe tener al menos 8 caracteres.",
+            },
+            pattern: {
+                value: /^(?=.*[A-Z])(?=.*\d).*$/, 
+                message: "Debe contener al menos una mayúscula y un número.",
+            },
+        },
+        confirmPassword: {
+            required: "Confirma la contraseña.",
+        },
+    };
 
-  const password = watch('password')
+    const {
+        register,
+        handleSubmit: hookFormHandleSubmit,
+        formState: { errors, isValid, isSubmitting },
+        setError,
+        getValues,
+    } = useForm({ mode: "onBlur" });
 
-  const onSubmit = useCallback(async (data) => {
-    setIsSubmitting(true)
-
-    try {
-      // En desarrollo, usar datos mock
-      if (process.env.NODE_ENV === 'development') {
-        await simulateNetworkDelay()
-
-        // Simular registro exitoso con datos del formulario
-        const mockResponse = {
-          user: {
-            id: Date.now().toString(),
-            name: data.name,
-            email: data.email
-          },
-          token: `mock-token-${Date.now()}`
+    const handleSubmit = hookFormHandleSubmit(async (data) => {
+        
+        if (data.password !== data.confirmPassword) {
+            setError("confirmPassword", {
+                type: "manual",
+                message: "Las contraseñas no coinciden.",
+            });
+            return;
         }
 
-        console.log('Signup exitoso (mock):', mockResponse)
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: data.email,
+                    name: data.name,
+                    lastName: data.lastName, 
+                    password: data.password,
+                }),
+            });
 
-        // Auto-login después del registro exitoso
-        login(mockResponse)
-      } else {
-        // En producción, hacer la llamada real
-        const signupData = {
-          name: data.name,
-          email: data.email,
-          password: data.password
+            if (!response.ok) {
+                const errorData = await response.json();
+                
+                if (response.status === 400 && typeof errorData === 'object') {
+                    Object.keys(errorData).forEach(field => {
+                        setError(field, { type: "server", message: errorData[field] });
+                    });
+                } else if (errorData.email) {
+                    setError("email", { type: "server", message: errorData.email });
+                } else {
+                    setError("submit", { 
+                        type: "server", 
+                        message: "Hubo un error al crear la cuenta. Intenta de nuevo." 
+                    });
+                }
+                return;
+            }
+
+            const successData = await response.json();
+            alert(successData.message); 
+            navigate("/login"); 
+
+        } catch (error) {
+            console.error("Error de conexión:", error);
+            setError("submit", {
+                type: "network",
+                message: "Error de conexión con el servidor. Verifica tu conexión.",
+            });
         }
+    });
 
-        const response = await axios.post('/api/auth/signup', signupData)
-        console.log('Signup exitoso:', response.data)
-
-        login({
-          id: response.data.user.id,
-          email: response.data.user.email,
-          name: response.data.user.name,
-          token: response.data.token
-        })
-      }
-
-    } catch (error) {
-      console.error('Error en signup:', error)
-
-      // Manejar diferentes tipos de errores
-      if (error.response?.status === 409) {
-        setError('email', {
-          type: 'manual',
-          message: 'Este email ya está registrado'
-        })
-      } else {
-        setError('submit', {
-          type: 'manual',
-          message: 'Error al crear la cuenta. Intenta nuevamente.'
-        })
-      }
-    } finally {
-      setIsSubmitting(false)
-    }
-  }, [login, setError])
-
-  // Validaciones para los campos usando validaciones centralizadas
-  const signupValidationRules = {
-    name: validationRules.name,
-    email: validationRules.email,
-    password: validationRules.password,
-    confirmPassword: createPasswordConfirmValidation(password)
-  }
-
-  return {
-    register,
-    handleSubmit: handleSubmit(onSubmit),
-    errors,
-    isValid,
-    isSubmitting,
-    validationRules: signupValidationRules
-  }
-}
+    return {
+        register,
+        handleSubmit,
+        errors,
+        isValid,
+        isSubmitting,
+        validationRules,
+        getValues,
+    };
+};
