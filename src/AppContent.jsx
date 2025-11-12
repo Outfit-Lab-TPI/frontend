@@ -4,12 +4,12 @@ import Footer from "./components/layout/Footer";
 import LandingNavbar from "./components/landing/Navbar";
 import Landing from "./pages/Landing";
 import Home from "./pages/Home";
+import BrandHome from "./pages/BrandHome";
 import Profile from "./pages/Profile";
 import Combinaciones from "./pages/Combinaciones";
 import NotFound from "./pages/errors/NotFound";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import NuevaPrenda from "./pages/NuevaPrenda";
 import Marcas from "./pages/Marcas";
 import MarcaDetalle from "./pages/MarcaDetalle";
 import SubscriptionPage from "./pages/Subscription";
@@ -27,11 +27,11 @@ export default function AppContent() {
         <Routes>
           <Route path="/landing" element={<Landing />} />
           <Route path="/home" element={<Home />} />
+          {/* <Route path="/home" element={<BrandHome />} /> */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/perfil" element={<Profile />} />
           <Route path="/mis-combinaciones" element={<Combinaciones />} />
-          <Route path="/nueva-prenda" element={<NuevaPrenda />} />
           <Route path="/marcas" element={<Marcas />} />
           <Route path="/marcas/:codigoMarca" element={<MarcaDetalle />} />
           <Route path="/suscripcion" element={<SubscriptionPage />} />

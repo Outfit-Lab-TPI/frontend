@@ -1,19 +1,115 @@
-import { useNavigate } from "react-router-dom";    
-import Button from "../components/shared/Button.jsx";
-import { Plus } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useMarcaDetail } from "../hooks/useMarcaDetail.jsx";
+import BrandContenido from "../components/BrandContenido.jsx";
+import PrendaModal from "../components/PrendaModal.jsx";
 
 export default function BrandHome() {
-  const navigate = useNavigate();
+  // TODO: Obtener codigoMarca del user context cuando esté implementado el auth
+  // const { user } = useAuth();
+  // const codigoMarca = user?.codigoMarca;
+  const codigoMarca = "puma"; // Hardcodeado temporalmente
+
+  const {
+    marcaDetail,
+    loading,
+    error,
+    criticalError,
+  } = useMarcaDetail(codigoMarca);
+
+  const [modalAbierto, setModalAbierto] = useState(false);
+  const [prendaParaEditar, setPrendaParaEditar] = useState(null);
+
+  const handleAgregarPrenda = () => {
+    setPrendaParaEditar(null);
+    setModalAbierto(true);
+  };
+
+  const handleEditarPrenda = (prenda) => {
+    setPrendaParaEditar(prenda);
+    setModalAbierto(true);
+  };
+
+  const handleEliminarPrenda = async (prenda) => {
+    if (window.confirm(`¿Estás seguro de que quieres eliminar "${prenda.nombre}"?`)) {
+      try {
+        // TODO: Implementar hook para eliminar prenda
+        console.log("Eliminando prenda:", prenda);
+        // await eliminarPrenda(prenda.garmentCode || prenda.codigo);
+      } catch (error) {
+        console.error("Error al eliminar prenda:", error);
+      }
+    }
+  };
+
+  const handleCerrarModal = () => {
+    setModalAbierto(false);
+    setPrendaParaEditar(null);
+  };
+
+  const handleGuardarPrenda = () => {
+    // El modal se encargará de la lógica de guardado
+    handleCerrarModal();
+    // TODO: Recargar datos de la marca
+  };
+
+  useEffect(() => {
+    if (criticalError) {
+      throw new Error(
+        `Error crítico del servidor: ${
+          criticalError.message || "No se pudo conectar con el servidor"
+        }`
+      );
+    }
+  }, [criticalError]);
+
+  if (loading) {
+    return (
+      <div className="text-white py-10 px-5">
+        <div className="text-center py-10 text-lg text-gray">
+          Cargando prendas de la marca...
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-white py-10 px-5">
+        <div className="text-center py-10">
+          <div className="text-lg text-error mb-4">Error: {error}</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!marcaDetail) {
+    return (
+      <div className="text-white py-10 px-5">
+        <div className="text-center py-10">
+          <div className="text-lg text-gray mb-4">Marca no encontrada</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h1>Bienvenido a la página de la marca</h1>
-      <Button
-      width="fit"
-      onClick={() => { navigate(`/nueva-prenda`); }}>
-        <Plus size={16} />
-        Nueva prenda
-      </Button>
+    <div
+      className="flex-1 flex flex-col py-2 px-4 sm:px-6"
+      style={{ height: "calc(100vh - 70px)" }}
+    >
+      <BrandContenido
+        marcaDetail={marcaDetail}
+        onAgregarPrenda={handleAgregarPrenda}
+        onEditarPrenda={handleEditarPrenda}
+      />
+
+      <PrendaModal
+        isOpen={modalAbierto}
+        onClose={handleCerrarModal}
+        onGuardar={handleGuardarPrenda}
+        onEliminar={handleEliminarPrenda}
+        prendaParaEditar={prendaParaEditar}
+      />
     </div>
-  )
+  );
 }
