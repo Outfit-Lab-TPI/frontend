@@ -58,11 +58,11 @@ function Profile() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-4 gap-6">
+    <div className="flex flex-col items-center justify-center p-4 gap-6 min-h-[calc(100vh-60px)]">
       {/* Card Principal de Profile */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 w-full max-w-4xl bg-gray/10 rounded-md p-8 shadow-xl">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 w-full max-w-4xl bg-gray/10 rounded-md p-8 shadow-xl">
           {/* Formulario - Lado izquierdo */}
-          <div className="lg:col-span-3">
+          <div className="md:col-span-3">
             <form
               onSubmit={handleSubmit}
               className=" h-full flex flex-col justify-between"
@@ -209,7 +209,7 @@ function Profile() {
           </div>
 
           {/* Área de Imagen de Perfil - Lado derecho */}
-          <div className="h-full lg:col-span-2">
+          <div className="h-full md:col-span-2">
             <div className="relative h-full">
               {/* Área de imagen */}
               <div className="rounded-md bg-black h-full relative">
@@ -275,6 +275,7 @@ function Profile() {
                         <span className="font-medium text-lg">
                           Subir imagen
                         </span>
+                        <p className="font-family-secondary text-xs">Esta es la imagen que se usará para probar las prendas y combinaciones</p>
 
                       </div>
                     </label>
@@ -324,7 +325,7 @@ function Profile() {
           </div>
         </div>
 
-      <div className="w-full max-w-4xl flex gap-6">
+      <div className="w-full max-w-4xl flex not-md:flex-col gap-6">
         {/* Card Mis outfits */}
         <div
           onClick={() => navigate("/mis-combinaciones")}

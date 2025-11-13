@@ -124,7 +124,7 @@ export function useProfile(onSuccess) {
     } finally {
       setIsSubmitting(false)
     }
-  }, [user, updateUser, setError, reset, data])
+  }, [user, updateUser, setError, reset])
 
   // Validaciones para los campos usando validaciones centralizadas
   const profileValidationRules = {
