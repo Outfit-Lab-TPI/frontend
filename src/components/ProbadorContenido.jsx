@@ -39,17 +39,16 @@ function ProbadorContenido({
     <div className="w-full lg:w-2/3 flex flex-col px-2">
       {/* Header del probador */}
       <div className="flex flex-col gap-2">
-        <GoBackButton />
-        <div className="p-4 bg-gray/10 w-full rounded-md max-w-[600px]">
-          <div className="flex flex-col lg:flex-row flex-wrap justify-between items-start lg:items-center gap-6">
+        <div className="p-4 bg-gray/10 w-full rounded-md ">
+          <div className="flex flex-wrap justify-between items-start lg:items-center gap-8">
             <div className="h-14 flex flex-col justify-center">
-              <h4>Probador Virtual</h4>
+              <h4 className="w-fit">Probador Virtual</h4>
               <p className="text-sm text-gray">
                 Combina prendas de todas las marcas
               </p>
             </div>
 
-            <div className="flex not-sm:flex-wrap w-full items-center md:justify-around gap-4">
+            <div className="flex not-sm:flex-wrap w-fit items-center md:justify-around gap-4">
               {/* Filtros dropdown */}
               <FilterDropdown
                 filtros={filtros}

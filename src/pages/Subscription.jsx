@@ -14,7 +14,7 @@ const SubscriptionPage = () => {
             frequency: 'mes', 
             description: 'Ideal para quienes recién interactúan con su probador virtual.', 
             features: [
-                '20 Combinaciones en tus favoritos',
+                '20 Combinaciones en favoritos',
                 'Generación de Outfits (20/día)',
                 'Descargar outfits 3D (limitado)',
             ],
@@ -28,7 +28,7 @@ const SubscriptionPage = () => {
             frequency: 'mes', 
             description: 'La mejor opción para experimentar con la creación de outfits.',
             features: [
-                '50 Combinaciones en tus favoritos',
+                '50 Combinaciones en favoritos',
                 'Generación de Outfits (50/día)',
                 'Descargar outfits 3D (limitado)',
             ],
@@ -42,7 +42,7 @@ const SubscriptionPage = () => {
             frequency: 'mes', 
             description: 'Máxima capacidad y funciones ilimitadas para profesionales.',
             features: [
-                'Combinaciones ilimitadas en tus favoritos',
+                'Combinaciones ilimitadas en favoritos',
                 'Generación de Outfits Ilimitada',
                 'Modelos 3D ilimitados',
                 ],
@@ -86,7 +86,7 @@ const SubscriptionPage = () => {
     };
 
     return (
-        <div className="min-h-screen text-white p-8 font-sans" style={{ backgroundColor: '#230636' }}> 
+        <div className="min-h-[calc(100vh-60px)] p-8 space-y-8" > 
             {isLoading && (
                 <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
                     <div className="text-xl text-white animate-pulse">
@@ -95,7 +95,7 @@ const SubscriptionPage = () => {
                 </div>
             )}
             
-            <h1 className="text-4xl sm:text-5xl font-extrabold text-center text-white mb-16 pt-8">
+            <h1 className="text-center">
                 Elige tu Plan
             </h1>
             <div className="flex flex-col md:flex-row justify-center items-stretch space-y-8 md:space-y-0 md:space-x-10 max-w-6xl mx-auto">

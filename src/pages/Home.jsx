@@ -206,8 +206,7 @@ export default function Home() {
 
   return (
     <div
-      className="flex-1 flex flex-col md:flex-row py-2 px-4 sm:px-6 gap-4"
-      style={{ height: "calc(100vh - 70px)" }}
+      className="flex-1 flex flex-col md:flex-row py-2 px-4 sm:px-6 gap-4 h-[calc(100vh-60px)]"
     >
       <ProbadorContenido
         prendas={prendas}

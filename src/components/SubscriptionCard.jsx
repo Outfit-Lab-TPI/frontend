@@ -46,14 +46,12 @@ const SubscriptionCard = ({ subscription = {}, onSubscribe, customColor }) => {
 
 
     return (
-        <div className="bg-white rounded-2xl shadow-xl p-0 flex flex-col justify-between items-center text-center 
+        <div className="bg-white rounded-lg shadow-xl p-0 flex flex-col justify-between items-center text-center 
                         max-w-xs mx-auto transition-transform hover:scale-[1.03] duration-300 relative min-h-[400px]">
             
-            <div className={`relative w-full text-white pt-6 pb-12 rounded-t-2xl ${headerStyles.className}`} style={headerStyles.style}>
+            <div className={`relative w-full text-white pt-6 pb-12 rounded-t-lg ${headerStyles.className}`} style={headerStyles.style}>
                 
-                <h2 className="text-xl font-bold uppercase mb-1">
-                    {subscription.name || 'PLAN'}
-                </h2>
+                <h2> {subscription.name || 'PLAN'} </h2>
                 
                 <p className="text-4xl font-extrabold flex items-baseline justify-center mb-1">
                     <span className="text-xl align-top mr-1 font-semibold opacity-90">
@@ -67,18 +65,17 @@ const SubscriptionCard = ({ subscription = {}, onSubscribe, customColor }) => {
                 </p>
 
                 <div 
-                    className={`absolute bottom-0 left-0 w-full h-8 bg-white z-10`} 
+                    className={`absolute -bottom-0.5 left-0 w-full h-8 bg-white z-10`} 
                     style={{ 
-                        clipPath: 'polygon(0% 0%, 100% 0%, 50% 100%)', 
-                        transform: 'translateY(50%)' 
+                        clipPath: 'polygon(0% 100%, 50% 0%, 100% 100%)', 
                     }}
                 ></div>
             </div>
 
-            <div className="text-left w-full p-6 pt-10 flex flex-col justify-between flex-grow">
+            <div className="text-left w-full p-8 pt-0 space-y-2">
                 
                 {subscription.frequency && (
-                    <p className="text-center text-sm font-medium text-gray-500 mb-6 uppercase">
+                    <p className="text-center text-gray">
                         / {subscription.frequency}
                     </p>
                 )}
