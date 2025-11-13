@@ -20,8 +20,8 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
   const [showTooltip, setShowTooltip] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const watchedValues = watch(['nombre', 'tipo', 'imagen']);
-  const [nombre, tipo, imagen] = watchedValues;
+  const watchedValues = watch(['nombre', 'tipo']);
+  const [nombre, tipo] = watchedValues;
 
   const isFormValid = nombre && tipo && selectedImage;
   const isEditing = !!prendaParaEditar;
@@ -152,8 +152,8 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
               Nueva prenda
             </h2>
             <form
-              id="nueva-prenda-form"
-              onSubmit={handleSubmit}
+              id="prenda-modal-form"
+              onSubmit={handleSubmit(handleFormSubmit)}
               className="space-y-6"
               aria-label="nueva prenda"
             >
