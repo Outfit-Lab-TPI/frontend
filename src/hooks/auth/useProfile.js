@@ -8,6 +8,7 @@ export function useProfile(onSuccess) {
   const { user, updateUser } = useAuth()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [selectedImage, setSelectedImage] = useState(null)
+  const [avatarGenero, setAvatarGenero] = useState('hombre')
 
   const {
     register,
@@ -33,6 +34,8 @@ export function useProfile(onSuccess) {
       })
       // Cargar imagen de perfil existente si la hay
       setSelectedImage(user.avatarUrl || null)
+      // Cargar preferencia de género del avatar (por defecto hombre)
+      setAvatarGenero(user.avatarGenero || 'hombre')
     }
   }, [user, reset])
 
@@ -57,6 +60,9 @@ export function useProfile(onSuccess) {
         formData.append('avatar', data.avatar[0])
       }
 
+      // Incluir preferencia de género del avatar
+      formData.append('avatarGenero', avatarGenero)
+
       // TODO: Reemplazar con endpoint real del backend
       let response
 
@@ -68,7 +74,8 @@ export function useProfile(onSuccess) {
         ...user,
         name: response.data.user.name,
         email: response.data.user.email,
-        avatarUrl: response.data.user.avatarUrl
+        avatarUrl: response.data.user.avatarUrl,
+        avatarGenero: response.data.user.avatarGenero || avatarGenero
       })
 
       // Actualizar imagen local
@@ -157,6 +164,7 @@ export function useProfile(onSuccess) {
       confirmPassword: ''
     })
     setSelectedImage(user?.avatarUrl || null)
+    setAvatarGenero(user?.avatarGenero || 'hombre')
   }, [user, reset])
 
   // Función para manejar cambio de imagen
@@ -191,6 +199,8 @@ export function useProfile(onSuccess) {
     cancelEdit,
     selectedImage,
     handleImageChange,
-    removeImage
+    removeImage,
+    avatarGenero,
+    setAvatarGenero
   }
 }

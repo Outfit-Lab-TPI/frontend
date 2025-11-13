@@ -77,7 +77,8 @@ describe("useCombinacion", () => {
             expect(combinacionService.combinarPrendas).toHaveBeenCalledWith(
             true,
             "url-superior.jpg",
-            "url-inferior.jpg"
+            "url-inferior.jpg",
+            null
             );
         });
 

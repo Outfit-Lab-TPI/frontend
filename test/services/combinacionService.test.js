@@ -37,6 +37,48 @@ describe('combinacionService', () => {
       expect(result).toEqual(mockData)
     })
 
+    it('debe usar avatarGenero del usuario cuando no hay imagen personalizada', async () => {
+      // given
+      const mockData = { imageUrl: 'https://example.com/combinacion1.png' }
+      apiClient.post.mockResolvedValueOnce({ data: mockData })
+
+      const esHombre = true
+      const top = 'camisa azul'
+      const bottom = 'pantalón negro'
+      const usuario = { avatarGenero: 'mujer', avatarUrl: null }
+
+      // when
+      const result = await combinacionService.combinarPrendas(esHombre, top, bottom, usuario)
+
+      // then
+      expect(apiClient.post).toHaveBeenCalledWith(
+        '/fashion/combinar-prendas',
+        { avatarType: 'woman', top, bottom },  // Debe usar 'woman' por la preferencia del usuario
+        { timeout: 60000 }
+      )
+    })
+
+    it('debe usar avatar personalizado cuando usuario tiene avatarUrl', async () => {
+      // given
+      const mockData = { imageUrl: 'https://example.com/combinacion1.png' }
+      apiClient.post.mockResolvedValueOnce({ data: mockData })
+
+      const esHombre = true
+      const top = 'camisa azul'
+      const bottom = 'pantalón negro'
+      const usuario = { avatarGenero: 'hombre', avatarUrl: 'https://example.com/user-avatar.jpg' }
+
+      // when
+      const result = await combinacionService.combinarPrendas(esHombre, top, bottom, usuario)
+
+      // then
+      expect(apiClient.post).toHaveBeenCalledWith(
+        '/fashion/combinar-prendas',
+        { avatarType: 'custom', top, bottom },  // Debe usar 'custom' cuando hay imagen personalizada
+        { timeout: 60000 }
+      )
+    })
+
     it('debe lanzar error si apiClient.post falla', async () => {
       // given
       const error = new Error('Servidor caído')

@@ -5,12 +5,14 @@ import { useCombinacion } from "../hooks/useCombinacion.jsx";
 import { useModelo3D } from "../hooks/useModelo3D.jsx";
 import { useFavoritos } from "../hooks/useFavoritos.jsx";
 import { useSugerencias } from "../hooks/useSugerencias.jsx";
+import { useAuth } from "../hooks/auth/useAuth.jsx";
 import ProbadorContenido from "../components/ProbadorContenido.jsx";
 import Panel from "../components/Panel.jsx";
 import SugerenciasModal from "../components/shared/SugerenciasModal";
 
 export default function Home() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const {
     prendas,
@@ -51,7 +53,8 @@ export default function Home() {
 
   const [selectedSuperior, setSelectedSuperior] = useState(null);
   const [selectedInferior, setSelectedInferior] = useState(null);
-  const [esHombre, setEsHombre] = useState(true);
+  // Determinar género del avatar basado en las preferencias del usuario
+  const esHombre = user?.avatarGenero === 'mujer' ? false : true; // Default a hombre si no hay preferencia
   const [lastCombination, setLastCombination] = useState(null);
   const [modalSugerenciasAbierto, setModalSugerenciasAbierto] = useState(false);
   const [prendaParaSugerencias, setPrendaParaSugerencias] = useState(null);
@@ -158,7 +161,7 @@ export default function Home() {
         esHombre: esHombre,
       });
 
-      await combinarPrendas(esHombre, selectedSuperior, selectedInferior);
+      await combinarPrendas(esHombre, selectedSuperior, selectedInferior, user);
     }
   };
 
@@ -222,8 +225,6 @@ export default function Home() {
         selectedInferior={selectedInferior}
         onSelectPrenda={handleSelectPrenda}
         canCombine={canCombine}
-        esHombre={esHombre}
-        setEsHombre={setEsHombre}
         onCombinarPrendas={handleCombinarPrendas}
         loadingCombinacion={loadingCombinacion}
         resultado={resultado}

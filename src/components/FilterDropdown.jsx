@@ -28,7 +28,7 @@ function FilterDropdown({
       {/* Botón de filtros */}
       <button
         onClick={toggleExpanded}
-        className="flex items-center gap-2 px-3 py-2 rounded-md transition-colors bg-gray/10 text-gray hover:text-white border border-gray/20 hover:border-gray/40"
+        className="flex items-center gap-2 p-2.5 rounded-md transition-colors bg-gray/10 text-gray hover:text-white border border-gray/20 hover:border-gray/40"
       >
         <Filter className="h-4 w-4" />
         <span className="text-sm font-medium">

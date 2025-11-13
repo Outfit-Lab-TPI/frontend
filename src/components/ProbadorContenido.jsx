@@ -24,8 +24,6 @@ function ProbadorContenido({
   selectedInferior,
   onSelectPrenda,
   canCombine,
-  esHombre,
-  setEsHombre,
   onCombinarPrendas,
   loadingCombinacion,
   resultado,
@@ -58,33 +56,6 @@ function ProbadorContenido({
                 onLimpiarFiltros={onLimpiarFiltros}
               />
 
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray whitespace-nowrap">
-                  Avatar:
-                </span>
-                <div className="relative inline-flex items-center bg-dark-gray rounded-full p-1 transition-colors">
-                  <button
-                    onClick={() => setEsHombre(true)}
-                    className={`cursor-pointer relative z-10 px-3 py-1 text-xs font-medium rounded-l-full transition-all duration-200 border border-gray ${
-                      esHombre
-                        ? "text-black bg-white/80 shadow-sm"
-                        : "text-gray hover:text-white"
-                    }`}
-                  >
-                    Hombre
-                  </button>
-                  <button
-                    onClick={() => setEsHombre(false)}
-                    className={`cursor-pointer relative z-10 px-3 py-1 text-xs font-medium rounded-r-full transition-all duration-200 border border-gray ${
-                      !esHombre
-                        ? "text-black bg-white/80 shadow-sm"
-                        : "text-gray hover:text-white"
-                    }`}
-                  >
-                    Mujer
-                  </button>
-                </div>
-              </div>
               <div className="hidden lg:inline-flex">
                 <Button
                   onClick={onCombinarPrendas}

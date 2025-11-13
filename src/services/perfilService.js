@@ -39,6 +39,7 @@ export const perfilService = {
             name: 'Usuario Mock',
             email: 'usuario@example.com',
             avatarUrl: null,
+            avatarGenero: 'hombre', // Preferencia por defecto
             createdAt: new Date().toISOString()
           }
         }
@@ -75,6 +76,7 @@ export const perfilService = {
             name: formData.get('name'),
             email: formData.get('email'),
             avatarUrl: formData.has('avatar') ? `/uploads/avatars/${userId}.jpg` : null,
+            avatarGenero: formData.get('avatarGenero') || 'hombre',
             updatedAt: new Date().toISOString()
           }
         }

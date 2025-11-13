@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ChevronRight,
@@ -17,6 +17,7 @@ import { useAuth } from "../hooks/auth/useAuth";
 function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [avatarGenero, setAvatarGenero] = useState("hombre"); // 'hombre' | 'mujer' para avatar por defecto
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -29,22 +30,37 @@ function Profile() {
     handleSubmit,
     errors,
     isValid,
-    isDirty,
     isSubmitting,
     validationRules,
     cancelEdit,
     selectedImage,
     handleImageChange,
     removeImage,
+    avatarGenero: hookAvatarGenero,
+    setAvatarGenero: setHookAvatarGenero,
   } = useProfile(onSubmitSuccess);
+
+  // Sincronizar estado local con el hook
+  React.useEffect(() => {
+    setAvatarGenero(hookAvatarGenero);
+  }, [hookAvatarGenero]);
 
   const handleCancelEdit = () => {
     setIsEditing(false);
     cancelEdit();
   };
 
+  // Función para cambiar género y activar modo edición
+  const handleAvatarGeneroChange = genero => {
+    setAvatarGenero(genero);
+    setHookAvatarGenero(genero);
+    if (!selectedImage) {
+      setIsEditing(true);
+    }
+  };
+
   // Wrapper para handleImageChange que activa el modo edición
-  const handleImageChangeWithEdit = (event) => {
+  const handleImageChangeWithEdit = event => {
     handleImageChange(event);
     if (event.target.files && event.target.files[0]) {
       setIsEditing(true);
@@ -60,14 +76,15 @@ function Profile() {
   return (
     <div className="flex flex-col items-center justify-center p-4 gap-6 min-h-[calc(100vh-60px)]">
       {/* Card Principal de Profile */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 w-full max-w-4xl bg-gray/10 rounded-md p-8 shadow-xl">
+      <div className="w-full max-w-md md:max-w-4xl bg-gray/10 rounded-md p-8 shadow-xl space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
           {/* Formulario - Lado izquierdo */}
           <div className="md:col-span-3">
             <form
               onSubmit={handleSubmit}
               className=" h-full flex flex-col justify-between"
             >
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {/* Header con título y icono de edición */}
                 <div className="flex items-center justify-between mb-8">
                   <h2 className="text-white font-medium">
@@ -102,7 +119,7 @@ function Profile() {
                     className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray disabled:opacity-60"
                   />
                   {errors.name && (
-                    <p className="text-error text-sm mt-1">
+                    <p className="text-error text-xs mt-1">
                       {errors.name.message}
                     </p>
                   )}
@@ -124,7 +141,7 @@ function Profile() {
                     className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray disabled:opacity-60"
                   />
                   {errors.email && (
-                    <p className="text-error text-sm mt-1">
+                    <p className="text-error text-xs mt-1">
                       {errors.email.message}
                     </p>
                   )}
@@ -148,7 +165,7 @@ function Profile() {
                         className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
                       />
                       {errors.password && (
-                        <p className="text-error text-sm mt-1">
+                        <p className="text-error text-xs mt-1">
                           {errors.password.message}
                         </p>
                       )}
@@ -172,7 +189,7 @@ function Profile() {
                         className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
                       />
                       {errors.confirmPassword && (
-                        <p className="text-error text-sm mt-1">
+                        <p className="text-error text-xs mt-1">
                           {errors.confirmPassword.message}
                         </p>
                       )}
@@ -182,18 +199,14 @@ function Profile() {
 
                 {/* Mostrar errores generales */}
                 {errors.submit && (
-                  <div className="text-error text-sm text-center">
+                  <div className="text-error text-xs text-center">
                     {errors.submit.message}
                   </div>
                 )}
               </div>
-              {/* Botón Cerrar sesión / Guardar cambios */}
-              <div className="mt-8">
-                {isEditing ? (
-                  <Button type="submit" disabled={!isValid || isSubmitting}>
-                    {isSubmitting ? "Guardando..." : "Guardar cambios"}
-                  </Button>
-                ) : (
+              {/* Botón Cerrar sesión */}
+              {!isEditing && (
+                <div className="mt-8">
                   <Button
                     variant="outline"
                     color="error"
@@ -203,8 +216,8 @@ function Profile() {
                     <LogOut />
                     Cerrar sesión
                   </Button>
-                )}
-              </div>
+                </div>
+              )}
             </form>
           </div>
 
@@ -271,12 +284,47 @@ function Profile() {
                       className="cursor-pointer block p-8 text-center transition-colors rounded-lg h-full"
                     >
                       <div className="flex flex-col items-center justify-center h-full gap-2 text-gray hover:text-white">
-                        <Camera className="w-12 h-12" />
+                        <Camera className="w-12 h-12 mt-12" />
                         <span className="font-medium text-lg">
                           Subir imagen
                         </span>
-                        <p className="font-family-secondary text-xs">Esta es la imagen que se usará para probar las prendas y combinaciones</p>
 
+                        {/* Selección de avatar por defecto cuando no hay imagen */}
+                        <div className="mt-6">
+                          <p className="text-xs font-family-secondary text-gray mb-2">
+                            O selecciona un avatar por defecto:
+                          </p>
+                          <div className="flex items-center justify-center">
+                            <button
+                              type="button"
+                              onClick={() => handleAvatarGeneroChange("hombre")}
+                              className={`flex gap-4 px-3 py-1 text-sm font-medium rounded-l-full transition-all duration-200 border border-gray ${
+                                avatarGenero === "hombre"
+                                  ? "text-black bg-gray shadow-sm"
+                                  : "text-gray hover:text-white"
+                              }`}
+                            >
+                              {avatarGenero === "hombre" && (
+                                <div className="w-1">✓</div>
+                              )}
+                              Hombre
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleAvatarGeneroChange("mujer")}
+                              className={`flex gap-4 px-3 py-1 text-sm font-medium rounded-r-full transition-all duration-200 border border-gray ${
+                                avatarGenero === "mujer"
+                                  ? "text-black bg-gray shadow-sm"
+                                  : "text-gray hover:text-white"
+                              }`}
+                            >
+                              {avatarGenero === "mujer" && (
+                                <div className="w-1">✓</div>
+                              )}
+                              Mujer
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </label>
                   )
@@ -317,15 +365,22 @@ function Profile() {
               </div>
 
               {errors.avatar && (
-                <p className="text-error text-sm mt-2">
+                <p className="text-error text-xs mt-2">
                   {errors.avatar.message}
                 </p>
               )}
             </div>
           </div>
         </div>
+        {/* Boton de guardar cambios */}
+        {isEditing && (
+          <Button type="submit" disabled={!isValid || isSubmitting}>
+            {isSubmitting ? "Guardando..." : "Guardar cambios"}
+          </Button>
+        )}
+      </div>
 
-      <div className="w-full max-w-4xl flex not-md:flex-col gap-6">
+      <div className="w-full max-w-md md:max-w-4xl flex not-md:flex-col gap-6">
         {/* Card Mis outfits */}
         <div
           onClick={() => navigate("/mis-combinaciones")}

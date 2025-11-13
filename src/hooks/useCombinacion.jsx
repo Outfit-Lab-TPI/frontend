@@ -6,7 +6,7 @@ export const useCombinacion = () => {
   const [error, setError] = useState(null);
   const [resultado, setResultado] = useState(null);
 
-  const combinarPrendas = async (esHombre, prendaSuperior, prendaInferior) => {
+  const combinarPrendas = async (esHombre, prendaSuperior, prendaInferior, usuario = null) => {
     if (!validarCombinacion(esHombre, prendaSuperior, prendaInferior)) {
       return null;
     }
@@ -21,7 +21,8 @@ export const useCombinacion = () => {
       response = await combinacionService.combinarPrendas(
         esHombre,
         prendaSuperior.imagenUrl,
-        prendaInferior.imagenUrl
+        prendaInferior.imagenUrl,
+        usuario  // Pasar información del usuario para avatar personalizado
       );
 
       setResultado(response);
