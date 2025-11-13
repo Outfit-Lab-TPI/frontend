@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useAuth } from './useAuth'
 import { validationRules, createOptionalPasswordConfirmValidation } from '../../utils/validations'
-import axios from 'axios'
+import { perfilService } from '../../services/perfilService'
 
 export function useProfile(onSuccess) {
   const { user, updateUser } = useAuth()
@@ -60,40 +60,8 @@ export function useProfile(onSuccess) {
       // TODO: Reemplazar con endpoint real del backend
       let response
 
-      // Por ahora simulamos la respuesta ya que el backend no está implementado
-      if (process.env.NODE_ENV === 'development') {
-        // Simular delay de red
-        await new Promise(resolve => setTimeout(resolve, 1000))
-
-        // Simular URL de avatar si se subió una imagen
-        let avatarUrl = user.avatarUrl
-        if (data.avatar && data.avatar[0]) {
-          // En desarrollo, simular URL de la imagen subida
-          avatarUrl = URL.createObjectURL(data.avatar[0])
-        }
-
-        // Simular respuesta exitosa
-        response = {
-          data: {
-            user: {
-              id: user.id,
-              name: formData.get('name'),
-              email: formData.get('email'),
-              avatarUrl: avatarUrl
-            }
-          }
-        }
-        console.log('Profile actualizado exitosamente (simulado):', response.data)
-      } else {
-        // En producción, hacer la llamada real
-        response = await axios.put('/api/auth/profile', formData, {
-          headers: {
-            Authorization: `Bearer ${user?.token}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-        console.log('Profile actualizado exitosamente:', response.data)
-      }
+      // Usar el perfilService para actualizar el perfil
+      response = await perfilService.actualizarPerfil(user.id, formData)
 
       // Actualizar los datos del usuario en el contexto
       updateUser({
@@ -122,12 +90,9 @@ export function useProfile(onSuccess) {
       return { success: true, message: 'Perfil actualizado correctamente' }
 
     } catch (error) {
-      // Solo mostrar errores de red en producción
-      if (process.env.NODE_ENV !== 'development') {
-        console.error('Error al actualizar perfil:', error)
-      }
+      console.error('Error al actualizar perfil:', error)
 
-      // Manejar diferentes tipos de errores
+      // Manejar diferentes tipos de errores del servicio
       if (error.response?.status === 409) {
         setError('email', {
           type: 'manual',
@@ -143,17 +108,15 @@ export function useProfile(onSuccess) {
           type: 'manual',
           message: 'Datos inválidos. Revisa los campos y vuelve a intentar.'
         })
-      } else if (error.response?.status === 404 && process.env.NODE_ENV === 'development') {
-        // En desarrollo, el 404 es esperado porque el backend no está implementado
-        console.log('Endpoint no implementado aún (esperado en desarrollo)')
+      } else if (error.isCritical) {
         setError('submit', {
           type: 'manual',
-          message: 'Funcionalidad no implementada en el backend aún.'
+          message: 'Error de conexión. Revisa tu conexión a internet e inténtalo nuevamente.'
         })
       } else {
         setError('submit', {
           type: 'manual',
-          message: 'Error al actualizar el perfil. Intenta nuevamente.'
+          message: error.message || 'Error al actualizar el perfil. Intenta nuevamente.'
         })
       }
 
@@ -161,7 +124,7 @@ export function useProfile(onSuccess) {
     } finally {
       setIsSubmitting(false)
     }
-  }, [user, updateUser, setError, reset])
+  }, [user, updateUser, setError, reset, data])
 
   // Validaciones para los campos usando validaciones centralizadas
   const profileValidationRules = {
