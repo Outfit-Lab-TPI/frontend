@@ -1,3 +1,4 @@
+import { useState } from "react";
 import PrendaGalleryCard from "./PrendaGalleryCard.jsx";
 import FilterDropdown from "./FilterDropdown.jsx";
 import Button from "./shared/Button.jsx";
@@ -8,11 +9,11 @@ import {
   DrawerContent,
   DrawerClose,
 } from "@/components/ui/drawer";
-import GoBackButton from "./shared/GoBackButton.jsx";
+import { searchGarments } from "@/lib/searchUtils.js";
+import SearchInput from "./shared/SearchInput.jsx";
 
-function ProbadorContenido({
+export default function ProbadorContenido({
   prendas,
-  prendasCategorizadas,
   filtros,
   marcasDisponibles,
   coloresDisponibles,
@@ -33,9 +34,17 @@ function ProbadorContenido({
   loadingModelo3D,
   handleGenerarModelo3D,
 }) {
+  const [busqueda, setBusqueda] = useState("");
+
+  const prendasFiltradas = searchGarments(prendas, busqueda);
+
+  const prendasCategorizadasFiltradas = {
+    superiores: prendasFiltradas.filter((p) => p.tipo === "superior"),
+    inferiores: prendasFiltradas.filter((p) => p.tipo === "inferior"),
+  };
+
   return (
     <div className="w-full lg:w-2/3 flex flex-col px-2">
-      {/* Header del probador */}
       <div className="flex flex-col gap-2">
         <div className="p-4 bg-gray/10 w-full rounded-md ">
           <div className="flex flex-wrap justify-between items-start lg:items-center gap-8">
@@ -47,7 +56,12 @@ function ProbadorContenido({
             </div>
 
             <div className="flex not-sm:flex-wrap w-fit items-center md:justify-around gap-4">
-              {/* Filtros dropdown */}
+              <SearchInput
+                value={busqueda}
+                onChange={setBusqueda}
+                placeholder="Buscar prendas..."
+              />
+
               <FilterDropdown
                 filtros={filtros}
                 marcasDisponibles={marcasDisponibles}
@@ -106,66 +120,71 @@ function ProbadorContenido({
         </p>
       </div>
 
-      {/* Galería de prendas */}
       <div className="flex-1 overflow-y-auto mt-4 modern-scrollbar">
-        {prendas && prendas.length > 0 ? (
+        {prendasFiltradas && prendasFiltradas.length > 0 ? (
           <div className="space-y-6 max-w-5xl mx-auto">
             <div>
               <h5 className="bg-gray/5 pt-1 px-2 rounded-sm font-semibold mb-4">
-                Prendas Superiores ({prendasCategorizadas.superiores.length})
+                Prendas Superiores (
+                {prendasCategorizadasFiltradas.superiores.length})
               </h5>
+
               <div className="flex flex-wrap mx-8 items-center gap-6">
-                {prendasCategorizadas.superiores.map((prenda, index) => (
-                  <PrendaGalleryCard
-                    key={`superior-${index}`}
-                    prenda={prenda}
-                    isSelected={selectedSuperior?.nombre === prenda.nombre}
-                    onSelect={onSelectPrenda}
-                    onToggleFavorita={onToggleFavorita}
-                    onSugerencias={onSugerencias}
-                  />
-                ))}
+                {prendasCategorizadasFiltradas.superiores.map(
+                  (prenda, index) => (
+                    <PrendaGalleryCard
+                      key={`superior-${index}`}
+                      prenda={prenda}
+                      isSelected={selectedSuperior?.nombre === prenda.nombre}
+                      onSelect={onSelectPrenda}
+                      onToggleFavorita={onToggleFavorita}
+                      onSugerencias={onSugerencias}
+                    />
+                  )
+                )}
               </div>
-              {prendasCategorizadas.superiores.length === 0 && (
+
+              {prendasCategorizadasFiltradas.superiores.length === 0 && (
                 <div className="text-center py-8 text-gray">
-                  No hay prendas superiores disponibles con los filtros
-                  aplicados
+                  No hay prendas superiores que coincidan con la búsqueda
                 </div>
               )}
             </div>
 
             <div>
               <h5 className="bg-gray/5 py-1 px-2 rounded-sm font-semibold mb-4">
-                Prendas Inferiores ({prendasCategorizadas.inferiores.length})
+                Prendas Inferiores (
+                {prendasCategorizadasFiltradas.inferiores.length})
               </h5>
+
               <div className="flex flex-wrap mx-8 items-center gap-6">
-                {prendasCategorizadas.inferiores.map((prenda, index) => (
-                  <PrendaGalleryCard
-                    key={`inferior-${index}`}
-                    prenda={prenda}
-                    isSelected={selectedInferior?.nombre === prenda.nombre}
-                    onSelect={onSelectPrenda}
-                    onToggleFavorita={onToggleFavorita}
-                    onSugerencias={onSugerencias}
-                  />
-                ))}
+                {prendasCategorizadasFiltradas.inferiores.map(
+                  (prenda, index) => (
+                    <PrendaGalleryCard
+                      key={`inferior-${index}`}
+                      prenda={prenda}
+                      isSelected={selectedInferior?.nombre === prenda.nombre}
+                      onSelect={onSelectPrenda}
+                      onToggleFavorita={onToggleFavorita}
+                      onSugerencias={onSugerencias}
+                    />
+                  )
+                )}
               </div>
-              {prendasCategorizadas.inferiores.length === 0 && (
+
+              {prendasCategorizadasFiltradas.inferiores.length === 0 && (
                 <div className="text-center py-8 text-gray">
-                  No hay prendas inferiores disponibles con los filtros
-                  aplicados
+                  No hay prendas inferiores que coincidan con la búsqueda
                 </div>
               )}
             </div>
           </div>
         ) : (
           <div className="text-center py-12 text-gray">
-            No hay prendas disponibles con los filtros aplicados
+            No hay prendas disponibles con la búsqueda aplicada
           </div>
         )}
       </div>
     </div>
   );
 }
-
-export default ProbadorContenido;
