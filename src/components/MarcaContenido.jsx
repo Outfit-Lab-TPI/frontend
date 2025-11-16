@@ -10,6 +10,8 @@ import {
   DrawerClose,
 } from "@/components/ui/drawer";
 import GoBackButton from "./shared/GoBackButton.jsx";
+import { searchGarments } from "@/lib/searchUtils.js";
+import SearchInput from "./shared/SearchInput.jsx";
 
 function MarcaContenido({
   marcaDetail,
@@ -30,26 +32,29 @@ function MarcaContenido({
 }) {
   const [soloFavoritosSuperiores, setSoloFavoritosSuperiores] = useState(false);
   const [soloFavoritosInferiores, setSoloFavoritosInferiores] = useState(false);
+  const [busqueda, setBusqueda] = useState("");
 
   const prendasCategorizadas = useMemo(() => {
     const superiores = marcaDetail?.garmentTop?.content || [];
     const inferiores = marcaDetail?.garmentBottom?.content || [];
+    const superioresBuscados = searchGarments(superiores, busqueda);
+    const inferioresBuscados = searchGarments(inferiores, busqueda);
 
     return {
       superiores: soloFavoritosSuperiores
-        ? superiores.filter((prenda) => prenda.esFavorita)
-        : superiores,
+        ? superioresBuscados.filter((prenda) => prenda.esFavorita)
+        : superioresBuscados,
       inferiores: soloFavoritosInferiores
-        ? inferiores.filter((prenda) => prenda.esFavorita)
-        : inferiores,
+        ? inferioresBuscados.filter((prenda) => prenda.esFavorita)
+        : inferioresBuscados,
     };
-  }, [marcaDetail, soloFavoritosSuperiores, soloFavoritosInferiores]);
+  }, [marcaDetail, soloFavoritosSuperiores, soloFavoritosInferiores, busqueda]);
 
   return (
     <div className="w-full lg:w-2/3 flex flex-col px-2">
       <div className="flex flex-col gap-2">
         <GoBackButton url={"/marcas"} />
-        <div className="p-4 bg-gray/10 w-full rounded-md max-w-[600px]">
+        <div className="p-4 bg-gray/10 w-full rounded-md max-w-[600px] lg:max-w-full">
           <div className="flex flex-col lg:flex-row flex-wrap justify-between items-start lg:items-center gap-6">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 bg-gray rounded-xl flex items-center justify-center p-1">
@@ -80,6 +85,11 @@ function MarcaContenido({
             </div>
 
             <div className="flex flex-wrap not-lg:w-full items-center gap-6">
+              <SearchInput
+                value={busqueda}
+                onChange={setBusqueda}
+                placeholder="Buscar prendas..."
+              />
               <div className="hidden lg:inline-flex">
                 <Button
                   onClick={onCombinarPrendas}

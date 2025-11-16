@@ -16,7 +16,6 @@ export default function Home() {
 
   const {
     prendas,
-    prendasCategorizadas,
     loading,
     error,
     criticalError,
@@ -54,7 +53,7 @@ export default function Home() {
   const [selectedSuperior, setSelectedSuperior] = useState(null);
   const [selectedInferior, setSelectedInferior] = useState(null);
   // Determinar género del avatar basado en las preferencias del usuario
-  const esHombre = user?.avatarGenero === 'mujer' ? false : true; // Default a hombre si no hay preferencia
+  const esHombre = user?.avatarGenero === "mujer" ? false : true; // Default a hombre si no hay preferencia
   const [lastCombination, setLastCombination] = useState(null);
   const [modalSugerenciasAbierto, setModalSugerenciasAbierto] = useState(false);
   const [prendaParaSugerencias, setPrendaParaSugerencias] = useState(null);
@@ -208,12 +207,9 @@ export default function Home() {
   }
 
   return (
-    <div
-      className="flex-1 flex flex-col md:flex-row py-2 px-4 sm:px-6 gap-4 h-[calc(100vh-60px)]"
-    >
+    <div className="flex-1 flex flex-col md:flex-row py-2 px-4 sm:px-6 gap-4 h-[calc(100vh-60px)]">
       <ProbadorContenido
         prendas={prendas}
-        prendasCategorizadas={prendasCategorizadas}
         filtros={filtros}
         marcasDisponibles={marcasDisponibles}
         coloresDisponibles={coloresDisponibles}
