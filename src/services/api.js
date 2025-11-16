@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 5000,
+  timeout: 500000,
 });
 
 // Response interceptor for error handling
@@ -26,25 +26,39 @@ apiClient.interceptors.response.use(
 );
 
 // API endpoints
+/*
 export const userAPI = {
   getUserById: (id) => apiClient.get(`/users/${id}`),
 };
+*/
 
-export const prendaAPI = {
-  crearNuevaPrenda: (formData) => {
-    console.log('Enviando FormData:', formData);
-    // Validar que FormData tenga los campos requeridos
-    if (!formData.has('nombre') || !formData.has('tipo')) {
-      return Promise.reject(new Error('FormData debe contener nombre y tipo'));
-    }
+//Endpoints para mercado pago
+export const subscriptionAPI = {
+  /**
+   * Solicita al backend de Java que cree una Preferencia de Pago Único.
+   * @param {string} planId - El ID interno de tu plan
+   * @param {string} userEmail - Email del pagador
+   * @param {number} price - El precio del item
+   * @param {string} currency - La moneda (ej. "USD" o "ARS")
+   * @returns {Promise<string>} Retorna la URL de redirección (initPoint) de Mercado Pago.
+   */
+  createPreference: (planId, userEmail, price, currency) => {
+    const payload = {
+      planId,
+      userEmail,
+      price,
+      currency
+    };
 
-    // Para FormData, necesitamos configurar headers específicos
-    return apiClient.post('/nueva-prenda', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+    return apiClient.post(
+      '/mp/crear-suscripcion',
+      payload
+    )
+    .then(response => {
+        return response.data.initPoint; 
     });
-  },
+  }
 };
+
 
 export default apiClient;

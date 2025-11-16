@@ -1,17 +1,25 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 :root {
   /* Color Palette */
   --primary: #230636;
-  --secondary: #926490;
+  --secondary: #8f5d8d;
   --tertiary: #e3c18a;
   --white: #fffcf5;
   --gray: #858182;
   --black: #0a050e;
 
   /* Typography */
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+
+  /* Font families */
+  --font-primary: "Bebas Neue", system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-secondary: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
   line-height: 1.5;
+  letter-spacing: normal;
   font-weight: 400;
 
   color: var(--white);
@@ -21,6 +29,22 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@theme {
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-tertiary: var(--tertiary);
+  --color-white: var(--white);
+  --color-gray: var(--gray);
+  --color-black: var(--black);
+  --color-error: #b62626;
+  --color-success: #1f8724;
+  --color-warning: #bd7115;
+  --color-info: #1d8cc9;
+
+  --font-family-primary: var(--font-primary);
+  --font-family-secondary: var(--font-secondary);
 }
 
 * {
@@ -45,15 +69,17 @@ body {
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
+  max-width: 2000px;
+  margin: 0 auto;
 }
 
 a {
   font-weight: 500;
-  color: var(--primary);
-  text-decoration: inherit;
 }
-a:hover {
-  color: var(--secondary);
+
+input,
+textarea {
+  font-family: "Arial Narrow", Arial, sans-serif;
 }
 
 h1 {
@@ -61,50 +87,67 @@ h1 {
   line-height: 1.1;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: var(--primary);
-  color: var(--white);
-  cursor: pointer;
-  transition: all 0.25s;
-}
-button:hover {
-  background-color: var(--secondary);
-}
-button:focus,
-button:focus-visible {
-  outline: 2px solid var(--tertiary);
-}
-button:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-button:disabled:hover {
-  background-color: var(--primary);
+h2 {
+  font-size: 2.4em;
+  line-height: 1.2;
 }
 
+h3 {
+  font-size: 1.8em;
+  line-height: 1.3;
+}
+
+h4 {
+  font-size: 1.4em;
+  line-height: 1.4;
+}
+
+h5 {
+  font-size: 1.2em;
+  line-height: 1.4;
+}
+
+h6 {
+  font-size: 1em;
+  line-height: 1.5;
+}
+
+/* Bebas Neue font for headings and labels */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+label {
+  font-family: var(--font-primary);
+  letter-spacing: 1.2px;
+}
+
+/* Font utility classes */
+.font-secondary {
+  font-family: var(--font-secondary);
+  letter-spacing: normal;
+}
+
+input,
+select {
+  background-color: rgba(133, 129, 130, 0.2);
+  color: var(--white);
+  border-radius: 4px;
+}
+
+input,
 select {
   background-color: var(--black);
   color: var(--white);
-  border: 1px solid var(--gray);
-}
-
-input[type="text"] {
-  background-color: var(--black);
-  color: var(--white);
-  border: 1px solid var(--gray);
+  border-radius: 4px;
 }
 
 /* Layout Classes */
 .main-content {
   flex: 1;
   width: 100%;
-  padding: 20px;
 }
 
 .header {
@@ -138,7 +181,6 @@ input[type="text"] {
 .prendas-section h2 {
   color: var(--white);
   margin-bottom: 15px;
-  font-size: 1.3rem;
 }
 
 .prendas-grid {
@@ -249,4 +291,10 @@ input[type="text"] {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(6, 1fr);
   }
+}
+
+/* Custom Modern Scrollbar Styles */
+.modern-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--gray) var(--black);
 }

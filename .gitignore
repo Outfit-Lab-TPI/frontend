@@ -27,3 +27,4 @@ dist-ssr
 .claude
 
 package-lock.json
+.env

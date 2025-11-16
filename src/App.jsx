@@ -1,24 +1,19 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Header from './components/Header'
-import Footer from './components/Footer'
-import Home from './pages/Home'
-import Profile from './pages/Profile'
-import NuevaPrenda from './pages/NuevaPrenda'
+import { BrowserRouter } from "react-router-dom";
+import AppContent from "./AppContent";
+import ErrorBoundary from "./pages/errors/ErrorBoundary";
+import { AuthProvider } from "./context/AuthContext";
+import MercadoPagoWrapper from "./components/MercadoPagoWrapper"; 
 
-function App() {
+export default function App() {
   return (
-    <BrowserRouter>
-      <Header />
-      <main className="main-content">
-        <Routes>
-          <Route path="/home" element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/nueva-prenda" element={<NuevaPrenda />} />
-          <Route path="/" element={<Home />} />
-        </Routes>
-      </main>
-    </BrowserRouter>
-  )
+    <ErrorBoundary>
+      <AuthProvider>
+        <MercadoPagoWrapper>
+          <BrowserRouter>
+            <AppContent />
+          </BrowserRouter>
+        </MercadoPagoWrapper>
+      </AuthProvider>
+    </ErrorBoundary>
+  );
 }
-
-export default App
