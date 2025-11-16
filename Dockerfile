@@ -1,6 +1,10 @@
 # Stage 1: Build the React application
 FROM node:20-alpine AS builder
 WORKDIR /app
+ARG VITE_API_BASE_URL
+ARG VITE_MP_PUBLIC_KEY
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL \
+    VITE_MP_PUBLIC_KEY=$VITE_MP_PUBLIC_KEY
 COPY package*.json ./
 RUN npm install
 COPY . .
