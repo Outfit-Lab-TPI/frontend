@@ -84,7 +84,20 @@ export const perfilService = {
     } catch (error) {
       error.isCritical = isCriticalError(error);
       console.error('Error en perfilService.actualizarPerfil:', error);
-      throw error;
+
+      // Manejar errores específicos del perfil
+      if (error.response?.status === 409) {
+        throw new Error('Este email ya está en uso por otra cuenta');
+      } else if (error.response?.status === 401) {
+        throw new Error('Sesión expirada. Por favor, inicia sesión nuevamente.');
+      } else if (error.response?.status === 400) {
+        throw new Error('Datos inválidos. Revisa los campos y vuelve a intentar.');
+      }
+
+      // Para otros errores, usar mensaje del servidor o genérico
+      throw new Error(
+        error.response?.data?.message || 'Error al actualizar el perfil'
+      );
     }
   },
 
