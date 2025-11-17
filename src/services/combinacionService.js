@@ -1,19 +1,12 @@
 import apiClient from './api.js';
 
 export const combinacionService = {
-  combinarPrendas: async (esHombre, top, bottom, usuario = null) => {
-    // Determinar qué avatar usar basado en las preferencias del usuario
-    let avatarType;
+  combinarPrendas: async (avatarType, top, bottom, usuario = null) => {
     let customAvatarUrl = null;
 
-    if (usuario && usuario.avatarUrl) {
-      // Si el usuario tiene una imagen personalizada, usarla
-      avatarType = 'custom';
+    // Si es custom, incluir la URL del avatar personalizado
+    if (avatarType === 'custom' && usuario?.avatarUrl) {
       customAvatarUrl = usuario.avatarUrl;
-    } else {
-      // Si no hay imagen personalizada, usar avatar por defecto basado en preferencias o parámetro esHombre
-      const generoPreferido = usuario?.avatarGenero || (esHombre ? 'hombre' : 'mujer');
-      avatarType = generoPreferido === 'hombre' ? 'man' : 'woman';
     }
 
     try {
@@ -23,17 +16,52 @@ export const combinacionService = {
         bottom
       };
 
-      // TODO: Cuando se implemente el backend, agregar soporte para avatares personalizados
-      // if (customAvatarUrl) {
-      //   requestData.customAvatar = customAvatarUrl;
-      // }
+      // Incluir avatar personalizado si aplica
+      if (customAvatarUrl) {
+        requestData.customAvatar = customAvatarUrl;
+      }
 
       const response = await apiClient.post('/fashion/combinar-prendas', requestData, {
         timeout: 60000
       });
       return response.data;
     } catch (error) {
-      console.error("error:", error);
+      console.error("Error en combinacionService:", error);
+
+      // Manejo específico de errores relacionados con avatar custom
+      if (error.response?.status === 400 || error.response?.status === 404) {
+        if (avatarType === 'custom') {
+          // Si el error es con avatar personalizado, intentar con fallback
+          console.warn('Avatar personalizado falló, intentando con fallback...');
+
+          try {
+            // Determinar avatar por defecto basado en preferencias del usuario
+            const fallbackAvatarType = usuario?.avatarGenero === 'mujer' ? 'woman' : 'man';
+
+            const fallbackRequestData = {
+              avatarType: fallbackAvatarType,
+              top,
+              bottom
+            };
+
+            const fallbackResponse = await apiClient.post('/fashion/combinar-prendas', fallbackRequestData, {
+              timeout: 60000
+            });
+
+            // Agregar información sobre el fallback en la respuesta
+            return {
+              ...fallbackResponse.data,
+              usedFallback: true,
+              fallbackMessage: 'No se pudo usar tu foto, se usó avatar por defecto'
+            };
+          } catch (fallbackError) {
+            console.error("Error en fallback:", fallbackError);
+            throw new Error('Error al procesar la combinación. Verifica tu conexión e intenta nuevamente.');
+          }
+        }
+      }
+
+      // Para otros errores, lanzar el error original
       throw error;
     }
   }
