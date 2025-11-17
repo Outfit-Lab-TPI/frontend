@@ -1,3 +1,4 @@
+import { useState } from "react";
 import PrendaGalleryCard from "./PrendaGalleryCard.jsx";
 import FilterDropdown from "./FilterDropdown.jsx";
 import Button from "./shared/Button.jsx";
@@ -9,11 +10,11 @@ import {
   DrawerContent,
   DrawerClose,
 } from "@/components/ui/drawer";
-import GoBackButton from "./shared/GoBackButton.jsx";
+import { searchGarments } from "@/lib/searchUtils.js";
+import SearchInput from "./shared/SearchInput.jsx";
 
-function ProbadorContenido({
+export default function ProbadorContenido({
   prendas,
-  prendasCategorizadas,
   filtros,
   marcasDisponibles,
   coloresDisponibles,
@@ -59,12 +60,19 @@ function ProbadorContenido({
               </p>
             </div>
 
-            <div className="flex items-center gap-4">
-              <AvatarDropdown
-                avatarType={avatarType}
-                onAvatarTypeChange={onAvatarTypeChange}
-                userHasPhoto={user?.avatarUrl ? true : false}
-                disabled={loadingCombinacion}
+            <div className="flex not-sm:flex-wrap w-fit items-center md:justify-around gap-4">
+              <SearchInput
+                value={busqueda}
+                onChange={setBusqueda}
+                placeholder="Buscar prendas..."
+              />
+
+              <FilterDropdown
+                filtros={filtros}
+                marcasDisponibles={marcasDisponibles}
+                coloresDisponibles={coloresDisponibles}
+                onActualizarFiltros={onActualizarFiltros}
+                onLimpiarFiltros={onLimpiarFiltros}
               />
 
               <div className="hidden lg:inline-flex">
@@ -131,9 +139,8 @@ function ProbadorContenido({
         </div>
       </div>
 
-      {/* Galería de prendas */}
       <div className="flex-1 overflow-y-auto mt-4 modern-scrollbar">
-        {prendas && prendas.length > 0 ? (
+        {prendasFiltradas && prendasFiltradas.length > 0 ? (
           <div className="space-y-6 max-w-5xl mx-auto">
             <div>
               <div className="bg-gray/5 pt-1 px-2 flex gap-8 justify-between items-center rounded-sm mb-2">
@@ -149,21 +156,23 @@ function ProbadorContenido({
               </div>
 
               <div className="flex flex-wrap mx-8 items-center gap-6">
-                {prendasCategorizadas.superiores.map((prenda, index) => (
-                  <PrendaGalleryCard
-                    key={`superior-${index}`}
-                    prenda={prenda}
-                    isSelected={selectedSuperior?.nombre === prenda.nombre}
-                    onSelect={onSelectPrenda}
-                    onToggleFavorita={onToggleFavorita}
-                    onSugerencias={onSugerencias}
-                  />
-                ))}
+                {prendasCategorizadasFiltradas.superiores.map(
+                  (prenda, index) => (
+                    <PrendaGalleryCard
+                      key={`superior-${index}`}
+                      prenda={prenda}
+                      isSelected={selectedSuperior?.nombre === prenda.nombre}
+                      onSelect={onSelectPrenda}
+                      onToggleFavorita={onToggleFavorita}
+                      onSugerencias={onSugerencias}
+                    />
+                  )
+                )}
               </div>
-              {prendasCategorizadas.superiores.length === 0 && (
+
+              {prendasCategorizadasFiltradas.superiores.length === 0 && (
                 <div className="text-center py-8 text-gray">
-                  No hay prendas superiores disponibles con los filtros
-                  aplicados
+                  No hay prendas superiores que coincidan con la búsqueda
                 </div>
               )}
             </div>
@@ -182,33 +191,33 @@ function ProbadorContenido({
               </div>
 
               <div className="flex flex-wrap mx-8 items-center gap-6">
-                {prendasCategorizadas.inferiores.map((prenda, index) => (
-                  <PrendaGalleryCard
-                    key={`inferior-${index}`}
-                    prenda={prenda}
-                    isSelected={selectedInferior?.nombre === prenda.nombre}
-                    onSelect={onSelectPrenda}
-                    onToggleFavorita={onToggleFavorita}
-                    onSugerencias={onSugerencias}
-                  />
-                ))}
+                {prendasCategorizadasFiltradas.inferiores.map(
+                  (prenda, index) => (
+                    <PrendaGalleryCard
+                      key={`inferior-${index}`}
+                      prenda={prenda}
+                      isSelected={selectedInferior?.nombre === prenda.nombre}
+                      onSelect={onSelectPrenda}
+                      onToggleFavorita={onToggleFavorita}
+                      onSugerencias={onSugerencias}
+                    />
+                  )
+                )}
               </div>
-              {prendasCategorizadas.inferiores.length === 0 && (
+
+              {prendasCategorizadasFiltradas.inferiores.length === 0 && (
                 <div className="text-center py-8 text-gray">
-                  No hay prendas inferiores disponibles con los filtros
-                  aplicados
+                  No hay prendas inferiores que coincidan con la búsqueda
                 </div>
               )}
             </div>
           </div>
         ) : (
           <div className="text-center py-12 text-gray">
-            No hay prendas disponibles con los filtros aplicados
+            No hay prendas disponibles con la búsqueda aplicada
           </div>
         )}
       </div>
     </div>
   );
 }
-
-export default ProbadorContenido;

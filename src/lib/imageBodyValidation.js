@@ -70,7 +70,6 @@ export async function validateCustomImageLogic(file) {
 
     const img = await fileToImage(file);
 
-    // Detectar persona en la imagen
     const detecciones = await modeloPersonas.detect(img);
     const persona = detecciones.find(
       d => d.class === "person" && d.score >= 0.60

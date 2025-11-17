@@ -1,9 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SubscriptionCard from '../components/SubscriptionCard.jsx';
- import { subscriptionAPI as mpService } from '../services/api.js';
+import { subscriptionAPI as mpService } from '../services/api.js';
+import PaymentStatusDialog from "../components/shared/PaymentStatusDialog.jsx";
 
 const SubscriptionPage = () => {
     const [isLoading, setIsLoading] = useState(false);
+
+    const [paymentStatus, setPaymentStatus] = useState(null); 
+    const [paymentData, setPaymentData] = useState(null);
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+
+        const rawCollectionStatus = params.get("collection_status");
+
+        if (rawCollectionStatus) {
+            const raw = String(rawCollectionStatus).toLowerCase().trim();
+
+            let normalized;
+            if (raw === "approved") normalized = "approved";
+            else if (raw === "pending" || raw === "in_process") normalized = "pending";
+            else normalized = "failure";
+
+            setPaymentStatus(normalized);
+
+            setPaymentData({
+                collectionStatus: rawCollectionStatus,
+                collectionId: params.get("collection_id"),
+                paymentId: params.get("payment_id"),
+                externalReference: params.get("external_reference"),
+                paymentType: params.get("payment_type"),
+                merchantOrderId: params.get("merchant_order_id"),
+                preferenceId: params.get("preference_id"),
+            });
+
+            window.history.replaceState({}, document.title, "/subscription");
+        }
+    }, []);
 
     const plans = [
         { 
@@ -18,7 +51,8 @@ const SubscriptionPage = () => {
                 'Generación de Outfits (20/día)',
                 'Descargar outfits 3D (limitado)',
             ],
-            cardColor: '#926490' 
+            cardColor: '#926490',
+            isPopular:false
         },
         { 
             id: 'standard-monthly', 
@@ -32,7 +66,8 @@ const SubscriptionPage = () => {
                 'Generación de Outfits (50/día)',
                 'Descargar outfits 3D (limitado)',
             ],
-            cardColor: 'from-purple-500 to-indigo-600' 
+            cardColor: 'from-purple-500 to-indigo-600',
+            isPopular:true
         },
         { 
             id: 'pro-monthly', 
@@ -46,7 +81,8 @@ const SubscriptionPage = () => {
                 'Generación de Outfits Ilimitada',
                 'Modelos 3D ilimitados',
                 ],
-            cardColor: '#E3C18A' 
+            cardColor: '#E3C18A',
+            isPopular:false
         },
     ];
 
@@ -64,8 +100,6 @@ const SubscriptionPage = () => {
                 return;
             }
 
-            console.log(`Iniciando Preferencia con plan: ${selectedPlan.name}`);
-
             const initPointUrl = await mpService.createPreference(
                 selectedPlan.id,
                 userEmail,
@@ -73,38 +107,50 @@ const SubscriptionPage = () => {
                 selectedPlan.currency
             );
 
-            console.log("Redirigiendo a Mercado Pago (URL REAL):", initPointUrl);
-            
             window.location.href = initPointUrl;
             
         } catch (error) {
-            console.error("Fallo la suscripción o la comunicación con el backend:", error);
-            alert('Hubo un error al iniciar el pago. Revisa la consola y el estado de tu servidor Spring Boot.');
+            console.error("Fallo la suscripción:", error);
+            alert('Hubo un error al iniciar el pago.');
         } finally {
             setIsLoading(false);
         }
     };
 
+    const messageByStatus = {
+        approved: "¡Gracias! Tu pago fue acreditado correctamente.",
+        pending: "Tu pago está en proceso. Mercado Pago lo está revisando.",
+        failure: `Hubo un problema con el pago.`
+    };
+
     return (
-        <div className="min-h-[calc(100vh-60px)] p-8 space-y-8" > 
+        <div className="min-h-[calc(100vh-60px)] p-8 space-y-8">
+
+            <PaymentStatusDialog
+                isOpen={!!paymentStatus}
+                status={paymentStatus}
+                message={messageByStatus[paymentStatus]}
+                onClose={() => setPaymentStatus(null)}
+            />
+
             {isLoading && (
                 <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
                     <div className="text-xl text-white animate-pulse">
-                        Procesando suscripción y comunicándose con el backend...
+                        Procesando suscripción...
                     </div>
                 </div>
             )}
-            
-            <h1 className="text-center">
-                Elige tu Plan
-            </h1>
-            <div className="flex flex-col md:flex-row justify-center items-stretch space-y-8 md:space-y-0 md:space-x-10 max-w-6xl mx-auto">
+
+            <h1 className="text-center">Elige tu Plan</h1>
+
+            <div className="flex flex-col md:flex-row justify-center items-stretch mt-20  space-y-8 md:space-y-0 md:space-x-10 max-w-6xl mx-auto">
                 {plans.map(plan => (
                     <SubscriptionCard 
                         key={plan.id}
                         subscription={plan}
                         onSubscribe={handleSubscribe} 
-                        customColor={plan.cardColor} 
+                        customColor={plan.cardColor}
+                        isPopular={plan.isPopular}
                     />
                 ))}
             </div>
@@ -113,3 +159,6 @@ const SubscriptionPage = () => {
 };
 
 export default SubscriptionPage;
+
+
+

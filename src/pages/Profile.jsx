@@ -210,6 +210,15 @@ function Profile() {
                   </Button>
                 </div>
               )}
+              {/* Boton de guardar cambios */}
+                {isEditing && (
+                  <Button 
+                    type="submit" 
+                    disabled={!isValid || isSubmitting}
+                    className="mt-5">
+                    {isSubmitting ? "Guardando..." : "Guardar cambios"}
+                  </Button>
+                )}
             </form>
           </div>
 
@@ -226,6 +235,7 @@ function Profile() {
                     color="gray"
                     onMouseEnter={() => setShowTooltip(true)}
                     onMouseLeave={() => setShowTooltip(false)}
+                    className="transform hover:scale-140 hover:text-white hover:cursor-help"
                   >
                     <Info size={18} />
                   </Button>
@@ -249,7 +259,7 @@ function Profile() {
                       <img
                         src={selectedImage}
                         alt="Avatar"
-                        className="w-full h-full object-cover rounded-lg"
+                        className="w-full object-cover rounded-lg max-h-[500px]"
                       />
                       {/* Overlay con opciones */}
                       <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-4">
@@ -273,7 +283,7 @@ function Profile() {
                     /* Área clickeable para subir avatar */
                     <label
                       htmlFor="avatar"
-                      className="cursor-pointer block p-8 text-center transition-colors rounded-lg h-full"
+                      className="cursor-pointer block p-8 text-center transition-colors rounded-lg h-full overflow-hidden"
                     >
                       <div className="flex flex-col items-center justify-center h-full gap-2 text-gray hover:text-white">
                         <Camera className="w-12 h-12 mt-12" />
@@ -319,6 +329,7 @@ function Profile() {
               )}
             </div>
           </div>
+          
         </div>
         {/* Boton de guardar cambios  */}
         {isEditing && (

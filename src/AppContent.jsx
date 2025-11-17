@@ -13,6 +13,7 @@ import Signup from "./pages/Signup";
 import Marcas from "./pages/Marcas";
 import MarcaDetalle from "./pages/MarcaDetalle";
 import SubscriptionPage from "./pages/Subscription";
+import AdminDashboard from "./pages/AdminDashboard";
 
 export default function AppContent() {
   const location = useLocation();
@@ -26,11 +27,12 @@ export default function AppContent() {
       <main className="main-content">
         <Routes>
           <Route path="/landing" element={<Landing />} />
-          <Route path="/home" element={<Home />} />
-          {/* <Route path="/home" element={<BrandHome />} /> */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/perfil" element={<Profile />} />
+          <Route path="/dashboard" element={<AdminDashboard />} />
+          <Route path="/home" element={<Home />} />
+          {/* <Route path="/home" element={<BrandHome />} /> */}
           <Route path="/mis-combinaciones" element={<Combinaciones />} />
           <Route path="/marcas" element={<Marcas />} />
           <Route path="/marcas/:codigoMarca" element={<MarcaDetalle />} />
