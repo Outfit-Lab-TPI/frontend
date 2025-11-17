@@ -61,18 +61,10 @@ export default function ProbadorContenido({
             </div>
 
             <div className="flex not-sm:flex-wrap w-fit items-center md:justify-around gap-4">
-              <SearchInput
-                value={busqueda}
-                onChange={setBusqueda}
-                placeholder="Buscar prendas..."
-              />
-
-              <FilterDropdown
-                filtros={filtros}
-                marcasDisponibles={marcasDisponibles}
-                coloresDisponibles={coloresDisponibles}
-                onActualizarFiltros={onActualizarFiltros}
-                onLimpiarFiltros={onLimpiarFiltros}
+              <AvatarDropdown
+                avatarType={avatarType}
+                onAvatarTypeChange={onAvatarTypeChange}
+                userHasPhoto={!!user?.foto}
               />
 
               <div className="hidden lg:inline-flex">

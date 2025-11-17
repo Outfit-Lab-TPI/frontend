@@ -210,15 +210,6 @@ function Profile() {
                   </Button>
                 </div>
               )}
-              {/* Boton de guardar cambios */}
-                {isEditing && (
-                  <Button 
-                    type="submit" 
-                    disabled={!isValid || isSubmitting}
-                    className="mt-5">
-                    {isSubmitting ? "Guardando..." : "Guardar cambios"}
-                  </Button>
-                )}
             </form>
           </div>
 
