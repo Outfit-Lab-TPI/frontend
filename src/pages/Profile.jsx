@@ -218,6 +218,15 @@ function Profile() {
                   </Button>
                 </div>
               )}
+              {/* Boton de guardar cambios */}
+                {isEditing && (
+                  <Button 
+                    type="submit" 
+                    disabled={!isValid || isSubmitting}
+                    className="mt-5">
+                    {isSubmitting ? "Guardando..." : "Guardar cambios"}
+                  </Button>
+                )}
             </form>
           </div>
 
@@ -234,6 +243,7 @@ function Profile() {
                     color="gray"
                     onMouseEnter={() => setShowTooltip(true)}
                     onMouseLeave={() => setShowTooltip(false)}
+                    className="transform hover:scale-140 hover:text-white hover:cursor-help"
                   >
                     <Info size={18} />
                   </Button>
@@ -257,7 +267,7 @@ function Profile() {
                       <img
                         src={selectedImage}
                         alt="Avatar"
-                        className="w-full h-full object-cover rounded-lg"
+                        className="w-full object-cover rounded-lg max-h-[500px]"
                       />
                       {/* Overlay con opciones */}
                       <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-4">
@@ -281,7 +291,7 @@ function Profile() {
                     /* Área clickeable para subir avatar */
                     <label
                       htmlFor="avatar"
-                      className="cursor-pointer block p-8 text-center transition-colors rounded-lg h-full"
+                      className="cursor-pointer block p-8 text-center transition-colors rounded-lg h-full overflow-hidden"
                     >
                       <div className="flex flex-col items-center justify-center h-full gap-2 text-gray hover:text-white">
                         <Camera className="w-12 h-12 mt-12" />
@@ -356,7 +366,7 @@ function Profile() {
                       <li className="flex items-start gap-3">
                         <span className="text-white text-lg">•</span>
                         <span className="leading-relaxed mt-1">
-                          Asegurate de que la imaegn tenga buena resolución
+                          Asegurate de que la imagen tenga buena resolución
                         </span>
                       </li>
                     </ul>
@@ -364,20 +374,27 @@ function Profile() {
                 )}
               </div>
 
-              {errors.avatar && (
-                <p className="text-error text-xs mt-2">
+              {errors.avatar?.message && (
+                <p
+                  className={
+                    errors.avatar.message.startsWith("✔")
+                      ? "text-green-500 text-sm mt-1"
+                      : "text-red-500 text-sm mt-1"
+                  }
+                >
                   {errors.avatar.message}
                 </p>
               )}
             </div>
           </div>
+          
         </div>
-        {/* Boton de guardar cambios */}
+        {/* Boton de guardar cambios 
         {isEditing && (
           <Button type="submit" disabled={!isValid || isSubmitting}>
             {isSubmitting ? "Guardando..." : "Guardar cambios"}
           </Button>
-        )}
+        )}*/}
       </div>
 
       <div className="w-full max-w-md md:max-w-4xl flex not-md:flex-col gap-6">

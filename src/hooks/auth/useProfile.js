@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useAuth } from './useAuth'
 import { validationRules, createOptionalPasswordConfirmValidation } from '../../utils/validations'
 import { perfilService } from '../../services/perfilService'
+import { validateCustomImageLogic } from '../../lib/imageBodyValidation'
 
 export function useProfile(onSuccess) {
   const { user, updateUser } = useAuth()
@@ -150,6 +151,10 @@ export function useProfile(onSuccess) {
           if (!files || !files[0]) return true // Opcional
           const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
           return allowedTypes.includes(files[0].type) || 'Solo se permiten archivos JPG, PNG o WebP'
+        },
+        customBodyValidation: async files => {
+          if (!files || !files[0]) return true;
+          return await validateCustomImageLogic(files[0]);
         }
       }
     }
