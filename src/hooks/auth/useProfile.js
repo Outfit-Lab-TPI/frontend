@@ -1,14 +1,16 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useAuth } from './useAuth'
-import { validationRules, createOptionalPasswordConfirmValidation } from '../../utils/validations'
+import { validationRules, createOptionalPasswordConfirmValidation } from '../../lib/validations'
 import { perfilService } from '../../services/perfilService'
+import { validateCustomImageLogic, VALIDATION_STATUS } from '../../lib/imageBodyValidation'
 
 export function useProfile(onSuccess) {
   const { user, updateUser } = useAuth()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [selectedImage, setSelectedImage] = useState(null)
-  const [avatarGenero, setAvatarGenero] = useState('hombre')
+  const [isValidatingImage, setIsValidatingImage] = useState(false)
+  const [avatarValidationSuccess, setAvatarValidationSuccess] = useState(null)
 
   const {
     register,
@@ -20,6 +22,11 @@ export function useProfile(onSuccess) {
   } = useForm({
     mode: 'onChange'
   })
+
+  // DEBUG: Deshabilitado para producción
+  // React.useEffect(() => {
+  //   console.log('🐛 useProfile DEBUG:', { isValid, errors, ... })
+  // }, [errors, isValid, isDirty, watch])
 
   const password = watch('password')
 
@@ -34,8 +41,6 @@ export function useProfile(onSuccess) {
       })
       // Cargar imagen de perfil existente si la hay
       setSelectedImage(user.avatarUrl || null)
-      // Cargar preferencia de género del avatar (por defecto hombre)
-      setAvatarGenero(user.avatarGenero || 'hombre')
     }
   }, [user, reset])
 
@@ -60,8 +65,7 @@ export function useProfile(onSuccess) {
         formData.append('avatar', data.avatar[0])
       }
 
-      // Incluir preferencia de género del avatar
-      formData.append('avatarGenero', avatarGenero)
+      // No incluir avatarGenero ya que se maneja solo en los probadores
 
       // TODO: Reemplazar con endpoint real del backend
       let response
@@ -75,7 +79,8 @@ export function useProfile(onSuccess) {
         name: response.data.user.name,
         email: response.data.user.email,
         avatarUrl: response.data.user.avatarUrl,
-        avatarGenero: response.data.user.avatarGenero || avatarGenero
+        // Preservar avatarGenero existente si lo hay
+        avatarGenero: response.data.user.avatarGenero || user.avatarGenero
       })
 
       // Actualizar imagen local
@@ -99,32 +104,23 @@ export function useProfile(onSuccess) {
     } catch (error) {
       console.error('Error al actualizar perfil:', error)
 
-      // Manejar diferentes tipos de errores del servicio
-      if (error.response?.status === 409) {
-        setError('email', {
-          type: 'manual',
-          message: 'Este email ya está en uso por otra cuenta'
-        })
-      } else if (error.response?.status === 401) {
-        setError('submit', {
-          type: 'manual',
-          message: 'Sesión expirada. Por favor, inicia sesión nuevamente.'
-        })
-      } else if (error.response?.status === 400) {
-        setError('submit', {
-          type: 'manual',
-          message: 'Datos inválidos. Revisa los campos y vuelve a intentar.'
-        })
-      } else if (error.isCritical) {
-        setError('submit', {
-          type: 'manual',
-          message: 'Error de conexión. Revisa tu conexión a internet e inténtalo nuevamente.'
-        })
+      // Manejo de errores siguiendo el patrón estándar de la app
+      if (error.isCritical) {
+        // Error crítico - delegamos al Error Boundary
+        throw error;
       } else {
-        setError('submit', {
-          type: 'manual',
-          message: error.message || 'Error al actualizar el perfil. Intenta nuevamente.'
-        })
+        // Error no crítico - manejar en el formulario
+        if (error.message?.includes('email ya está en uso')) {
+          setError('email', {
+            type: 'manual',
+            message: error.message
+          })
+        } else {
+          setError('submit', {
+            type: 'manual',
+            message: error.message || 'Error al actualizar el perfil. Intenta nuevamente.'
+          })
+        }
       }
 
       return { success: false, error: error.message }
@@ -132,6 +128,58 @@ export function useProfile(onSuccess) {
       setIsSubmitting(false)
     }
   }, [user, updateUser, setError, reset])
+
+  // Constantes de validación de archivos
+  const FILE_VALIDATION = {
+    MAX_SIZE: 5 * 1024 * 1024, // 5MB
+    ALLOWED_TYPES: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
+    MESSAGES: {
+      SIZE_ERROR: 'La imagen no debe superar los 5MB',
+      TYPE_ERROR: 'Solo se permiten archivos JPG, PNG o WebP'
+    }
+  }
+
+  // Helper para validaciones de archivo
+  const validateFile = {
+    size: (files) => {
+      if (!files?.[0]) return true
+      return files[0].size <= FILE_VALIDATION.MAX_SIZE || FILE_VALIDATION.MESSAGES.SIZE_ERROR
+    },
+
+    type: (files) => {
+      if (!files?.[0]) return true
+      return FILE_VALIDATION.ALLOWED_TYPES.includes(files[0].type) || FILE_VALIDATION.MESSAGES.TYPE_ERROR
+    },
+
+    bodyValidation: async (files) => {
+      if (!files?.[0]) {
+        setIsValidatingImage(false)
+        setAvatarValidationSuccess(null)
+        return true
+      }
+
+      setIsValidatingImage(true)
+      setAvatarValidationSuccess(null)
+
+      try {
+        const validationResult = await validateCustomImageLogic(files[0])
+
+        if (validationResult.status === VALIDATION_STATUS.SUCCESS) {
+          setAvatarValidationSuccess(validationResult.message)
+          return true // ✅ Solo true para éxito, no strings
+        } else {
+          setAvatarValidationSuccess(null)
+          return validationResult.message // ❌ Solo errores van al objeto errors
+        }
+      } catch (error) {
+        console.error('Error en validación de imagen:', error)
+        setAvatarValidationSuccess(null)
+        return 'Error procesando la imagen. Intenta nuevamente.'
+      } finally {
+        setIsValidatingImage(false)
+      }
+    }
+  }
 
   // Validaciones para los campos usando validaciones centralizadas
   const profileValidationRules = {
@@ -141,16 +189,9 @@ export function useProfile(onSuccess) {
     confirmPassword: createOptionalPasswordConfirmValidation(password),
     avatar: {
       validate: {
-        fileSize: files => {
-          if (!files || !files[0]) return true // Opcional
-          const maxSize = 5 * 1024 * 1024 // 5MB
-          return files[0].size <= maxSize || 'La imagen no debe superar los 5MB'
-        },
-        fileType: files => {
-          if (!files || !files[0]) return true // Opcional
-          const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
-          return allowedTypes.includes(files[0].type) || 'Solo se permiten archivos JPG, PNG o WebP'
-        }
+        fileSize: validateFile.size,
+        fileType: validateFile.type,
+        customBodyValidation: validateFile.bodyValidation
       }
     }
   }
@@ -164,7 +205,6 @@ export function useProfile(onSuccess) {
       confirmPassword: ''
     })
     setSelectedImage(user?.avatarUrl || null)
-    setAvatarGenero(user?.avatarGenero || 'hombre')
   }, [user, reset])
 
   // Función para manejar cambio de imagen
@@ -195,12 +235,12 @@ export function useProfile(onSuccess) {
     isValid,
     isDirty,
     isSubmitting,
+    isValidatingImage,
+    avatarValidationSuccess,
     validationRules: profileValidationRules,
     cancelEdit,
     selectedImage,
     handleImageChange,
-    removeImage,
-    avatarGenero,
-    setAvatarGenero
+    removeImage
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ChevronRight,
@@ -17,7 +17,6 @@ import { useAuth } from "../hooks/auth/useAuth";
 function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
-  const [avatarGenero, setAvatarGenero] = useState("hombre"); // 'hombre' | 'mujer' para avatar por defecto
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -31,32 +30,18 @@ function Profile() {
     errors,
     isValid,
     isSubmitting,
+    isValidatingImage,
+    avatarValidationSuccess,
     validationRules,
     cancelEdit,
     selectedImage,
     handleImageChange,
     removeImage,
-    avatarGenero: hookAvatarGenero,
-    setAvatarGenero: setHookAvatarGenero,
   } = useProfile(onSubmitSuccess);
-
-  // Sincronizar estado local con el hook
-  React.useEffect(() => {
-    setAvatarGenero(hookAvatarGenero);
-  }, [hookAvatarGenero]);
 
   const handleCancelEdit = () => {
     setIsEditing(false);
     cancelEdit();
-  };
-
-  // Función para cambiar género y activar modo edición
-  const handleAvatarGeneroChange = genero => {
-    setAvatarGenero(genero);
-    setHookAvatarGenero(genero);
-    if (!selectedImage) {
-      setIsEditing(true);
-    }
   };
 
   // Wrapper para handleImageChange que activa el modo edición
@@ -72,6 +57,13 @@ function Profile() {
     removeImage();
     setIsEditing(true);
   };
+
+  const recomendaciones = [
+    "Toma la foto de frente",
+    "Elige un lugar bien iluminado",
+    "Busca un fondo liso o neutro",
+    "Asegurate de que la imagen tenga buena resolución",
+  ];
 
   return (
     <div className="flex flex-col items-center justify-center p-4 gap-6 min-h-[calc(100vh-60px)]">
@@ -160,7 +152,7 @@ function Profile() {
                       <input
                         id="password"
                         type="password"
-                        {...register("password", validationRules.password)}
+                        {...register("password", validationRules.passwordOptional)}
                         placeholder="Dejar vacío para mantener la actual"
                         className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
                       />
@@ -286,45 +278,12 @@ function Profile() {
                       <div className="flex flex-col items-center justify-center h-full gap-2 text-gray hover:text-white">
                         <Camera className="w-12 h-12 mt-12" />
                         <span className="font-medium text-lg">
-                          Subir imagen
+                          Subir imagen de perfil
                         </span>
-
-                        {/* Selección de avatar por defecto cuando no hay imagen */}
-                        <div className="mt-6">
-                          <p className="text-xs font-family-secondary text-gray mb-2">
-                            O selecciona un avatar por defecto:
-                          </p>
-                          <div className="flex items-center justify-center">
-                            <button
-                              type="button"
-                              onClick={() => handleAvatarGeneroChange("hombre")}
-                              className={`flex gap-4 px-3 py-1 text-sm font-medium rounded-l-full transition-all duration-200 border border-gray ${
-                                avatarGenero === "hombre"
-                                  ? "text-black bg-gray shadow-sm"
-                                  : "text-gray hover:text-white"
-                              }`}
-                            >
-                              {avatarGenero === "hombre" && (
-                                <div className="w-1">✓</div>
-                              )}
-                              Hombre
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleAvatarGeneroChange("mujer")}
-                              className={`flex gap-4 px-3 py-1 text-sm font-medium rounded-r-full transition-all duration-200 border border-gray ${
-                                avatarGenero === "mujer"
-                                  ? "text-black bg-gray shadow-sm"
-                                  : "text-gray hover:text-white"
-                              }`}
-                            >
-                              {avatarGenero === "mujer" && (
-                                <div className="w-1">✓</div>
-                              )}
-                              Mujer
-                            </button>
-                          </div>
-                        </div>
+                        <p className="font-family-secondary text-xs text-gray mt-2">
+                          Esta imagen podrá usarse como avatar personalizado en
+                          el probador virtual
+                        </p>
                       </div>
                     </label>
                   )
@@ -335,44 +294,33 @@ function Profile() {
                       Recomendaciones
                     </h4>
                     <ul className="text-sm text-gray-300">
-                      <li className="flex items-start gap-3">
-                        <span className="text-white text-lg">•</span>
-                        <span className="leading-relaxed mt-1">
-                          Toma la foto de frente
-                        </span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <span className="text-white text-lg">•</span>
-                        <span className="leading-relaxed mt-1">
-                          Elige un lugar bien iluminado
-                        </span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <span className="text-white text-lg">•</span>
-                        <span className="leading-relaxed mt-1">
-                          Busca un fondo liso o neutro
-                        </span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <span className="text-white text-lg">•</span>
-                        <span className="leading-relaxed mt-1">
-                          Asegurate de que la imaegn tenga buena resolución
-                        </span>
-                      </li>
+                      {recomendaciones.map((item, index) => (
+                        <li key={index} className="flex items-start gap-3">
+                          <span className="text-white text-lg">•</span>
+                          <span className="leading-relaxed mt-1">{item}</span>
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 )}
               </div>
 
-              {errors.avatar && (
-                <p className="text-error text-xs mt-2">
-                  {errors.avatar.message}
+              {(isValidatingImage || errors.avatar?.message || avatarValidationSuccess) && (
+                <p className={`text-sm mt-1
+                              ${isValidatingImage ? "text-yellow-500"
+                                : avatarValidationSuccess ? "text-green-500"
+                                : "text-red-500"}`}
+                >
+                  {isValidatingImage
+                    ? "Validando imagen..."
+                    : avatarValidationSuccess || errors.avatar?.message
+                  }
                 </p>
               )}
             </div>
           </div>
         </div>
-        {/* Boton de guardar cambios */}
+        {/* Boton de guardar cambios  */}
         {isEditing && (
           <Button type="submit" disabled={!isValid || isSubmitting}>
             {isSubmitting ? "Guardando..." : "Guardar cambios"}
