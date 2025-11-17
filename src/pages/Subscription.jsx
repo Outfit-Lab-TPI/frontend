@@ -51,7 +51,8 @@ const SubscriptionPage = () => {
                 'Generación de Outfits (20/día)',
                 'Descargar outfits 3D (limitado)',
             ],
-            cardColor: '#926490' 
+            cardColor: '#926490',
+            isPopular:false
         },
         { 
             id: 'standard-monthly', 
@@ -65,7 +66,8 @@ const SubscriptionPage = () => {
                 'Generación de Outfits (50/día)',
                 'Descargar outfits 3D (limitado)',
             ],
-            cardColor: 'from-purple-500 to-indigo-600' 
+            cardColor: 'from-purple-500 to-indigo-600',
+            isPopular:true
         },
         { 
             id: 'pro-monthly', 
@@ -79,7 +81,8 @@ const SubscriptionPage = () => {
                 'Generación de Outfits Ilimitada',
                 'Modelos 3D ilimitados',
                 ],
-            cardColor: '#E3C18A' 
+            cardColor: '#E3C18A',
+            isPopular:false
         },
     ];
 
@@ -140,13 +143,14 @@ const SubscriptionPage = () => {
 
             <h1 className="text-center">Elige tu Plan</h1>
 
-            <div className="flex flex-col md:flex-row justify-center items-stretch space-y-8 md:space-y-0 md:space-x-10 max-w-6xl mx-auto">
+            <div className="flex flex-col md:flex-row justify-center items-stretch mt-20  space-y-8 md:space-y-0 md:space-x-10 max-w-6xl mx-auto">
                 {plans.map(plan => (
                     <SubscriptionCard 
                         key={plan.id}
                         subscription={plan}
                         onSubscribe={handleSubscribe} 
-                        customColor={plan.cardColor} 
+                        customColor={plan.cardColor}
+                        isPopular={plan.isPopular}
                     />
                 ))}
             </div>
