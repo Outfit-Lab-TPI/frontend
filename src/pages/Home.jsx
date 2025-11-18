@@ -52,8 +52,12 @@ export default function Home() {
 
   const [selectedSuperior, setSelectedSuperior] = useState(null);
   const [selectedInferior, setSelectedInferior] = useState(null);
-  // Determinar género del avatar basado en las preferencias del usuario
-  const esHombre = user?.avatarGenero === "mujer" ? false : true; // Default a hombre si no hay preferencia
+  // Estado para el tipo de avatar seleccionado por el usuario
+  const [avatarType, setAvatarType] = useState(() => {
+    // Default basado en preferencias del usuario
+    if (user?.avatarUrl) return 'custom';
+    return user?.avatarGenero === 'mujer' ? 'woman' : 'man';
+  });
   const [lastCombination, setLastCombination] = useState(null);
   const [modalSugerenciasAbierto, setModalSugerenciasAbierto] = useState(false);
   const [prendaParaSugerencias, setPrendaParaSugerencias] = useState(null);
@@ -120,13 +124,14 @@ export default function Home() {
       setLastCombination({
         superior: sugerencia.topGarment.nombre,
         inferior: sugerencia.bottomGarment.nombre,
-        esHombre: esHombre,
+        avatarType: avatarType,
       });
 
       await combinarPrendas(
-        esHombre,
+        avatarType,
         sugerencia.topGarment,
-        sugerencia.bottomGarment
+        sugerencia.bottomGarment,
+        user
       );
     } catch (error) {
       console.error("Error al aplicar sugerencia:", error);
@@ -142,14 +147,14 @@ export default function Home() {
   const canCombine = useMemo(() => {
     if (!selectedSuperior || !selectedInferior) return false;
     if (!lastCombination) return true;
-    if (esHombre !== lastCombination.esHombre) return true;
+    if (avatarType !== lastCombination.avatarType) return true;
     return !(
       selectedSuperior.nombre === lastCombination.superior &&
       selectedInferior.nombre === lastCombination.inferior
     );
-  }, [selectedSuperior, selectedInferior, esHombre, lastCombination]);
+  }, [selectedSuperior, selectedInferior, avatarType, lastCombination]);
 
-  const handleCombinarPrendas = async () => {
+  const handleCombinarPrendas = async (selectedAvatarType = avatarType) => {
     if (canCombine) {
       limpiarResultado();
       limpiarModelo();
@@ -157,10 +162,10 @@ export default function Home() {
       setLastCombination({
         superior: selectedSuperior?.nombre,
         inferior: selectedInferior?.nombre,
-        esHombre: esHombre,
+        avatarType: selectedAvatarType,
       });
 
-      await combinarPrendas(esHombre, selectedSuperior, selectedInferior, user);
+      await combinarPrendas(selectedAvatarType, selectedSuperior, selectedInferior, user);
     }
   };
 
@@ -168,6 +173,10 @@ export default function Home() {
     if (resultado) {
       await generarModelo3D(resultado);
     }
+  };
+
+  const handleAvatarTypeChange = (newAvatarType) => {
+    setAvatarType(newAvatarType);
   };
 
   useEffect(() => {
@@ -229,6 +238,9 @@ export default function Home() {
         modeloUrl={modeloUrl}
         loadingModelo3D={loadingModelo3D}
         handleGenerarModelo3D={handleGenerarModelo3D}
+        avatarType={avatarType}
+        onAvatarTypeChange={handleAvatarTypeChange}
+        user={user}
       />
 
       {prendas && prendas.length > 0 && (

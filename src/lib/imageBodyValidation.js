@@ -50,6 +50,20 @@ function fileToImage(file) {
   });
 }
 
+// Constantes para estados de validación
+export const VALIDATION_STATUS = {
+  SUCCESS: 'success',
+  ERROR: 'error'
+};
+
+export const VALIDATION_MESSAGES = {
+  SUCCESS: 'Imagen válida: Persona completa detectada',
+  NO_PERSON: 'No se detectó una persona en la imagen',
+  PERSON_NOT_RECOGNIZED: 'La persona no pudo ser reconocida correctamente',
+  INCOMPLETE_PERSON: 'La persona no está completa, intenta con otra foto',
+  PROCESSING_ERROR: 'Error procesando la imagen. Intenta nuevamente'
+};
+
 export async function validateCustomImageLogic(file) {
   try {
     await cargarModelosSiNoEstan();
@@ -62,35 +76,57 @@ export async function validateCustomImageLogic(file) {
     );
 
     if (!persona) {
-      return "No se detectó una persona en la imagen.";
+      return {
+        status: VALIDATION_STATUS.ERROR,
+        message: VALIDATION_MESSAGES.NO_PERSON
+      };
     }
 
+    // Estimar poses para validar completitud de la persona
     const poses = await modeloPose.estimatePoses(img);
     if (!poses || poses.length === 0) {
-      return "La persona no pudo ser reconocida correctamente.";
+      return {
+        status: VALIDATION_STATUS.ERROR,
+        message: VALIDATION_MESSAGES.PERSON_NOT_RECOGNIZED
+      };
     }
 
     const keypoints = poses[0].keypoints;
 
-    const ok = name => {
-      const p = keypoints.find(k => k.name === name);
-      return p && p.score >= 0.50;
+    // Función helper para verificar keypoints
+    const hasValidKeypoint = name => {
+      const point = keypoints.find(k => k.name === name);
+      return point && point.score >= 0.50;
     };
 
-    const cabeza   = ok("nose") || ok("left_eye") || ok("right_eye");
-    const hombros  = ok("left_shoulder") && ok("right_shoulder");
-    const caderas  = ok("left_hip") && ok("right_hip");
-    const rodillas = ok("left_knee") && ok("right_knee");
-    const tobillos = ok("left_ankle") && ok("right_ankle");
+    // Verificar partes del cuerpo necesarias
+    const bodyParts = {
+      head: hasValidKeypoint("nose") || hasValidKeypoint("left_eye") || hasValidKeypoint("right_eye"),
+      shoulders: hasValidKeypoint("left_shoulder") && hasValidKeypoint("right_shoulder"),
+      hips: hasValidKeypoint("left_hip") && hasValidKeypoint("right_hip"),
+      knees: hasValidKeypoint("left_knee") && hasValidKeypoint("right_knee"),
+      ankles: hasValidKeypoint("left_ankle") && hasValidKeypoint("right_ankle")
+    };
 
-    if (cabeza && hombros && caderas && rodillas && tobillos) {
-        return "✔ Imagen válida: Persona completa detectada.";
+    const isCompleteBody = Object.values(bodyParts).every(Boolean);
+
+    if (isCompleteBody) {
+      return {
+        status: VALIDATION_STATUS.SUCCESS,
+        message: VALIDATION_MESSAGES.SUCCESS
+      };
     }
 
-    return "La persona no está completa en la imagen. Intenta con otra foto.";
+    return {
+      status: VALIDATION_STATUS.ERROR,
+      message: VALIDATION_MESSAGES.INCOMPLETE_PERSON
+    };
 
   } catch (error) {
     console.error("Error en validateCustomImageLogic:", error);
-    return "Error procesando la imagen. Intenta nuevamente.";
+    return {
+      status: VALIDATION_STATUS.ERROR,
+      message: VALIDATION_MESSAGES.PROCESSING_ERROR
+    };
   }
 }
