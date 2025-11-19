@@ -24,10 +24,12 @@ export function usePrendaCRUD() {
       formData.append('codigoMarca', 'puma') // TODO: obtener del auth context
       formData.append('nombre', data.nombre)
       formData.append('tipo', data.tipo)
+      formData.append('color', data.color)
+      formData.append('evento', data.evento)
       formData.append('imagen', data.imagen[0])
 
       console.log('Creando prenda:', { codigoMarca: 'puma', nombre: data.nombre, tipo: data.tipo })
-      // const response = await prendaService.crearPrenda(formData)
+      const response = await prendaService.crearPrenda(formData)
       return true
     } catch (error) {
       console.error('Error al crear prenda:', error)

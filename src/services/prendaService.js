@@ -5,7 +5,7 @@ export const prendaService = {
     try {
       validarFormDataPrenda(formData)
 
-      const response = await apiClient.post('/crear-prenda', formData, {
+      const response = await apiClient.post('/garments/new', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
