@@ -1,21 +1,37 @@
 import { useEffect, useState } from "react";
 import { X, Info, Plus, Trash2 } from "lucide-react";
 import { usePrendaCRUD } from "../hooks/usePrendaCRUD";
+import { useForm } from "react-hook-form";
 import Button from "./shared/Button";
 
+// function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar }) {
+//   const {
+//     register,
+//     handleSubmit,
+//     errors,
+//     isSubmitting,
+//     watch,
+//     reset,
+//     setValue,
+//     crearPrenda,
+//     editarPrenda,
+//     eliminarPrenda,
+//   } = usePrendaCRUD();
+
 function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar }) {
+
+  const form = useForm();
+
   const {
     register,
     handleSubmit,
-    errors,
-    isSubmitting,
     watch,
     reset,
     setValue,
-    crearPrenda,
-    editarPrenda,
-    eliminarPrenda,
-  } = usePrendaCRUD();
+    formState: { errors, isSubmitting }
+  } = form;
+
+  const { crearPrenda, editarPrenda, eliminarPrenda } = usePrendaCRUD(form);
 
   const [showTooltip, setShowTooltip] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -61,8 +77,11 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
   // Efecto para cargar datos cuando se abre en modo edición
   useEffect(() => {
     if (isOpen && prendaParaEditar) {
+      console.log("PRENDA PARA EDITARRRRRRRRRRRRRRRRRRRRRRRR" + prendaParaEditar.nombre + "--" + prendaParaEditar.color)
       setValue("nombre", prendaParaEditar.nombre || "");
       setValue("tipo", prendaParaEditar.tipo || "");
+      setValue("color", prendaParaEditar.color || "");
+      setValue("evento", prendaParaEditar.evento || "");
       setSelectedImage(prendaParaEditar.imagenUrl || null);
     } else if (isOpen && !prendaParaEditar) {
       reset();
