@@ -42,10 +42,10 @@ export const prendaService = {
       console.log('Eliminando prenda en servicio:', { id })
 
       // TODO: Implementar endpoint para eliminar prenda
-      // const response = await apiClient.delete(`/prendas/${id}`)
-      // return response
+      const response = await apiClient.delete(`/garments/delete/${id}`)
+      return response
 
-      return { data: { mensaje: 'Prenda eliminada exitosamente (mock)' } }
+      //return { data: { mensaje: 'Prenda eliminada exitosamente (mock)' } }
     } catch (error) {
       console.error('Error en prendaService.eliminarPrenda:', error)
       throw error

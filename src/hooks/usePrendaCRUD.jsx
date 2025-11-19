@@ -84,7 +84,7 @@ export function usePrendaCRUD() {
   const eliminarPrenda = useCallback(async (id) => {
     try {
       console.log('Eliminando prenda:', { id })
-      // await prendaService.eliminarPrenda(id)
+      await prendaService.eliminarPrenda(id)
       return true
     } catch (error) {
       console.error('Error al eliminar prenda:', error)
