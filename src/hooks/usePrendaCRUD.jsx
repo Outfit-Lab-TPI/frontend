@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 import { prendaService } from '../services/prendaService'
 
 export function usePrendaCRUD() {
@@ -30,6 +31,7 @@ export function usePrendaCRUD() {
 
       console.log('Creando prenda:', { codigoMarca: 'puma', nombre: data.nombre, tipo: data.tipo })
       const response = await prendaService.crearPrenda(formData)
+      toast.success('Prenda creada exitosamente')
       return true
     } catch (error) {
       console.error('Error al crear prenda:', error)
