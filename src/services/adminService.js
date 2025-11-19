@@ -49,10 +49,16 @@ export const adminService = {
       const response = await apiClient.get('/users/all');
       console.log('Usuarios obtenidos:', response);
 
+      // Agregar un ID temporal único a cada usuario para manejar duplicados
+      const usuariosConId = response.data.map((usuario, index) => ({
+        ...usuario,
+        _tempId: `${usuario.email}-${index}-${Date.now()}`
+      }));
+
       return {
         data: {
-          content: response.data,
-          totalElements: response.data.length
+          content: usuariosConId,
+          totalElements: usuariosConId.length
         }
       };
     } catch (error) {
@@ -112,26 +118,18 @@ export const adminService = {
   },
 
   // Activar/desactivar usuario
-  toggleUsuarioActivo: async (userId, activo) => {
+  toggleUsuarioActivo: async (userEmail, activo) => {
     try {
-      // TODO: Implementar endpoint cuando esté disponible
-      // return await apiClient.put(`/usuarios/${userId}/estado`, { activo });
-
-      // Simulación temporal
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          const usuarioIndex = mockUsuarios.findIndex(u => u.id === userId);
-          if (usuarioIndex !== -1) {
-            mockUsuarios[usuarioIndex].activo = activo;
-          }
-          resolve({
-            data: {
-              message: `Usuario ${activo ? 'activado' : 'desactivado'} exitosamente`,
-              usuario: mockUsuarios[usuarioIndex]
-            }
-          });
-        }, 500);
-      });
+      // Solo desactivar está implementado en el backend
+      if (!activo) {
+        const response = await apiClient.get('/users/desactivate', {
+          params: { email: userEmail }
+        });
+        return response;
+      } else {
+        // TODO: Implementar endpoint de activación cuando esté disponible
+        throw new Error('La activación de usuarios aún no está implementada en el backend');
+      }
     } catch (error) {
       error.isCritical = isCriticalError(error);
       throw error;

@@ -39,7 +39,7 @@ function TablaUsuarios({
         </thead>
         <tbody>
           {usuarios.map((usuario) => (
-            <tr key={usuario.email} className="border-b border-gray/20 hover:bg-gray/5">
+            <tr key={usuario._tempId} className="border-b border-gray/20 hover:bg-gray/5">
               <td className="px-4 py-3 text-sm text-white">{usuario.name}</td>
               <td className="px-4 py-3 text-sm text-white">{usuario.lastName}</td>
               <td className="px-4 py-3 text-sm text-gray">{usuario.email}</td>
@@ -53,8 +53,8 @@ function TablaUsuarios({
               <td className="px-4 py-3 text-center">
                 {/* Badge clickeable para rol */}
                 <button
-                  onClick={() => onCambiarRol(usuario.email, usuario.role)}
-                  disabled={operacionEnCurso === `rol-${usuario.email}`}
+                  onClick={() => onCambiarRol(usuario.email, usuario.role, usuario._tempId)}
+                  disabled={operacionEnCurso === `rol-${usuario._tempId}`}
                   className={`group relative px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 disabled:opacity-50 cursor-pointer ${
                     usuario.role === 'administrador'
                       ? 'bg-tertiary/20 text-tertiary hover:bg-secondary/30 hover:text-secondary'
@@ -72,9 +72,9 @@ function TablaUsuarios({
               <td className="px-4 py-3 text-center">
                 {/* Toggle switch para estado activo */}
                 <button
-                  onClick={() => onToggleEstado(usuario.email, usuario.status)}
-                  disabled={operacionEnCurso === `usuario-${usuario.email}`}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors disabled:opacity-50 ${
+                  onClick={() => onToggleEstado(usuario.email, usuario.status, usuario._tempId)}
+                  disabled={operacionEnCurso === `usuario-${usuario._tempId}`}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors disabled:opacity-50 cursor-pointer ${
                     usuario.status ? 'bg-success' : 'bg-error'
                   }`}
                 >

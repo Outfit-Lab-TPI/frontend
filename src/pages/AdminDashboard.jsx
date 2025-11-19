@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Search, Users, Store } from 'lucide-react';
 import { useAdmin } from '../hooks/useAdmin.jsx';
-import TablaUsuarios from '../components/TablaUsuarios.jsx';
-import TablaMarcas from '../components/TablaMarcas.jsx';
+import TablaUsuarios from '../components/admin/TablaUsuarios.jsx';
+import TablaMarcas from '../components/admin/TablaMarcas.jsx';
 
 function AdminDashboard() {
   const {
@@ -32,9 +32,9 @@ function AdminDashboard() {
     }
   }, [criticalError]);
 
-  const handleCambiarRol = async (usuarioEmail, rolActual) => {
+  const handleCambiarRol = async (usuarioEmail, rolActual, tempId) => {
     const nuevoRol = rolActual === 'administrador' ? 'usuario' : 'administrador';
-    const key = `rol-${usuarioEmail}`;
+    const key = `rol-${tempId}`;
 
     setOperacionEnCurso(key);
     const resultado = await cambiarRolUsuario(usuarioEmail, nuevoRol);
@@ -45,9 +45,9 @@ function AdminDashboard() {
     }
   };
 
-  const handleToggleUsuario = async (usuarioEmail, estadoActual) => {
+  const handleToggleUsuario = async (usuarioEmail, estadoActual, tempId) => {
     const nuevoEstado = !estadoActual;
-    const key = `usuario-${usuarioEmail}`;
+    const key = `usuario-${tempId}`;
 
     setOperacionEnCurso(key);
     const resultado = await toggleUsuarioActivo(usuarioEmail, nuevoEstado);
