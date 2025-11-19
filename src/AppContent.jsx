@@ -32,7 +32,7 @@ export default function AppContent() {
           <Route path="/perfil" element={<Profile />} />
           <Route path="/dashboard" element={<AdminDashboard />} />
           <Route path="/home" element={<Home />} />
-          {/* <Route path="/home" element={<BrandHome />} /> */}
+          <Route path="/brand-home" element={<BrandHome />} />
           <Route path="/mis-combinaciones" element={<Combinaciones />} />
           <Route path="/marcas" element={<Marcas />} />
           <Route path="/marcas/:codigoMarca" element={<MarcaDetalle />} />

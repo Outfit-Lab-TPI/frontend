@@ -141,11 +141,11 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="w-full max-w-3xl bg-black rounded-lg shadow-xl max-h-[90vh] overflow-y-auto">
+      <div className="w-full max-w-3xl bg-black rounded-lg shadow-xl max-h-[90vh] h-[62vh] overflow-y-auto border border-[#8F5D8D]">
 
         {/* Contenido del modal */}
         <div className="p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 ">
             {/* Formulario - Lado izquierdo */}
           <div>
             <h2 className="text-2xl text-white font-medium mb-8">
@@ -208,6 +208,67 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
                 )}
               </div>
 
+              {/* Campo Color */}
+              <div>
+                <label htmlFor="color" className="block text-sm text-gray mb-2">
+                  Color predominante
+                </label>
+                <select
+                  id="color"
+                  {...register("color", {
+                    required: "Debe seleccionar un color",
+                  })}
+                  className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
+                >
+                  <option value="">Selecciona un color</option>
+                  <option value="negro">Negro</option>
+                  <option value="blanco">Blanco</option>
+                  <option value="gris">Gris</option>
+                  <option value="azul">Azul</option>
+                  <option value="rojo">Rojo</option>
+                  <option value="verde">Verde</option>
+                  <option value="amarillo">Amarillo</option>
+                  <option value="violeta">Violeta</option>
+                  <option value="celeste">Celeste</option>
+                  <option value="rosa">Rosa</option>
+                  <option value="naranja">Naranja</option>
+                  <option value="bordo">Bordó</option>
+                  <option value="marron">Marrón</option>
+                </select>
+                {errors.color && (
+                  <p className="text-error text-sm mt-1">
+                    {errors.color.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Campo Tipo de evento */}
+              <div>
+                <label htmlFor="evento" className="block text-sm text-gray mb-2">
+                  Tipo de evento
+                </label>
+                <select
+                  id="evento"
+                  {...register("evento", {
+                    required: "Debe seleccionar un tipo de evento",
+                  })}
+                  className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
+                >
+                  <option value="">Selecciona un tipo de evento</option>
+                  <option value="informal">Informal</option>
+                  <option value="formal">Formal</option>
+                  <option value="casual">Casual</option>
+                  <option value="elegante">Elegante</option>
+                  <option value="deportivo">Deportivo</option>
+                </select>
+                {errors.evento && (
+                  <p className="text-error text-sm mt-1">
+                    {errors.evento.message}
+                  </p>
+                )}
+              </div>
+
+
               {/* Error de submit */}
               {errors.submit && (
                 <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-3">
@@ -218,7 +279,7 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
           </div>
 
             {/* Área de Imagen - Lado derecho */}
-            <div>
+            <div className="flex items-center justify-center">
               <div className="relative">
                 <div className="flex items-center justify-between gap-2 mb-4">
                   <h4 className="text-lg font-medium text-gray">Imagen</h4>
