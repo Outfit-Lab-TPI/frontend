@@ -46,7 +46,7 @@ function AdminDashboard() {
   };
 
   const handleToggleUsuario = async (usuarioEmail, estadoActual, tempId) => {
-    const nuevoEstado = !estadoActual;
+    const nuevoEstado = !estadoActual;  // ← IMPORTANTE: invertir el estado
     const key = `usuario-${tempId}`;
 
     setOperacionEnCurso(key);

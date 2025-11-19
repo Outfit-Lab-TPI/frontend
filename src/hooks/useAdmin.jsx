@@ -71,11 +71,16 @@ export const useAdmin = () => {
     try {
       await adminService.toggleUsuarioActivo(userEmail, activo);
       // Actualizar el usuario en el estado local
-      setUsuarios(prev => prev.map(usuario =>
-        usuario.email === userEmail ? { ...usuario, status: activo } : usuario
-      ));
+      setUsuarios(prev => {
+        const updated = prev.map(usuario =>
+          usuario.email === userEmail ? { ...usuario, status: activo } : usuario
+        );
+        return updated;
+      });
+
       return { success: true };
     } catch (err) {
+      console.error('useAdmin - Error:', err);
       return { success: false, error: err.message || 'Error al cambiar estado del usuario' };
     }
   }, []);

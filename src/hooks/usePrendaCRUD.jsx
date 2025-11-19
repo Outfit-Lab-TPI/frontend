@@ -29,7 +29,6 @@ export function usePrendaCRUD() {
       formData.append('evento', data.evento)
       formData.append('imagen', data.imagen[0])
 
-      console.log('Creando prenda:', { codigoMarca: 'puma', nombre: data.nombre, tipo: data.tipo })
       const response = await prendaService.crearPrenda(formData)
       toast.success('Prenda creada exitosamente')
       return true
@@ -67,7 +66,6 @@ export function usePrendaCRUD() {
         formData.append('imagen', data.imagen[0])
       }
 
-      console.log('Editando prenda:', { id, nombre: data.nombre, tipo: data.tipo })
       // const response = await prendaService.editarPrenda(id, formData)
       return true
     } catch (error) {
@@ -85,7 +83,6 @@ export function usePrendaCRUD() {
 
   const eliminarPrenda = useCallback(async (id) => {
     try {
-      console.log('Eliminando prenda:', { id })
       await prendaService.eliminarPrenda(id)
       return true
     } catch (error) {

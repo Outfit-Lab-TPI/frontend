@@ -77,7 +77,6 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
   // Efecto para cargar datos cuando se abre en modo edición
   useEffect(() => {
     if (isOpen && prendaParaEditar) {
-      console.log("PRENDA PARA EDITARRRRRRRRRRRRRRRRRRRRRRRR" + prendaParaEditar.nombre + "--" + prendaParaEditar.color)
       setValue("nombre", prendaParaEditar.nombre || "");
       setValue("tipo", prendaParaEditar.tipo || "");
       setValue("color", prendaParaEditar.color || "");

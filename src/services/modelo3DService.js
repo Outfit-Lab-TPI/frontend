@@ -12,7 +12,6 @@ export const modelo3DService = {
       const response = await apiClient.post('/tripo/upload/image', {
         imageUrl
       });
-      console.log('Respuesta backend:', response.data);
       //return response.data;
       return {
         modeloUrl: response.data.tripoModelUrl

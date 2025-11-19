@@ -47,7 +47,6 @@ export const adminService = {
   obtenerUsuarios: async () => {
     try {
       const response = await apiClient.get('/users/all');
-      console.log('Usuarios obtenidos:', response);
 
       // Agregar un ID temporal único a cada usuario para manejar duplicados
       const usuariosConId = response.data.map((usuario, index) => ({
@@ -118,17 +117,22 @@ export const adminService = {
   },
 
   // Activar/desactivar usuario
-  toggleUsuarioActivo: async (userEmail, activo) => {
+  // status: true = Activo (desbloqueado)
+  // status: false = Inactivo/Desactivado (bloqueado)
+  toggleUsuarioActivo: async (userEmail, nuevoStatus) => {
     try {
-      // Solo desactivar está implementado en el backend
-      if (!activo) {
+      if (nuevoStatus === false) {
+        // Desactivar usuario (cambiar status a false)
         const response = await apiClient.get('/users/desactivate', {
           params: { email: userEmail }
         });
         return response;
-      } else {
-        // TODO: Implementar endpoint de activación cuando esté disponible
-        throw new Error('La activación de usuarios aún no está implementada en el backend');
+      } else if (nuevoStatus === true) {
+        // Activar usuario (cambiar status a true)
+        const response = await apiClient.get('/users/activate', {
+          params: { email: userEmail }
+        });
+        return response;
       }
     } catch (error) {
       error.isCritical = isCriticalError(error);
