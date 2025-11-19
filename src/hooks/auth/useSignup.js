@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-
-const API_URL = "http://localhost:8080/api/users/register"; 
+import { signupService } from "../../services/auth/signupService"; 
 
 export const useSignup = () => {
     const navigate = useNavigate();
@@ -63,23 +62,21 @@ export const useSignup = () => {
         }
 
         try {
-            const response = await fetch(API_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email: data.email,
-                    name: data.name,
-                    lastName: data.lastName, 
-                    password: data.password,
-                }),
+            const successData = await signupService({
+                email: data.email,
+                name: data.name,
+                lastName: data.lastName,
+                password: data.password,
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                
-                if (response.status === 400 && typeof errorData === 'object') {
+            alert(successData.message);
+            navigate("/login");
+
+        } catch (error) {
+            if (error.response) {
+                const errorData = error.response.data;
+
+                if (error.response.status === 400 && typeof errorData === 'object') {
                     Object.keys(errorData).forEach(field => {
                         setError(field, { type: "server", message: errorData[field] });
                     });
@@ -91,19 +88,13 @@ export const useSignup = () => {
                         message: "Hubo un error al crear la cuenta. Intenta de nuevo." 
                     });
                 }
-                return;
+            } else {
+                console.error("Error de conexión:", error);
+                setError("submit", {
+                    type: "network",
+                    message: "Error de conexión con el servidor. Verifica tu conexión.",
+                });
             }
-
-            const successData = await response.json();
-            alert(successData.message); 
-            navigate("/login"); 
-
-        } catch (error) {
-            console.error("Error de conexión:", error);
-            setError("submit", {
-                type: "network",
-                message: "Error de conexión con el servidor. Verifica tu conexión.",
-            });
         }
     });
 
