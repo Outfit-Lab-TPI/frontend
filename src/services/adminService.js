@@ -10,39 +10,6 @@ const isCriticalError = (error) => {
   return false;
 };
 
-// Datos mock para simular usuarios
-const mockUsuarios = [
-  {
-    id: 1,
-    nombre: 'Carlos',
-    apellido: 'Ramirez',
-    email: 'usuario1@predictor.com',
-    verificado: true,
-    rol: 'administrador',
-    activo: true,
-    fechaCreacion: '2024-01-15'
-  },
-  {
-    id: 2,
-    nombre: 'Lucia',
-    apellido: 'Fernandez',
-    email: 'usuario2@predictor.com',
-    verificado: true,
-    rol: 'administrador',
-    activo: true,
-    fechaCreacion: '2024-02-20'
-  },
-  {
-    id: 3,
-    nombre: 'Miguel',
-    apellido: 'Sanchez',
-    email: 'usuario3@predictor.com',
-    verificado: false,
-    rol: 'administrador',
-    activo: false,
-    fechaCreacion: '2024-03-10'
-  }
-];
 
 // Datos mock para simular marcas de admin
 const mockMarcasAdmin = [
@@ -79,20 +46,15 @@ export const adminService = {
   // Obtener todos los usuarios para administración
   obtenerUsuarios: async () => {
     try {
-      // TODO: Implementar endpoint cuando esté disponible
-      // return await apiClient.get('/usuarios');
+      const response = await apiClient.get('/users/all');
+      console.log('Usuarios obtenidos:', response);
 
-      // Simulación temporal
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve({
-            data: {
-              content: mockUsuarios,
-              totalElements: mockUsuarios.length
-            }
-          });
-        }, 800);
-      });
+      return {
+        data: {
+          content: response.data,
+          totalElements: response.data.length
+        }
+      };
     } catch (error) {
       error.isCritical = isCriticalError(error);
       throw error;

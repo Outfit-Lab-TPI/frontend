@@ -53,12 +53,12 @@ export const useAdmin = () => {
   }, []);
 
   // Cambiar rol de usuario
-  const cambiarRolUsuario = useCallback(async (userId, nuevoRol) => {
+  const cambiarRolUsuario = useCallback(async (userEmail, nuevoRol) => {
     try {
-      await adminService.cambiarRolUsuario(userId, nuevoRol);
+      await adminService.cambiarRolUsuario(userEmail, nuevoRol);
       // Actualizar el usuario en el estado local
       setUsuarios(prev => prev.map(usuario =>
-        usuario.id === userId ? { ...usuario, rol: nuevoRol } : usuario
+        usuario.email === userEmail ? { ...usuario, role: nuevoRol } : usuario
       ));
       return { success: true };
     } catch (err) {
@@ -67,12 +67,12 @@ export const useAdmin = () => {
   }, []);
 
   // Toggle estado activo usuario
-  const toggleUsuarioActivo = useCallback(async (userId, activo) => {
+  const toggleUsuarioActivo = useCallback(async (userEmail, activo) => {
     try {
-      await adminService.toggleUsuarioActivo(userId, activo);
+      await adminService.toggleUsuarioActivo(userEmail, activo);
       // Actualizar el usuario en el estado local
       setUsuarios(prev => prev.map(usuario =>
-        usuario.id === userId ? { ...usuario, activo } : usuario
+        usuario.email === userEmail ? { ...usuario, status: activo } : usuario
       ));
       return { success: true };
     } catch (err) {
@@ -99,8 +99,8 @@ export const useAdmin = () => {
     if (!busquedaUsuarios) return true;
     const busqueda = busquedaUsuarios.toLowerCase();
     return (
-      usuario.nombre.toLowerCase().includes(busqueda) ||
-      usuario.apellido.toLowerCase().includes(busqueda) ||
+      usuario.name.toLowerCase().includes(busqueda) ||
+      usuario.lastName.toLowerCase().includes(busqueda) ||
       usuario.email.toLowerCase().includes(busqueda)
     );
   });
