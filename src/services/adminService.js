@@ -93,9 +93,11 @@ export const adminService = {
   cambiarRolUsuario: async (userId, nuevoRol) => {
     try {
       // TODO: Implementar endpoint cuando esté disponible
-      // return await apiClient.put(`/usuarios/${userId}/rol`, { rol: nuevoRol });
+      let endpointToConvert = nuevoRol === 'ADMIN' ? 'convert-to-admin' : 'convert-to-user';
+      console.log(endpointToConvert)
+      return await apiClient.put(`/users/${endpointToConvert}/${userId}`);
 
-      // Simulación temporal
+      {/*} Simulación temporal
       return new Promise((resolve) => {
         setTimeout(() => {
           const usuarioIndex = mockUsuarios.findIndex(u => u.id === userId);
@@ -109,7 +111,7 @@ export const adminService = {
             }
           });
         }, 500);
-      });
+      });*/}
     } catch (error) {
       error.isCritical = isCriticalError(error);
       throw error;

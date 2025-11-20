@@ -56,16 +56,16 @@ function TablaUsuarios({
                   onClick={() => onCambiarRol(usuario.email, usuario.role, usuario._tempId)}
                   disabled={operacionEnCurso === `rol-${usuario._tempId}`}
                   className={`group relative px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 disabled:opacity-50 cursor-pointer ${
-                    usuario.role === 'administrador'
+                    usuario.role === 'ADMIN'
                       ? 'bg-tertiary/20 text-tertiary hover:bg-secondary/30 hover:text-secondary'
                       : 'bg-secondary/20 text-secondary hover:bg-tertiary/30 hover:text-tertiary'
                   }`}
                 >
                   <span className="group-hover:hidden">
-                    {usuario.role === 'administrador' ? 'Administrador' : 'Usuario'}
+                    {usuario.role === 'ADMIN' ? 'Administrador' : 'Usuario'}
                   </span>
                   <span className="hidden group-hover:inline">
-                    {usuario.role === 'administrador' ? 'Hacer Usuario' : 'Hacer Admin'}
+                    {usuario.role === 'ADMIN' ? 'Hacer Usuario' : 'Hacer Admin'}
                   </span>
                 </button>
               </td>
