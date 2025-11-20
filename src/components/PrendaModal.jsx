@@ -160,7 +160,7 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="w-full max-w-3xl bg-black rounded-lg shadow-xl max-h-[90vh] h-[62vh] overflow-y-auto border border-[#8F5D8D]">
+      <div className="w-full max-w-3xl bg-black rounded-lg shadow-xl max-h-[90vh] h-[auto] overflow-y-auto border border-[#8F5D8D]">
 
         {/* Contenido del modal */}
         <div className="p-6">

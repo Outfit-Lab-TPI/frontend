@@ -61,12 +61,14 @@ export function usePrendaCRUD() {
       const formData = new FormData()
       formData.append('nombre', data.nombre)
       formData.append('tipo', data.tipo)
+      formData.append('color', data.color)
+      formData.append('evento', data.evento)
       if (data.imagen && data.imagen[0]) {
         formData.append('imagen', data.imagen[0])
       }
 
       console.log('Editando prenda:', { id, nombre: data.nombre, tipo: data.tipo })
-      // const response = await prendaService.editarPrenda(id, formData)
+      const response = await prendaService.editarPrenda(id, formData)
       return true
     } catch (error) {
       console.error('Error al editar prenda:', error)
