@@ -77,7 +77,6 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
   // Efecto para cargar datos cuando se abre en modo edición
   useEffect(() => {
     if (isOpen && prendaParaEditar) {
-      console.log("PRENDA PARA EDITARRRRRRRRRRRRRRRRRRRRRRRR" + prendaParaEditar.nombre + "--" + prendaParaEditar.color)
       setValue("nombre", prendaParaEditar.nombre || "");
       setValue("tipo", prendaParaEditar.tipo || "");
       setValue("color", prendaParaEditar.color || "");
@@ -159,8 +158,16 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="w-full max-w-3xl bg-black rounded-lg shadow-xl max-h-[90vh] h-[auto] overflow-y-auto border border-[#8F5D8D]">
+
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={handleClose}
+      />
+
+      {/* Modal */}
+      <div className="relative w-full max-w-4xl bg-black border border-gray/20 rounded-lg shadow-sm shadow-secondary max-h-[90vh] overflow-y-auto">
 
         {/* Contenido del modal */}
         <div className="p-6">
@@ -173,7 +180,7 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
             <form
               id="prenda-modal-form"
               onSubmit={handleSubmit(handleFormSubmit)}
-              className="space-y-6"
+              className="space-y-4"
               aria-label="nueva prenda"
             >
               {/* Campo Nombre */}
@@ -298,8 +305,8 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
           </div>
 
             {/* Área de Imagen - Lado derecho */}
-            <div className="flex items-center justify-center">
-              <div className="relative">
+            <div className="flex items-center justify-center mt-6">
+              <div className="relative h-full">
                 <div className="flex items-center justify-between gap-2 mb-4">
                   <h4 className="text-lg font-medium text-gray">Imagen</h4>
                   <Button
@@ -314,7 +321,7 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
                 </div>
 
                 {/* Área de upload */}
-                <div className="rounded-md bg-black h-[240px]">
+                <div className="rounded-md bg-black min-w-sm border border-gray h-80">
                   <input
                     id="imagen"
                     type="file"

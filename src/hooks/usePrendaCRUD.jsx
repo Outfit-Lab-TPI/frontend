@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 import { prendaService } from '../services/prendaService'
 
 export function usePrendaCRUD() {
@@ -28,8 +29,8 @@ export function usePrendaCRUD() {
       formData.append('evento', data.evento)
       formData.append('imagen', data.imagen[0])
 
-      console.log('Creando prenda:', { codigoMarca: 'puma', nombre: data.nombre, tipo: data.tipo })
       const response = await prendaService.crearPrenda(formData)
+      toast.success('Prenda creada exitosamente')
       return true
     } catch (error) {
       console.error('Error al crear prenda:', error)
@@ -85,7 +86,6 @@ export function usePrendaCRUD() {
 
   const eliminarPrenda = useCallback(async (id) => {
     try {
-      console.log('Eliminando prenda:', { id })
       await prendaService.eliminarPrenda(id)
       return true
     } catch (error) {

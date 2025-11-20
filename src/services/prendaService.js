@@ -10,7 +10,6 @@ export const prendaService = {
           'Content-Type': 'multipart/form-data',
         },
       })
-
       return response
     } catch (error) {
       console.error('Error en prendaService.crearPrenda:', error)

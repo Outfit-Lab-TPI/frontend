@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Search, Users, Store, Check, X, Shield, User } from 'lucide-react';
+import { Search, Users, Store } from 'lucide-react';
 import { useAdmin } from '../hooks/useAdmin.jsx';
+import TablaUsuarios from '../components/admin/TablaUsuarios.jsx';
+import TablaMarcas from '../components/admin/TablaMarcas.jsx';
 
 function AdminDashboard() {
   const {
@@ -30,12 +32,12 @@ function AdminDashboard() {
     }
   }, [criticalError]);
 
-  const handleCambiarRol = async (usuarioId, rolActual) => {
+  const handleCambiarRol = async (usuarioEmail, rolActual, tempId) => {
     const nuevoRol = rolActual === 'administrador' ? 'usuario' : 'administrador';
-    const key = `rol-${usuarioId}`;
+    const key = `rol-${tempId}`;
 
     setOperacionEnCurso(key);
-    const resultado = await cambiarRolUsuario(usuarioId, nuevoRol);
+    const resultado = await cambiarRolUsuario(usuarioEmail, nuevoRol);
     setOperacionEnCurso(null);
 
     if (!resultado.success) {
@@ -43,12 +45,12 @@ function AdminDashboard() {
     }
   };
 
-  const handleToggleUsuario = async (usuarioId, estadoActual) => {
-    const nuevoEstado = !estadoActual;
-    const key = `usuario-${usuarioId}`;
+  const handleToggleUsuario = async (usuarioEmail, estadoActual, tempId) => {
+    const nuevoEstado = !estadoActual;  // ← IMPORTANTE: invertir el estado
+    const key = `usuario-${tempId}`;
 
     setOperacionEnCurso(key);
-    const resultado = await toggleUsuarioActivo(usuarioId, nuevoEstado);
+    const resultado = await toggleUsuarioActivo(usuarioEmail, nuevoEstado);
     setOperacionEnCurso(null);
 
     if (!resultado.success) {
@@ -67,168 +69,6 @@ function AdminDashboard() {
     if (!resultado.success) {
       console.error('Error al cambiar estado de la marca:', resultado.error);
     }
-  };
-
-  const TablaUsuarios = () => {
-    if (loadingUsuarios) {
-      return (
-        <div className="text-center py-10">
-          <div className="text-lg text-gray">Cargando usuarios...</div>
-        </div>
-      );
-    }
-
-    if (errorUsuarios) {
-      return (
-        <div className="text-center py-10">
-          <div className="text-lg text-error">Error: {errorUsuarios}</div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="overflow-x-auto">
-        <table className="w-full bg-gray/10 rounded-lg overflow-hidden">
-          <thead className="bg-gray/50">
-            <tr>
-              <th className="text-left font-medium p-3 text-sm">Nombre</th>
-              <th className="text-left font-medium p-3 text-sm">Apellido</th>
-              <th className="text-left font-medium p-3 text-sm">Email</th>
-              <th className="text-center font-medium p-3 text-sm">Verificado</th>
-              <th className="text-center font-medium p-3 text-sm">Rol</th>
-              <th className="text-center font-medium p-3 text-sm">Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {usuarios.map((usuario) => (
-              <tr key={usuario.id} className="border-b border-gray/20 hover:bg-gray/5">
-                <td className="px-4 py-3 text-sm text-white">{usuario.nombre}</td>
-                <td className="px-4 py-3 text-sm text-white">{usuario.apellido}</td>
-                <td className="px-4 py-3 text-sm text-gray">{usuario.email}</td>
-                <td className="px-4 py-3 text-center">
-                  {usuario.verificado ? (
-                    <Check className="w-5 h-5 text-success mx-auto" />
-                  ) : (
-                    <X className="w-5 h-5 text-error mx-auto" />
-                  )}
-                </td>
-                <td className="px-4 py-3 text-center">
-                  {/* Badge clickeable para rol */}
-                  <button
-                    onClick={() => handleCambiarRol(usuario.id, usuario.rol)}
-                    disabled={operacionEnCurso === `rol-${usuario.id}`}
-                    className={`group relative px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 disabled:opacity-50 cursor-pointer ${
-                      usuario.rol === 'administrador'
-                        ? 'bg-tertiary/20 text-tertiary hover:bg-secondary/30 hover:text-secondary'
-                        : 'bg-secondary/20 text-secondary hover:bg-tertiary/30 hover:text-tertiary'
-                    }`}
-                  >
-                    <span className="group-hover:hidden">
-                      {usuario.rol === 'administrador' ? 'Administrador' : 'Usuario'}
-                    </span>
-                    <span className="hidden group-hover:inline">
-                      {usuario.rol === 'administrador' ? 'Hacer Usuario' : 'Hacer Admin'}
-                    </span>
-                  </button>
-                </td>
-                <td className="px-4 py-3 text-center">
-                  {/* Toggle switch para estado activo */}
-                  <button
-                    onClick={() => handleToggleUsuario(usuario.id, usuario.activo)}
-                    disabled={operacionEnCurso === `usuario-${usuario.id}`}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors disabled:opacity-50 ${
-                      usuario.activo ? 'bg-success' : 'bg-error'
-                    }`}
-                  >
-                    <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        usuario.activo ? 'translate-x-6' : 'translate-x-1'
-                      }`}
-                    />
-                    <span className="sr-only">
-                      {usuario.activo ? 'Desactivar usuario' : 'Activar usuario'}
-                    </span>
-                  </button>
-                  <div className="mt-1 text-xs text-gray">
-                    {usuario.activo ? 'Activo' : 'Bloqueado'}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
-
-  const TablaMarcas = () => {
-    if (loadingMarcas) {
-      return (
-        <div className="text-center py-10">
-          <div className="text-lg text-gray">Cargando marcas...</div>
-        </div>
-      );
-    }
-
-    if (errorMarcas) {
-      return (
-        <div className="text-center py-10">
-          <div className="text-lg text-error">Error: {errorMarcas}</div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="overflow-x-auto">
-        <table className="w-full bg-gray/10 rounded-lg overflow-hidden">
-          <thead className="bg-gray/50">
-            <tr>
-              <th className="text-left font-medium p-3 text-sm">Nombre</th>
-              <th className="text-left font-medium p-3 text-sm">Email</th>
-              <th className="text-center font-medium p-3 text-sm">Verificado</th>
-              <th className="text-center font-medium p-3 text-sm">Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {marcas.map((marca) => (
-              <tr key={marca.id} className="border-b border-gray/20 hover:bg-gray/5">
-                <td className="px-4 py-3 text-sm text-white">{marca.nombre}</td>
-                <td className="px-4 py-3 text-sm text-gray">{marca.email}</td>
-                <td className="px-4 py-3 text-center">
-                  {marca.verificado ? (
-                    <Check className="w-5 h-5 text-success mx-auto" />
-                  ) : (
-                    <X className="w-5 h-5 text-error mx-auto" />
-                  )}
-                </td>
-                <td className="px-4 py-3 text-center">
-                  {/* Toggle switch para estado activo de marca */}
-                  <button
-                    onClick={() => handleToggleMarca(marca.id, marca.activa)}
-                    disabled={operacionEnCurso === `marca-${marca.id}`}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors disabled:opacity-50 ${
-                      marca.activa ? 'bg-success' : 'bg-error'
-                    }`}
-                  >
-                    <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        marca.activa ? 'translate-x-6' : 'translate-x-1'
-                      }`}
-                    />
-                    <span className="sr-only">
-                      {marca.activa ? 'Desactivar marca' : 'Activar marca'}
-                    </span>
-                  </button>
-                  <div className="mt-1 text-xs text-gray">
-                    {marca.activa ? 'Activa' : 'Inactiva'}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
   };
 
   return (
@@ -285,11 +125,24 @@ function AdminDashboard() {
       {/* Contenido de la tab activa */}
       {tabActiva === 'usuarios' ? (
         <div>
-          <TablaUsuarios />
+          <TablaUsuarios
+            usuarios={usuarios}
+            loading={loadingUsuarios}
+            error={errorUsuarios}
+            operacionEnCurso={operacionEnCurso}
+            onCambiarRol={handleCambiarRol}
+            onToggleEstado={handleToggleUsuario}
+          />
         </div>
       ) : (
         <div>
-          <TablaMarcas />
+          <TablaMarcas
+            marcas={marcas}
+            loading={loadingMarcas}
+            error={errorMarcas}
+            operacionEnCurso={operacionEnCurso}
+            onToggleEstado={handleToggleMarca}
+          />
         </div>
       )}
     </div>

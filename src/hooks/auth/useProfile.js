@@ -23,11 +23,6 @@ export function useProfile(onSuccess) {
     mode: 'onChange'
   })
 
-  // DEBUG: Deshabilitado para producción
-  // React.useEffect(() => {
-  //   console.log('🐛 useProfile DEBUG:', { isValid, errors, ... })
-  // }, [errors, isValid, isDirty, watch])
-
   const password = watch('password')
 
   // Inicializar valores del formulario cuando el usuario esté disponible
