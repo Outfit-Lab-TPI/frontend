@@ -69,8 +69,8 @@ export const useSignup = () => {
                 password: data.password,
             });
 
-            alert(successData.message);
-            navigate("/login");
+            alert("¡Registro exitoso! Por favor, verifica tu email.");
+            navigate("/pending-verification");
 
         } catch (error) {
             if (error.response) {

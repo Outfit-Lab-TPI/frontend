@@ -14,6 +14,7 @@ import Marcas from "./pages/Marcas";
 import MarcaDetalle from "./pages/MarcaDetalle";
 import SubscriptionPage from "./pages/Subscription";
 import AdminDashboard from "./pages/AdminDashboard";
+import PendingVerification from "./pages/PendingVerification";
 
 export default function AppContent() {
   const location = useLocation();
@@ -37,6 +38,7 @@ export default function AppContent() {
           <Route path="/marcas" element={<Marcas />} />
           <Route path="/marcas/:codigoMarca" element={<MarcaDetalle />} />
           <Route path="/suscripcion" element={<SubscriptionPage />} />
+          <Route path="/pending-verification" element={<PendingVerification />} />
           <Route path="/" element={<Landing />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
