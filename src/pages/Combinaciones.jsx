@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { BookHeart, CircleArrowLeft } from "lucide-react";
 import { usePerfil } from "../hooks/usePerfil.jsx";
@@ -45,24 +45,24 @@ export default function Combinaciones() {
   const [combinacionSeleccionada, setCombinacionSeleccionada] = useState(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [combinacionAEliminar, setCombinacionAEliminar] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [autoOpenDisabled, setAutoOpenDisabled] = useState(false);
+  const [highlightButton, setHighlightButton] = useState(false);
   const navigate = useNavigate();
 
   const handleToggleFavorita = async (combinacion) => {
-      setCombinacionAEliminar(combinacion);
-      setShowConfirmDialog(true);
+    setCombinacionAEliminar(combinacion);
+    setShowConfirmDialog(true);
   };
 
   const confirmarEliminacion = async () => {
     if (!combinacionAEliminar) return;
 
-    const codigoCombinacion =
-      combinacionAEliminar.combinationUrl;
+    const codigoCombinacion = combinacionAEliminar.combinationUrl;
 
     try {
       // Primero hacer la llamada al servidor
-      await toggleCombinacionFavorita(
-        codigoCombinacion,
-      );
+      await toggleCombinacionFavorita(codigoCombinacion);
 
       // Solo si la operación fue exitosa, actualizar el estado local
       eliminarCombinacionLocal(codigoCombinacion);
@@ -74,7 +74,6 @@ export default function Combinaciones() {
 
       setShowConfirmDialog(false);
       setCombinacionAEliminar(null);
-
     } catch (error) {
       console.error("Error al eliminar combinación de favoritos:", error);
       // Si falla, cerrar el diálogo pero mantener el estado
@@ -93,17 +92,30 @@ export default function Combinaciones() {
       setCombinacionSeleccionada(null);
     } else {
       setCombinacionSeleccionada(combinacion);
+
+      setHighlightButton(true);
+      setTimeout(() => setHighlightButton(false), 800);
     }
 
     limpiarResultado();
     limpiarModelo();
   };
 
+  function handleOnOpenChange(open) {
+    setIsDrawerOpen(open);
+    if (!open) setAutoOpenDisabled(true);
+  }
+
+  function handleCombineInDrawer() {
+    setIsDrawerOpen(true);
+    setAutoOpenDisabled(true);
+    handleProbarCombinacion();
+  }
+
   const handleProbarCombinacion = async () => {
     if (combinacionSeleccionada) {
       limpiarResultado();
       limpiarModelo();
-
 
       // Establecer resultado usando la imagen de la combinación favorita
       const resultadoCombinacion = {
@@ -120,6 +132,25 @@ export default function Combinaciones() {
       await generarModelo3D(resultado);
     }
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobile = window.innerWidth < 1024;
+
+      if (isMobile && (resultado || modeloUrl) && !autoOpenDisabled) {
+        setIsDrawerOpen(true);
+        setAutoOpenDisabled(true);
+      }
+
+      if (!isMobile) {
+        if (isDrawerOpen) setIsDrawerOpen(false);
+        if (autoOpenDisabled) setAutoOpenDisabled(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [resultado, modeloUrl, autoOpenDisabled, isDrawerOpen]);
 
   if (loading) {
     return (
@@ -176,51 +207,57 @@ export default function Combinaciones() {
               </div>
 
               <div className="flex not-sm:flex-col not-lg:w-full items-center gap-4">
-                <>
-                  <div className="hidden lg:inline-flex">
+                <div className="hidden lg:inline-flex">
+                  <Button
+                    onClick={handleProbarCombinacion}
+                    disabled={loadingCombinacion || !combinacionSeleccionada}
+                    width="full"
+                    className={`text-nowrap transition-all duration-300 ${
+                      highlightButton
+                        ? "animate-pulse scale-103 border border-primary/40"
+                        : ""
+                    }`}
+                  >
+                    {loadingCombinacion ? "Cargando..." : "Ver combinación"}
+                  </Button>
+                </div>
+
+                <Drawer open={isDrawerOpen} onOpenChange={handleOnOpenChange}>
+                  <DrawerTrigger asChild>
                     <Button
-                      onClick={handleProbarCombinacion}
+                      onClick={handleCombineInDrawer}
                       disabled={loadingCombinacion || !combinacionSeleccionada}
-                      width="full"
-                      className="text-nowrap"
+                      className={`lg:hidden text-nowrap transition-all duration-300 ${
+                        highlightButton
+                          ? "animate-pulse scale-102 border border-primary/40"
+                          : ""
+                      }`}
                     >
-                      {loadingCombinacion ? "Cargando..." : "Ver combinación"}
+                      {loadingCombinacion ? "Cargando..." : "Ver combinación"}{" "}
                     </Button>
-                  </div>
+                  </DrawerTrigger>
+                  <DrawerContent className="h-[90dvh] flex flex-col bg-black/95 lg:hidden">
+                    <div className="flex-1 overflow-y-auto pb-2">
+                      <Panel
+                        loadingCombinacion={loadingCombinacion}
+                        resultado={resultado}
+                        errorCombinacion={errorCombinacion}
+                        errorModelo3D={errorModelo3D}
+                        modeloUrl={modeloUrl}
+                        loadingModelo3D={loadingModelo3D}
+                        onGenerarModelo3D={handleGenerarModelo3D}
+                      />
+                    </div>
 
-                  <Drawer>
-                    <DrawerTrigger asChild>
-                      <Button
-                        onClick={handleProbarCombinacion}
-                        className="lg:hidden text-nowrap"
-                        disabled={
-                          loadingCombinacion || !combinacionSeleccionada
-                        }
-                      >
-                        {loadingCombinacion ? "Cargando..." : "Ver combinación"}{" "}
-                      </Button>
-                    </DrawerTrigger>
-                    <DrawerContent className="h-[90dvh] flex flex-col bg-black/95 lg:hidden">
-                      <div className="flex-1 overflow-y-auto pb-2">
-                        <Panel
-                          loadingCombinacion={loadingCombinacion}
-                          resultado={resultado}
-                          errorCombinacion={errorCombinacion}
-                          errorModelo3D={errorModelo3D}
-                          modeloUrl={modeloUrl}
-                          loadingModelo3D={loadingModelo3D}
-                          onGenerarModelo3D={handleGenerarModelo3D}
-                        />
-                      </div>
-
-                      <div className="p-4 border-t text-white border-gray/20 bg-background flex justify-end">
-                        <DrawerClose asChild>
-                          <Button>Cerrar</Button>
-                        </DrawerClose>
-                      </div>
-                    </DrawerContent>
-                  </Drawer>
-                </>
+                    <div className="p-4 border-t text-white border-gray/20 bg-background flex justify-end">
+                      <DrawerClose asChild>
+                        <Button onClick={() => setIsDrawerOpen(false)}>
+                          Cerrar
+                        </Button>
+                      </DrawerClose>
+                    </div>
+                  </DrawerContent>
+                </Drawer>
               </div>
             </div>
           </div>

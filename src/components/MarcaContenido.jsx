@@ -33,6 +33,9 @@ function MarcaContenido({
   avatarType,
   onAvatarTypeChange,
   user,
+  isDrawerOpen,
+  setIsDrawerOpen,
+  setAutoOpenDisabled,
 }) {
   const [soloFavoritosSuperiores, setSoloFavoritosSuperiores] = useState(false);
   const [soloFavoritosInferiores, setSoloFavoritosInferiores] = useState(false);
@@ -53,6 +56,17 @@ function MarcaContenido({
         : inferioresBuscados,
     };
   }, [marcaDetail, soloFavoritosSuperiores, soloFavoritosInferiores, busqueda]);
+
+  function handleOnOpenChange(open) {
+    setIsDrawerOpen(open);
+    if (!open) setAutoOpenDisabled(true);
+  }
+
+  function handleCombineInDrawer() {
+    setIsDrawerOpen(true);
+    setAutoOpenDisabled(true);
+    onCombinarPrendas(avatarType);
+  }
 
   return (
     <div className="w-full lg:w-2/3 flex flex-col px-2">
@@ -88,7 +102,7 @@ function MarcaContenido({
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 flex-wrap">
               <AvatarDropdown
                 avatarType={avatarType}
                 onAvatarTypeChange={onAvatarTypeChange}
@@ -107,10 +121,21 @@ function MarcaContenido({
                 </Button>
               </div>
 
-              <Drawer>
+              <div className="lg:hidden">
+                <Button
+                  onClick={() => setIsDrawerOpen(true)}
+                  disabled={!resultado && !modeloUrl}
+                  variant="primary"
+                  width="fit"
+                >
+                  Ver combinación
+                </Button>
+              </div>
+
+              <Drawer open={isDrawerOpen} onOpenChange={handleOnOpenChange}>
                 <DrawerTrigger asChild>
                   <Button
-                    onClick={() => onCombinarPrendas(avatarType)}
+                    onClick={handleCombineInDrawer}
                     className="lg:hidden text-nowrap"
                     width="fit"
                     disabled={!canCombine || loadingCombinacion}
@@ -133,7 +158,9 @@ function MarcaContenido({
 
                   <div className="p-4 border-t text-white border-gray/20 bg-background flex justify-end">
                     <DrawerClose asChild>
-                      <Button>Cerrar</Button>
+                      <Button onClick={() => setIsDrawerOpen(false)}>
+                        Cerrar
+                      </Button>
                     </DrawerClose>
                   </div>
                 </DrawerContent>
