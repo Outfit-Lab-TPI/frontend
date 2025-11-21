@@ -70,8 +70,12 @@ function Login() {
               <p className="text-error text-sm">{errors.submit.message}</p>
             )}
             {/* Botón Iniciar sesión */}
+            
             {/* <Button type="submit" disabled={isSubmitting || !isValid}> */}
-            <Button onClick={handleLoginClick}>
+            {/*<Button onClick={handleLoginClick}>
+              {isSubmitting ? "Iniciando sesión..." : "Iniciar sesión"}
+            </Button>*/}
+            <Button type="submit" disabled={isSubmitting || !isValid}>
               {isSubmitting ? "Iniciando sesión..." : "Iniciar sesión"}
             </Button>
 
