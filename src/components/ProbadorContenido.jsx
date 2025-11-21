@@ -161,7 +161,7 @@ export default function ProbadorContenido({
         {prendasFiltradas && prendasFiltradas.length > 0 ? (
           <div className="space-y-6 max-w-5xl mx-auto">
             <div>
-              <div className="bg-gray/5 pt-1 px-2 flex gap-8 justify-between items-center rounded-sm mb-2">
+              <div className="bg-gray/5 pt-1 px-2 flex flex-col sm:flex-row justify-between items-center rounded-sm mb-2">
                 <h5 className="font-semibold">
                   Prendas Superiores (
                   {prendasCategorizadasFiltradas.superiores.length})
@@ -173,7 +173,7 @@ export default function ProbadorContenido({
                 )}
               </div>
 
-              <div className="flex flex-wrap mx-8 items-center gap-6">
+              <div className="grid justify-center grid-cols-[repeat(auto-fit,160px)] mx-4 my-8 gap-6 md:gap-8">
                 {prendasCategorizadasFiltradas.superiores.map(
                   (prenda, index) => (
                     <PrendaGalleryCard
@@ -196,7 +196,7 @@ export default function ProbadorContenido({
             </div>
 
             <div>
-              <div className="bg-gray/5 pt-1 px-2 flex gap-8 justify-between items-center rounded-sm mb-2">
+              <div className="bg-gray/5 pt-1 px-2 flex flex-col sm:flex-row justify-between items-center rounded-sm mb-2">
                 <h5 className="font-semibold">
                   Prendas Inferiores (
                   {prendasCategorizadasFiltradas.inferiores.length})
@@ -208,7 +208,7 @@ export default function ProbadorContenido({
                 )}
               </div>
 
-              <div className="flex flex-wrap mx-8 items-center gap-6">
+              <div className="grid justify-center grid-cols-[repeat(auto-fit,160px)] mx-2 md:mx-4 my-8 gap-5 md:gap-7">
                 {prendasCategorizadasFiltradas.inferiores.map(
                   (prenda, index) => (
                     <PrendaGalleryCard

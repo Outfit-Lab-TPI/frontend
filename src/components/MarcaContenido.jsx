@@ -215,7 +215,7 @@ function MarcaContenido({
                   <span className="text-sm text-white">Solo favoritos</span>
                 </label>
               </div>
-              <div className="flex flex-wrap gap-4 mx-8 items-center">
+              <div className="grid justify-center grid-cols-[repeat(auto-fit,160px)] mx-4 my-8 gap-6 md:gap-8">
                 {prendasCategorizadas.superiores.map((prenda, index) => (
                   <PrendaGalleryCard
                     key={`superior-${index}`}
@@ -260,7 +260,7 @@ function MarcaContenido({
                   <span className="text-sm text-white">Solo favoritos</span>
                 </label>
               </div>
-              <div className="flex flex-wrap gap-4 mx-8 items-center">
+              <div className="grid justify-center grid-cols-[repeat(auto-fit,160px)] mx-4 my-8 gap-6 md:gap-8">
                 {prendasCategorizadas.inferiores.map((prenda, index) => (
                   <PrendaGalleryCard
                     key={`inferior-${index}`}

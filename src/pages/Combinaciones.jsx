@@ -274,7 +274,7 @@ export default function Combinaciones() {
                   Tus Combinaciones ({combinaciones.length})
                 </h5>
 
-                <div className="flex flex-wrap mx-8 text-center items-center gap-6">
+                <div className="grid justify-center grid-cols-[repeat(auto-fit,192px)] mx-4 my-8 gap-6 md:gap-8">
                   {combinaciones.map((combinacion, index) => (
                     <div
                       key={`combinacion-${index}`}
