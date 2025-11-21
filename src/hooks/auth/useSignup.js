@@ -69,8 +69,12 @@ export const useSignup = () => {
                 password: data.password,
             });
 
-            alert("¡Registro exitoso! Por favor, verifica tu email.");
-            navigate("/pending-verification");
+            localStorage.setItem('pendingVerificationEmail', data.email);
+            
+            alert(successData.message || "¡Registro exitoso! Por favor, verifica tu email.");
+            
+            const emailEncoded = encodeURIComponent(data.email);
+            navigate(`/pending-verification?email=${emailEncoded}`); 
 
         } catch (error) {
             if (error.response) {
