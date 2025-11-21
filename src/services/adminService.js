@@ -93,7 +93,7 @@ export const adminService = {
   cambiarRolUsuario: async (userId, nuevoRol) => {
     try {
       // TODO: Implementar endpoint cuando esté disponible
-      let endpointToConvert = nuevoRol === 'administrador' ? 'convert-to-admin' : 'convert-to-user';
+      let endpointToConvert = nuevoRol === 'ADMIN' ? 'convert-to-admin' : 'convert-to-user';
       console.log(endpointToConvert + " -- nuevo rol->" + nuevoRol)
       return await apiClient.put(`/users/${endpointToConvert}/${userId}`);
 

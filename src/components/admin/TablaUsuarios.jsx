@@ -61,7 +61,6 @@ function TablaUsuarios({
                       : 'bg-secondary/20 text-secondary hover:bg-tertiary/30 hover:text-tertiary'
                   }`}
                 >
-                  <span>{usuario.role}--</span>
                   <span className="group-hover:hidden">
                     {usuario.role === 'ADMIN' ? 'Administrador' : 'Usuario'}
                   </span>
