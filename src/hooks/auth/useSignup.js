@@ -113,16 +113,12 @@ export const useSignup = () => {
                 alert("¡Registro exitoso! Verifica tu email.");
                 navigate("/pending-verification");
 
-
-            /*const successData = await signupService({
-                email: data.email,
-                name: data.name,
-                lastName: data.lastName,
-                password: data.password,
-            });
-
-            alert("¡Registro exitoso! Por favor, verifica tu email.");
-            navigate("/pending-verification");*/
+                localStorage.setItem('pendingVerificationEmail', data.email);
+                
+                alert(successData.message || "¡Registro exitoso! Por favor, verifica tu email.");
+                
+                const emailEncoded = encodeURIComponent(data.email);
+                navigate(`/pending-verification?email=${emailEncoded}`); 
 
         } catch (error) {
             if (error.response) {
