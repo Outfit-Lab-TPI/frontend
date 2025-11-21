@@ -37,15 +37,28 @@ export default function ProbadorContenido({
   avatarType,
   onAvatarTypeChange,
   user,
+  isDrawerOpen,
+  setIsDrawerOpen,
+  setAutoOpenDisabled,
 }) {
   const [busqueda, setBusqueda] = useState("");
-
   const prendasFiltradas = searchGarments(prendas, busqueda);
 
   const prendasCategorizadasFiltradas = {
-    superiores: prendasFiltradas.filter(p => p.tipo === "superior"),
-    inferiores: prendasFiltradas.filter(p => p.tipo === "inferior"),
+    superiores: prendasFiltradas.filter((p) => p.tipo === "superior"),
+    inferiores: prendasFiltradas.filter((p) => p.tipo === "inferior"),
   };
+
+  function handleOnOpenChange(open) {
+    setIsDrawerOpen(open);
+    if (!open) setAutoOpenDisabled(true);
+  }
+
+  function handleCombineInDrawer() {
+    setIsDrawerOpen(true);
+    setAutoOpenDisabled(true);
+    onCombinarPrendas(avatarType);
+  }
 
   return (
     <div className="w-full lg:w-2/3 flex flex-col px-2">
@@ -78,10 +91,21 @@ export default function ProbadorContenido({
                 </Button>
               </div>
 
-              <Drawer>
+              <div className="lg:hidden">
+                <Button
+                  onClick={() => setIsDrawerOpen(true)}
+                  disabled={!resultado && !modeloUrl}
+                  variant="primary"
+                  width="fit"
+                >
+                  Ver combinación
+                </Button>
+              </div>
+
+              <Drawer open={isDrawerOpen} onOpenChange={handleOnOpenChange}>
                 <DrawerTrigger asChild>
                   <Button
-                    onClick={() => onCombinarPrendas(avatarType)}
+                    onClick={handleCombineInDrawer}
                     className="lg:hidden text-nowrap"
                     width="fit"
                     disabled={!canCombine || loadingCombinacion}
@@ -104,7 +128,9 @@ export default function ProbadorContenido({
 
                   <div className="p-4 border-t text-white border-gray/20 bg-background flex justify-end">
                     <DrawerClose asChild>
-                      <Button>Cerrar</Button>
+                      <Button onClick={() => setIsDrawerOpen(false)}>
+                        Cerrar
+                      </Button>
                     </DrawerClose>
                   </div>
                 </DrawerContent>
@@ -135,7 +161,7 @@ export default function ProbadorContenido({
         {prendasFiltradas && prendasFiltradas.length > 0 ? (
           <div className="space-y-6 max-w-5xl mx-auto">
             <div>
-              <div className="bg-gray/5 pt-1 px-2 flex gap-8 justify-between items-center rounded-sm mb-2">
+              <div className="bg-gray/5 pt-1 px-2 flex flex-col sm:flex-row justify-between items-center rounded-sm mb-2">
                 <h5 className="font-semibold">
                   Prendas Superiores (
                   {prendasCategorizadasFiltradas.superiores.length})
@@ -147,7 +173,7 @@ export default function ProbadorContenido({
                 )}
               </div>
 
-              <div className="flex flex-wrap mx-8 items-center gap-6">
+              <div className="grid justify-center grid-cols-[repeat(auto-fit,160px)] mx-4 my-8 gap-6 md:gap-8">
                 {prendasCategorizadasFiltradas.superiores.map(
                   (prenda, index) => (
                     <PrendaGalleryCard
@@ -170,7 +196,7 @@ export default function ProbadorContenido({
             </div>
 
             <div>
-              <div className="bg-gray/5 pt-1 px-2 flex gap-8 justify-between items-center rounded-sm mb-2">
+              <div className="bg-gray/5 pt-1 px-2 flex flex-col sm:flex-row justify-between items-center rounded-sm mb-2">
                 <h5 className="font-semibold">
                   Prendas Inferiores (
                   {prendasCategorizadasFiltradas.inferiores.length})
@@ -182,7 +208,7 @@ export default function ProbadorContenido({
                 )}
               </div>
 
-              <div className="flex flex-wrap mx-8 items-center gap-6">
+              <div className="grid justify-center grid-cols-[repeat(auto-fit,160px)] mx-2 md:mx-4 my-8 gap-5 md:gap-7">
                 {prendasCategorizadasFiltradas.inferiores.map(
                   (prenda, index) => (
                     <PrendaGalleryCard

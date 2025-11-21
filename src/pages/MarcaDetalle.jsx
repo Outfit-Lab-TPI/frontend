@@ -44,15 +44,15 @@ function MarcaDetalle() {
   const { togglePrendaFavorita, toggleCombinacionFavorita } = useFavoritos();
   const [selectedSuperior, setSelectedSuperior] = useState(null);
   const [selectedInferior, setSelectedInferior] = useState(null);
-  // Estado para el tipo de avatar seleccionado por el usuario
   const [avatarType, setAvatarType] = useState(() => {
-    // Default basado en preferencias del usuario
-    if (user?.avatarUrl) return 'custom';
-    return user?.avatarGenero === 'mujer' ? 'woman' : 'man';
+    if (user?.avatarUrl) return "custom";
+    return user?.avatarGenero === "mujer" ? "woman" : "man";
   });
   const [lastCombination, setLastCombination] = useState(null);
   const [modalSugerenciasAbierto, setModalSugerenciasAbierto] = useState(false);
   const [prendaParaSugerencias, setPrendaParaSugerencias] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [autoOpenDisabled, setAutoOpenDisabled] = useState(false);
 
   const handleSelectPrenda = (prenda) => {
     if (prenda.tipo === "superior") {
@@ -90,7 +90,12 @@ function MarcaDetalle() {
         avatarType: selectedAvatarType,
       });
 
-      await combinarPrendas(selectedAvatarType, selectedSuperior, selectedInferior, user);
+      await combinarPrendas(
+        selectedAvatarType,
+        selectedSuperior,
+        selectedInferior,
+        user
+      );
     }
   };
 
@@ -130,6 +135,7 @@ function MarcaDetalle() {
         sugerencia.bottomGarment,
         user
       );
+      setIsDrawerOpen(true);
     } catch (error) {
       console.error("Error al aplicar sugerencia:", error);
     }
@@ -177,6 +183,25 @@ function MarcaDetalle() {
       console.error("Error al cambiar favorito de combinación:", error);
     }
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobile = window.innerWidth < 1024;
+
+      if (isMobile && (resultado || modeloUrl) && !autoOpenDisabled) {
+        setIsDrawerOpen(true);
+        setAutoOpenDisabled(true);
+      }
+
+      if (!isMobile) {
+        if (isDrawerOpen) setIsDrawerOpen(false);
+        if (autoOpenDisabled) setAutoOpenDisabled(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [resultado, modeloUrl, autoOpenDisabled, isDrawerOpen]);
 
   useEffect(() => {
     if (criticalError) {
@@ -254,6 +279,9 @@ function MarcaDetalle() {
         avatarType={avatarType}
         onAvatarTypeChange={handleAvatarTypeChange}
         user={user}
+        isDrawerOpen={isDrawerOpen}
+        setIsDrawerOpen={setIsDrawerOpen}
+        setAutoOpenDisabled={setAutoOpenDisabled}
       />
 
       {(marcaDetail.garmentTop?.content?.length > 0 ||
