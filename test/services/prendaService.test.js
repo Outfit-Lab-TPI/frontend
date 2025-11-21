@@ -52,7 +52,7 @@ describe('prendaService', () => {
       const result = await prendaService.crearPrenda(data)
 
       expect(apiClient.post).toHaveBeenCalledWith(
-        '/crear-prenda',
+        '/garments/new',
         data,
         { headers: { 'Content-Type': 'multipart/form-data' } }
       )

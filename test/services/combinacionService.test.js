@@ -18,12 +18,12 @@ describe('combinacionService', () => {
       const mockData = { imageUrl: 'https://example.com/combinacion1.png' }
       apiClient.post.mockResolvedValueOnce({ data: mockData })
 
-      const esHombre = true
+      const avatar = 'man'
       const top = 'camisa azul'
       const bottom = 'pantalón negro'
 
       // when
-      const result = await combinacionService.combinarPrendas(esHombre, top, bottom)
+      const result = await combinacionService.combinarPrendas(avatar, top, bottom)
 
       // then
       // Verifica que el endpoint se llamó correctamente
@@ -42,13 +42,13 @@ describe('combinacionService', () => {
       const mockData = { imageUrl: 'https://example.com/combinacion1.png' }
       apiClient.post.mockResolvedValueOnce({ data: mockData })
 
-      const esHombre = true
+      const avatar = 'woman'
       const top = 'camisa azul'
       const bottom = 'pantalón negro'
       const usuario = { avatarGenero: 'mujer', avatarUrl: null }
 
       // when
-      const result = await combinacionService.combinarPrendas(esHombre, top, bottom, usuario)
+      const result = await combinacionService.combinarPrendas(avatar, top, bottom, usuario)
 
       // then
       expect(apiClient.post).toHaveBeenCalledWith(
@@ -63,18 +63,18 @@ describe('combinacionService', () => {
       const mockData = { imageUrl: 'https://example.com/combinacion1.png' }
       apiClient.post.mockResolvedValueOnce({ data: mockData })
 
-      const esHombre = true
+      const avatar = 'custom'
       const top = 'camisa azul'
       const bottom = 'pantalón negro'
       const usuario = { avatarGenero: 'hombre', avatarUrl: 'https://example.com/user-avatar.jpg' }
 
       // when
-      const result = await combinacionService.combinarPrendas(esHombre, top, bottom, usuario)
+      const result = await combinacionService.combinarPrendas(avatar, top, bottom, usuario)
 
       // then
       expect(apiClient.post).toHaveBeenCalledWith(
         '/fashion/combinar-prendas',
-        { avatarType: 'custom', top, bottom },  // Debe usar 'custom' cuando hay imagen personalizada
+        { avatarType: 'custom', top, bottom, customAvatar: 'https://example.com/user-avatar.jpg' },  // Incluye customAvatar cuando hay imagen personalizada
         { timeout: 60000 }
       )
     })
@@ -87,12 +87,12 @@ describe('combinacionService', () => {
 
       // when / then
       await expect(
-        combinacionService.combinarPrendas(true, 'camisa azul', 'pantalón negro')
+        combinacionService.combinarPrendas('man', 'camisa azul', 'pantalón negro')
       ).rejects.toThrow('Servidor caído')
 
       // then
       // Verifica que el error se registró en consola
-      expect(consoleSpy).toHaveBeenCalledWith('error:', error)
+      expect(consoleSpy).toHaveBeenCalledWith('Error en combinacionService:', error)
       consoleSpy.mockRestore()
     })
   })
