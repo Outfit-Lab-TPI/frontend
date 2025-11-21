@@ -178,9 +178,6 @@ function Signup() {
                 <input
                   id="sitioUrl"
                   type="url"
-                  {...register("sitioUrl", {
-                    required: isBrand ? "El sitio web es obligatorio" : false, // ⭐ AGREGADO
-                  })}
                   className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary"
                   placeholder="https://mi-marca.com"
                 />
