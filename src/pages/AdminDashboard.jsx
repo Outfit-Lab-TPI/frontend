@@ -33,7 +33,7 @@ function AdminDashboard() {
   }, [criticalError]);
 
   const handleCambiarRol = async (usuarioEmail, rolActual, tempId) => {
-    const nuevoRol = rolActual === 'administrador' ? 'usuario' : 'administrador';
+    const nuevoRol = rolActual === 'ADMIN' ? 'USER' : 'ADMIN';
     const key = `rol-${tempId}`;
 
     setOperacionEnCurso(key);
