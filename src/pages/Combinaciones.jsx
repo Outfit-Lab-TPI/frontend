@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { BookHeart, CircleArrowLeft } from "lucide-react";
-import { usePerfil } from "../hooks/usePerfil.jsx";
+import { useCombinacionesFavoritas } from "../hooks/useCombinacionesFavoritas.jsx";
 import { useFavoritos } from "../hooks/useFavoritos.jsx";
 import { useCombinacion } from "../hooks/useCombinacion.jsx";
 import { useModelo3D } from "../hooks/useModelo3D.jsx";
@@ -26,7 +26,7 @@ export default function Combinaciones() {
     actualizarFavoritoLocal,
     eliminarCombinacionLocal,
     refetch,
-  } = usePerfil();
+  } = useCombinacionesFavoritas(true);
   const { toggleCombinacionFavorita } = useFavoritos();
   const {
     loading: loadingCombinacion,

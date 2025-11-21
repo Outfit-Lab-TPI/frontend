@@ -11,7 +11,7 @@ import {
   Camera,
 } from "lucide-react";
 import Button from "../components/shared/Button";
-import { useProfile } from "../hooks/auth/useProfile";
+import { usePerfil } from "../hooks/usePerfil";
 import { useAuth } from "../hooks/auth/useAuth";
 
 function Profile() {
@@ -37,7 +37,7 @@ function Profile() {
     selectedImage,
     handleImageChange,
     removeImage,
-  } = useProfile(onSubmitSuccess);
+  } = usePerfil(onSubmitSuccess);
 
   const handleCancelEdit = () => {
     setIsEditing(false);
