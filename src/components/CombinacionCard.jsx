@@ -34,7 +34,7 @@ function CombinacionCard({ combinacion, onVerDetalle, onToggleFavorita }) {
           />
         </button>
 
-        {combinacion.combinationUrl ? <DownloadButton fileUrl={combinacion.combinationUrl}/> : null}
+        <DownloadButton fileUrl={combinacion.combinationUrl}/>
       </div>
     </div>
   );
