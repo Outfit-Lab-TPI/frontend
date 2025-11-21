@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { signupService } from "../../services/auth/signupService"; 
+import { Trigger } from "@radix-ui/react-dialog";
 
 export const useSignup = () => {
     const navigate = useNavigate();
@@ -43,15 +44,27 @@ export const useSignup = () => {
         },
     };
 
-    const {
+    
+   /* const {
         register,
         handleSubmit: hookFormHandleSubmit,
         formState: { errors, isValid, isSubmitting },
         setError,
         getValues,
-    } = useForm({ mode: "onBlur" });
+    } = useForm({ mode: "onBlur" });*/
 
-    const handleSubmit = hookFormHandleSubmit(async (data) => {
+    const {
+    register,
+    handleSubmit: hookFormHandleSubmit,
+    trigger, // <-- agregado
+    formState: { errors, isValid, isSubmitting },
+    setError,
+    getValues,
+} = useForm({ mode: "onChange" });
+
+
+
+    const handleSubmit = (isBrand) => hookFormHandleSubmit(async (data) => {
         
         if (data.password !== data.confirmPassword) {
             setError("confirmPassword", {
@@ -62,7 +75,46 @@ export const useSignup = () => {
         }
 
         try {
-            const successData = await signupService({
+
+            let payload;
+
+                if (isBrand) {
+                    // ------------------------
+                    // REGISTRO DE MARCA
+                    // ------------------------
+                    payload = new FormData();
+                    payload.append("email", data.email);
+                    payload.append("name", data.name);
+                    payload.append("lastName", data.lastName);
+                    payload.append("password", data.password);
+
+                    payload.append("brandName", data.nombreMarca || "");
+                    payload.append("urlSite", data.sitioUrl || "");
+
+                    if (data.logoImage?.[0]) {
+                        payload.append("logoBrand", data.logoImage[0]);
+                    }
+                    payload.append("registerAsBrand", true)
+
+                } else {
+                    // ------------------------
+                    // REGISTRO NORMAL
+                    // ------------------------
+                    payload = {
+                        email: data.email,
+                        name: data.name,
+                        lastName: data.lastName,
+                        password: data.password,
+                    };
+                }
+
+                const successData = await signupService(payload, isBrand);
+
+                alert("¡Registro exitoso! Verifica tu email.");
+                navigate("/pending-verification");
+
+
+            /*const successData = await signupService({
                 email: data.email,
                 name: data.name,
                 lastName: data.lastName,
@@ -70,7 +122,7 @@ export const useSignup = () => {
             });
 
             alert("¡Registro exitoso! Por favor, verifica tu email.");
-            navigate("/pending-verification");
+            navigate("/pending-verification");*/
 
         } catch (error) {
             if (error.response) {
@@ -106,5 +158,6 @@ export const useSignup = () => {
         isSubmitting,
         validationRules,
         getValues,
+        trigger
     };
 };
