@@ -20,5 +20,16 @@ export const modelo3DService = {
       console.error('Error en modelo3DService.generarModelo:', error);
       throw new Error('Error de conexión al generar modelo 3D');
     }
+  },
+
+  downloadModel: async (modelUrl) => {
+    try {
+      return await fetch(
+        `http://localhost:8080/api/tripo/models/download?url=${encodeURIComponent(modelUrl)}`
+      );
+    }catch (error) {
+      console.error('Error en modelo3DService.generarModelo:', error);
+      throw new Error('Error de conexión al generar modelo 3D');
+    }
   }
 };

@@ -1,3 +1,4 @@
+import { modelo3DService } from "@/services/modelo3DService";
 import { ArrowDownToLine } from "lucide-react";
 export default function DownloadButton ({fileUrl}){
     const handleDownload = async (e) => {
@@ -5,11 +6,15 @@ export default function DownloadButton ({fileUrl}){
 
         try {
             const extension = fileUrl.split(".").pop().toLowerCase();
-
-            const response = await fetch(fileUrl, {
-                mode: "cors"
-            });
-
+            let response;
+            if(extension === 'glb'){
+                response = modelo3DService.downloadModel(fileUrl)
+            }else {
+                response = await fetch(fileUrl, {
+                    mode: "cors"
+                });
+            }
+            
             if(!response.ok){
                 throw new Error("No se pudo descargar el archivo.")
             }
@@ -18,13 +23,16 @@ export default function DownloadButton ({fileUrl}){
             const link = document.createElement("a");
 
             link.href = url;
-            link.download = `combinacion_${Date.now()}.${extension}`;
-
-            document.body.appendChild(link);
+            if(extension === 'glb' || extension === 'hdr') {
+                link.download = fileUrl.split("/").pop(); // el nombre original del archivo
+            }else {
+                link.download = `combinacion_${Date.now()}.${extension}`;   
+                 document.body.appendChild(link);
+            }
 
             link.click();
             link.remove();
-            
+
             window.URL.revokeObjectURL(url);
         } catch (error) {
             console.error("Error descargando imagen:", error);
