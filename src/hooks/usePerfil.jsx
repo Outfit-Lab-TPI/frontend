@@ -90,6 +90,7 @@ export const usePerfil = (onSuccess) => {
 
   const profileValidationRules = {
     name: validationRules.name,
+    lastName: validationRules.lastName,
     email: validationRules.email,
     password: validationRules.passwordOptional,
     confirmPassword: createOptionalPasswordConfirmValidation(password),
@@ -109,29 +110,44 @@ export const usePerfil = (onSuccess) => {
       const formData = new FormData();
 
       formData.append('name', data.name);
+      formData.append('lastname', data.lastname);
       formData.append('email', data.email);
 
       if (data.password && data.password.trim() !== '') {
         formData.append('password', data.password);
+        formData.append('confirmPassword', data.confirmPassword);
       }
 
       if (data.avatar && data.avatar[0]) {
-        formData.append('avatar', data.avatar[0]);
+        formData.append('userImg', data.avatar[0]);
       }
+      /* 
+      
+      --- VER CON CAMI EL TEMA DE QUE YO ESPERO EL "USER EMAIL" COMO VALOR DEL PATH VARIABLE,
+      --- y actualmente me llega undefined (entiendo pq hacen user.id pero pq usan algo del provider
+      --- tal vez no se si será lo de enviar el token o cuando se logueann, dejar en local storage el email y acá
+      --- lo recuperamos para poder enviarlo en el /api/users/update/{email} )
 
-      const response = await perfilService.actualizarPerfil(user.id, formData);
+      --- por ahora dejo uno hardcodeado que se que existe en la bdd. 
+      
+      */
+
+      let userEmail = user.id ? user.id : "german@gmail.com"; //--hardocdeado
+      console.log("ACUALIZANDO PERFIL DEL USUARIO CON ID: ---------------: " + user.id + "- como no tenemos id, mando el email: " + userEmail)
+      const response = await perfilService.actualizarPerfil("german@gmail.com", formData);
 
       updateUser({
         ...user,
         name: response.data.user.name,
         email: response.data.user.email,
-        avatarUrl: response.data.user.avatarUrl,
+        avatarUrl: response.data.user.userImg,
       });
 
-      setSelectedImage(response.data.user.avatarUrl);
+      setSelectedImage(response.data.user.userImg);
 
       reset({
         name: response.data.user.name,
+        lastName: response.data.user.lastName,
         email: response.data.user.email,
         password: '',
         confirmPassword: ''

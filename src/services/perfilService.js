@@ -58,12 +58,12 @@ export const perfilService = {
       validarFormDataPerfil(formData);
 
       // TODO: Implementar endpoint para actualizar perfil
-      // const response = await apiClient.put(`/api/perfil/${userId}`, formData, {
-      //   headers: {
-      //     'Content-Type': 'multipart/form-data',
-      //   },
-      // });
-      // return response.data;
+      const response = await apiClient.put(`/users/update/${userId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
 
       // Simulación temporal
       console.log('Actualizando perfil en servicio:', { userId, formData });

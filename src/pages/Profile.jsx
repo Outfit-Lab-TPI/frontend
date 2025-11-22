@@ -117,6 +117,28 @@ function Profile() {
                   )}
                 </div>
 
+                {/* Campo Apellido */}
+                <div>
+                  <label
+                    htmlFor="lastname"
+                    className="block text-sm text-gray mb-2"
+                  >
+                    Apellido
+                  </label>
+                  <input
+                    id="lastname"
+                    type="text"
+                    {...register("lastName", validationRules.lastname)}
+                    disabled={!isEditing}
+                    className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray disabled:opacity-60"
+                  />
+                  {errors.lastname && (
+                    <p className="text-error text-xs mt-1">
+                      {errors.lastName.message}
+                    </p>
+                  )}
+                </div>
+
                 {/* Campo Correo electrónico */}
                 <div>
                   <label
@@ -210,6 +232,14 @@ function Profile() {
                   </Button>
                 </div>
               )}
+
+              {/* Boton de guardar cambios */}
+              {isEditing && (
+                <Button type="submit" disabled={!isValid || isSubmitting} className="mt-10">
+                  {isSubmitting ? "Guardando..." : "Guardar cambios"}
+                </Button>
+              )}
+
             </form>
           </div>
 
@@ -246,7 +276,7 @@ function Profile() {
                 {!showTooltip ? (
                   selectedImage ? (
                     /* Preview de imagen de perfil */
-                    <div className="relative h-full">
+                    <div className="relative h-full flex justify-center items-center">
                       <img
                         src={selectedImage}
                         alt="Avatar"
@@ -322,12 +352,13 @@ function Profile() {
           </div>
           
         </div>
-        {/* Boton de guardar cambios  */}
+        {/* Boton de guardar cambios
         {isEditing && (
           <Button type="submit" disabled={!isValid || isSubmitting}>
             {isSubmitting ? "Guardando..." : "Guardar cambios"}
           </Button>
         )}
+        */}
       </div>
 
       <div className="w-full max-w-md md:max-w-4xl flex not-md:flex-col gap-6">
