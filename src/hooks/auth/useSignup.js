@@ -1,62 +1,16 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { signupService } from "../../services/auth/signupService"; 
+import { signupService } from "../../services/auth/signupService";
 import { Trigger } from "@radix-ui/react-dialog";
+import { validationRules } from "../../lib/validations";
 
 export const useSignup = () => {
     const navigate = useNavigate();
-    
-    const validationRules = {
-        email: {
-            required: "El correo electrónico es obligatorio.",
-            pattern: {
-                value: /^\S+@\S+\.\S+$/,
-                message: "Correo electrónico inválido.",
-            },
-        },
-        name: {
-            required: "El nombre es obligatorio.",
-            minLength: {
-                value: 2,
-                message: "El nombre debe tener al menos 2 caracteres.",
-            },
-        },
-        lastName: {
-            required: "El apellido es obligatorio.",
-            minLength: {
-                value: 2,
-                message: "El apellido debe tener al menos 2 caracteres.",
-            },
-        },
-        password: {
-            required: "La contraseña es obligatoria.",
-            minLength: {
-                value: 8,
-                message: "La contraseña debe tener al menos 8 caracteres.",
-            },
-            pattern: {
-                value: /^(?=.*[A-Z])(?=.*\d).*$/, 
-                message: "Debe contener al menos una mayúscula y un número.",
-            },
-        },
-        confirmPassword: {
-            required: "Confirma la contraseña.",
-        },
-    };
-
-    
-   /* const {
-        register,
-        handleSubmit: hookFormHandleSubmit,
-        formState: { errors, isValid, isSubmitting },
-        setError,
-        getValues,
-    } = useForm({ mode: "onBlur" });*/
 
     const {
     register,
     handleSubmit: hookFormHandleSubmit,
-    trigger, // <-- agregado
+    trigger,
     formState: { errors, isValid, isSubmitting },
     setError,
     getValues,
@@ -79,9 +33,7 @@ export const useSignup = () => {
             let payload;
 
                 if (isBrand) {
-                    // ------------------------
-                    // REGISTRO DE MARCA
-                    // ------------------------
+                    // Registro marca
                     payload = new FormData();
                     payload.append("email", data.email);
                     payload.append("name", data.name);
@@ -97,9 +49,7 @@ export const useSignup = () => {
                     payload.append("registerAsBrand", true)
 
                 } else {
-                    // ------------------------
-                    // REGISTRO NORMAL
-                    // ------------------------
+                    // Registro user
                     payload = {
                         email: data.email,
                         name: data.name,
