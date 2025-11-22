@@ -14,28 +14,22 @@ function RecommendationChat({ categories, loading, recommendations, error, onSol
     const [inputText, setInputText] = useState('');
 
 const handleSubmit = (e) => {
-        e.preventDefault();
-        if (!inputText.trim()) return; 
-        const textToSend = inputText.trim();
-        setInputText(''); 
-        onSolicitar(textToSend);
-    };
+    e.preventDefault();
+    
+    const textToSubmit = inputText.trim();
+    
+    if (!textToSubmit) return; 
+
+    setInputText(''); 
+    
+    onSolicitar(textToSubmit); 
+};
 
     const handleSelect = (outfit) => {
         onSelectOutfit(outfit);
     };
 
     const isLoadingRecommendation = loading && recommendations === null;
-    
-    const renderPrendaPreview = (prenda) => {
-        const tipoLimpio = prenda.tipo ? (prenda.tipo.toLowerCase() === 'superior' ? 'Top' : 'Bottom') : 'Prenda';
-        return (
-            <p className="text-xs text-gray-400">
-                {tipoLimpio}: {prenda.nombre}
-            </p>
-        );
-    };
-
     return (
         <div className="bg-gray-800 p-4 rounded-lg shadow-xl h-64 flex flex-col">
             <h3 className="text-white text-lg font-semibold mb-2 flex items-center">
