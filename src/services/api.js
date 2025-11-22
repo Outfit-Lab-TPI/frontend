@@ -88,33 +88,6 @@ export const authUtils = {
   }
 };
 
-//Endpoints para mercado pago
-export const subscriptionAPI = {
-  /**
-   * Solicita al backend de Java que cree una Preferencia de Pago Único.
-   * @param {string} planId - El ID interno de tu plan
-   * @param {string} userEmail - Email del pagador
-   * @param {number} price - El precio del item
-   * @param {string} currency - La moneda (ej. "USD" o "ARS")
-   * @returns {Promise<string>} Retorna la URL de redirección (initPoint) de Mercado Pago.
-   */
-  createPreference: (planId, userEmail, price, currency) => {
-    const payload = {
-      planId,
-      userEmail,
-      price,
-      currency
-    };
-
-    return apiClient.post(
-      '/mp/crear-suscripcion',
-      payload
-    )
-    .then(response => {
-        return response.data.initPoint; 
-    });
-  }
-};
-
 
 export default apiClient;
+

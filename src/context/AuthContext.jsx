@@ -27,6 +27,15 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setUser(null)
     localStorage.removeItem('outfitlab-user')
+    sessionStorage.removeItem('access_token')
+    sessionStorage.removeItem('refresh_token')
+  }
+
+  const updateUserSubscription = (subscriptionData) => {
+    if (!user) return
+    const updatedUser = { ...user, subscription: subscriptionData }
+    setUser(updatedUser)
+    localStorage.setItem('outfitlab-user', JSON.stringify(updatedUser))
   }
 
   const value = {
@@ -34,7 +43,8 @@ export function AuthProvider({ children }) {
     isAuthenticated: !!user,
     isLoading,
     login,
-    logout
+    logout,
+    updateUserSubscription
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
