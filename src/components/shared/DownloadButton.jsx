@@ -4,23 +4,33 @@ export default function DownloadButton ({fileUrl}){
         e.stopPropagation();
 
         try {
+            const extension = fileUrl.split(".").pop().toLowerCase();
+
             const response = await fetch(fileUrl, {
-            mode: "cors"
+                mode: "cors"
             });
+
+            if(!response.ok){
+                throw new Error("No se pudo descargar el archivo.")
+            }
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
-
             const link = document.createElement("a");
+
             link.href = url;
-            link.download = `combinacion_${fileUrl}.png`;
+            link.download = `combinacion_${Date.now()}.${extension}`;
+
             document.body.appendChild(link);
+
             link.click();
             link.remove();
+            
             window.URL.revokeObjectURL(url);
         } catch (error) {
             console.error("Error descargando imagen:", error);
         }
     };
+
     return (
         <button
         
