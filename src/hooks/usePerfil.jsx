@@ -133,7 +133,6 @@ export const usePerfil = (onSuccess) => {
         lastName: response.user.lastname ?? user.lastName,
         userImg: response.user.userImg ?? user.userImg,
       });
-      console.log('Usuario actualizado en el contexto');
       setSelectedImage(response.user.userImg);
 
       reset({

@@ -7,9 +7,7 @@ export const useCombinacion = () => {
   const [resultado, setResultado] = useState(null);
 
   const combinarPrendas = async (avatarType, prendaSuperior, prendaInferior, usuario = null) => {
-    if (!validarCombinacion(avatarType, prendaSuperior, prendaInferior, usuario)) {
-      return null;
-    }
+    if (!validarCombinacion(avatarType, prendaSuperior, prendaInferior, usuario)) return null
 
     setLoading(true);
     setError(null);
@@ -60,7 +58,7 @@ export const useCombinacion = () => {
     }
 
     // Validar que el usuario tenga foto si selecciona avatar personalizado
-    if (avatarType === 'custom' && (!usuario?.avatarUrl)) {
+    if (avatarType === 'custom' && (!usuario?.userImg)) {
       setError('Debes tener una foto de perfil para usar esta opción. Por favor, sube una foto en tu perfil.');
       return false;
     }

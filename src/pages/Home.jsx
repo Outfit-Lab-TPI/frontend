@@ -311,7 +311,6 @@ export default function Home() {
         handleGenerarModelo3D={handleGenerarModelo3D}
         avatarType={avatarType}
         onAvatarTypeChange={handleAvatarTypeChange}
-        user={user}
         isDrawerOpen={isDrawerOpen}
         setIsDrawerOpen={setIsDrawerOpen}
         setAutoOpenDisabled={setAutoOpenDisabled}
