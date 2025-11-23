@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { User } from "lucide-react";
+import NotificationDropdown from '../NotificationDropdown'
 import Button from "../shared/Button";
 
 function Header() {
@@ -36,6 +37,8 @@ function Header() {
             Ver marcas
           </Button>
         </Link>
+
+        <NotificationDropdown />
 
         <Link to="/perfil">
           <div
