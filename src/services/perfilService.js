@@ -56,33 +56,13 @@ export const perfilService = {
   actualizarPerfil: async (userId, formData) => {
     try {
       validarFormDataPerfil(formData);
-
-      // TODO: Implementar endpoint para actualizar perfil
       const response = await apiClient.put(`/users/update/${userId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log("Respuesta del back:");
-      console.log(response.data)
       return response.data;
 
-      // Simulación temporal
-      console.log('Actualizando perfil en servicio:', { userId, formData });
-
-      // Simular respuesta del backend
-      return {
-        data: {
-          user: {
-            id: userId,
-            name: formData.get('name'),
-            email: formData.get('email'),
-            avatarUrl: formData.has('avatar') ? `/uploads/avatars/${userId}.jpg` : null,
-            avatarGenero: formData.get('avatarGenero') || 'hombre',
-            updatedAt: new Date().toISOString()
-          }
-        }
-      };
     } catch (error) {
       error.isCritical = isCriticalError(error);
       console.error('Error en perfilService.actualizarPerfil:', error);
