@@ -40,6 +40,8 @@ export const useAdmin = () => {
     setCriticalError(null);
     try {
       const response = await adminService.obtenerMarcasAdmin();
+      console.log("MARCAS CONSEGUIDAS CON USERS::")
+      console.log(response);
       setMarcas(response.data.content || []);
     } catch (err) {
       if (err.isCritical) {
@@ -90,9 +92,13 @@ export const useAdmin = () => {
     try {
       await adminService.toggleMarcaActiva(marcaId, activa);
       // Actualizar la marca en el estado local
-      setMarcas(prev => prev.map(marca =>
-        marca.id === marcaId ? { ...marca, activa } : marca
-      ));
+      setMarcas(prev =>
+        prev.map(m =>
+          m.brand.codigoMarca === marcaId
+            ? { ...m, status: activa, brandApproved: activa ? true : m.brandApproved }
+            : m
+        )
+      );
       return { success: true };
     } catch (err) {
       return { success: false, error: err.message || 'Error al cambiar estado de la marca' };
@@ -115,8 +121,10 @@ export const useAdmin = () => {
     if (!busquedaMarcas) return true;
     const busqueda = busquedaMarcas.toLowerCase();
     return (
-      marca.nombre.toLowerCase().includes(busqueda) ||
-      marca.email.toLowerCase().includes(busqueda)
+      marca.name.toLowerCase().includes(busqueda) ||
+      marca.brand.nombre.toLowerCase().includes(busqueda) ||
+      marca.email.toLowerCase().includes(busqueda) ||
+      marca.lastname.toLowerCase().includes(busqueda)
     );
   });
 

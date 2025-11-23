@@ -63,6 +63,8 @@ export const perfilService = {
           'Content-Type': 'multipart/form-data',
         },
       });
+      console.log("Respuesta del back:");
+      console.log(response.data)
       return response.data;
 
       // Simulación temporal

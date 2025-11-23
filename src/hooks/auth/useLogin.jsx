@@ -3,12 +3,18 @@ import { useForm } from 'react-hook-form'
 import { useAuth } from './useAuth'
 import { loginService } from '../../services/auth/loginService'
 import { useNavigate } from 'react-router-dom'
+import { validationRules } from '../../lib/validations'
 
 
 export function useLogin() {
   const { login } = useAuth()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const navigate = useNavigate()
+
+  const loginValidationRules = {
+    email: validationRules.email,
+    password: validationRules.passwordLogin
+  }
 
   const {
     register,
@@ -24,7 +30,22 @@ export function useLogin() {
     try {
       const userData = await loginService(data.email, data.password)
       login(userData)
-      navigate("/home")
+
+      // Redirect based on user role
+      const userRole = userData?.user?.role || userData?.role
+
+      switch (userRole) {
+        case 'ADMIN':
+          navigate('/dashboard')
+          break
+        case 'BRAND':
+          navigate('/brand-home')
+          break
+        case 'USER':
+        default:
+          navigate('/home')
+          break
+      }
     } catch (error) {
       console.error('Error al iniciar sesión:', error)
       setError('submit', {
@@ -50,6 +71,7 @@ export function useLogin() {
     handleSubmit: handleSubmit(onSubmit),
     errors,
     isValid,
-    isSubmitting
+    isSubmitting,
+    validationRules: loginValidationRules
   }
 }

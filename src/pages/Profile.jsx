@@ -65,6 +65,12 @@ function Profile() {
     "Asegurate de que la imagen tenga buena resolución",
   ];
 
+  const {
+    ref: avatarRef,
+    onChange: onAvatarChange,
+    ...restAvatar
+  } = register("avatar");
+
   return (
     <div className="flex flex-col items-center justify-center p-4 gap-6 min-h-[calc(100vh-60px)]">
       {/* Card Principal de Profile */}
@@ -85,6 +91,7 @@ function Profile() {
 
                   {/* Icono de edición/cancelar */}
                   <Button
+                    type="button"
                     onClick={
                       isEditing ? handleCancelEdit : () => setIsEditing(true)
                     }
@@ -128,7 +135,7 @@ function Profile() {
                   <input
                     id="lastname"
                     type="text"
-                    {...register("lastName", validationRules.lastname)}
+                    {...register("lastName", validationRules.lastName)}
                     disabled={!isEditing}
                     className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray disabled:opacity-60"
                   />
@@ -224,7 +231,7 @@ function Profile() {
                   <Button
                     variant="outline"
                     color="error"
-                    onClick={logout}
+                    onClick={() => logout(navigate)}
                     type="button"
                   >
                     <LogOut />
@@ -235,9 +242,9 @@ function Profile() {
 
               {/* Boton de guardar cambios */}
               {isEditing && (
-                <Button type="submit" disabled={!isValid || isSubmitting} className="mt-10">
-                  {isSubmitting ? "Guardando..." : "Guardar cambios"}
-                </Button>
+                 <Button type="submit" disabled={!isValid || isSubmitting} className="mt-10">
+                   {isSubmitting ? "Guardando..." : "Guardar cambios"}
+                 </Button>
               )}
 
             </form>
@@ -265,11 +272,13 @@ function Profile() {
                   id="avatar"
                   type="file"
                   accept="image/*"
-                  {...register("avatar", validationRules.avatar)}
-                  onChange={e => {
-                    register("avatar").onChange(e);
-                    handleImageChangeWithEdit(e);
+                  ref={avatarRef}
+                  onChange={async (e) => {
+                    onAvatarChange(e);        // Handler original de react-hook-form
+                    await handleImageChangeWithEdit(e); // Tu lógica de preview
+                    setIsEditing(true);
                   }}
+                  {...restAvatar}
                   className="hidden"
                 />
 
@@ -340,8 +349,7 @@ function Profile() {
                 <p className={`text-sm mt-1
                               ${isValidatingImage ? "text-yellow-500"
                                 : avatarValidationSuccess ? "text-green-500"
-                                : "text-red-500"}`}
-                >
+                                : "text-red-500"}`}>
                   {isValidatingImage
                     ? "Validando imagen..."
                     : avatarValidationSuccess || errors.avatar?.message

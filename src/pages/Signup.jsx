@@ -54,8 +54,8 @@ function Signup() {
       <div className="w-full max-w-xl bg-gray/10 rounded-md p-8 shadow-xl">
         <h2 className="text-2xl text-white font-medium mb-8">Crear cuenta</h2>
 
-        <form onSubmit={handleSubmit((data) => onSubmit(data, isBrand))} className="space-y-4">
-
+        {/*<form onSubmit={handleSubmit((data) => onSubmit(data, isBrand))} className="space-y-4">*/}
+        <form onSubmit={handleSubmit(isBrand)} className="space-y-4">
           {/* EMAIL */}
           <div>
             <label htmlFor="email" className="block text-sm text-gray mb-2">

@@ -6,9 +6,11 @@ import { useModelo3D } from "../hooks/useModelo3D.jsx";
 import { useFavoritos } from "../hooks/useFavoritos.jsx";
 import { useSugerencias } from "../hooks/useSugerencias.jsx";
 import { useAuth } from "../hooks/auth/useAuth.jsx";
+import { useRecomendacionAI } from "../hooks/useRecomendacionAI.jsx";
 import ProbadorContenido from "../components/ProbadorContenido.jsx";
 import Panel from "../components/Panel.jsx";
 import SugerenciasModal from "../components/shared/SugerenciasModal";
+import RecommendationChat from "../components/RecommendationChat.jsx";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -26,6 +28,16 @@ export default function Home() {
     limpiarFiltros,
     actualizarFavoritoLocal,
   } = useProbador();
+
+  const {
+    categories,
+    loadingCategories,
+    recommendations,
+    loadingAI,
+    errorAI,
+    solicitarRecomendacionAI,
+    limpiarRecomendaciones,
+  } = useRecomendacionAI(user?.id);
 
   const {
     combinarPrendas,
@@ -52,7 +64,6 @@ export default function Home() {
 
   const [selectedSuperior, setSelectedSuperior] = useState(null);
   const [selectedInferior, setSelectedInferior] = useState(null);
-  // Estado para el tipo de avatar seleccionado por el usuario
   const [avatarType, setAvatarType] = useState(() => {
     // Default basado en preferencias del usuario
     if (user?.avatarUrl) return "custom";
@@ -64,6 +75,42 @@ export default function Home() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [autoOpenDisabled, setAutoOpenDisabled] = useState(false);
 
+  const handleSeleccionarOutfitAI = async (outfit) => {
+    if (!outfit || outfit.prendas.length < 2) return;
+
+    const superior = outfit.prendas.find(p => p.tipo?.toLowerCase() === "superior");
+    const inferior = outfit.prendas.find(p => p.tipo?.toLowerCase() === "inferior");
+
+    if (!superior || !inferior) {
+      console.error("Outfit de IA incompleto o mal clasificado.");
+      return;
+    }
+
+    try {
+      limpiarResultado();
+      limpiarModelo();
+      setSelectedSuperior(superior);
+      setSelectedInferior(inferior);
+      limpiarRecomendaciones();
+
+      setLastCombination({
+        superior: superior.nombre,
+        inferior: inferior.nombre,
+        avatarType: avatarType,
+      });
+
+      await combinarPrendas(
+        avatarType,
+        superior,
+        inferior,
+        user
+      );
+    } catch (error) {
+      console.error("Error al aplicar outfit de IA:", error);
+    }
+  };
+
+  
   const handleSelectPrenda = (prenda) => {
     if (prenda.tipo === "superior") {
       setSelectedSuperior(
@@ -234,9 +281,6 @@ export default function Home() {
           <div className="text-lg mb-4">
             Por favor intenta de nuevo más tarde.
           </div>
-          <Button onClick={() => navigate("/")} width="fit">
-            ⭠ Volver
-          </Button>
         </div>
       </div>
     );
@@ -273,22 +317,33 @@ export default function Home() {
         setAutoOpenDisabled={setAutoOpenDisabled}
       />
 
-      {prendas && prendas.length > 0 && (
-        <div className="hidden flex-1 lg:flex items-center justify-center overflow-hidden">
-          <Panel
-            loadingCombinacion={loadingCombinacion}
-            resultado={resultado}
-            errorCombinacion={errorCombinacion}
-            errorModelo3D={errorModelo3D}
-            modeloUrl={modeloUrl}
-            loadingModelo3D={loadingModelo3D}
-            onGenerarModelo3D={handleGenerarModelo3D}
-            onToggleFavoritoCombinacion={handleToggleFavoritoCombinacion}
-          />
-        </div>
-      )}
+      <div className="flex-1 flex flex-col gap-4 overflow-hidden">
+        
+        {prendas && prendas.length > 0 && (
+          <div className="hidden flex-1 lg:flex items-center justify-center overflow-hidden">
+            <Panel
+              loadingCombinacion={loadingCombinacion}
+              resultado={resultado}
+              errorCombinacion={errorCombinacion}
+              errorModelo3D={errorModelo3D}
+              modeloUrl={modeloUrl}
+              loadingModelo3D={loadingModelo3D}
+              onGenerarModelo3D={handleGenerarModelo3D}
+              onToggleFavoritoCombinacion={handleToggleFavoritoCombinacion}
+            />
+          </div>
+        )}
+        
+        <RecommendationChat
+          categories={categories}
+          loading={loadingAI || loadingCategories}
+          recommendations={recommendations}
+          error={errorAI}
+          onSolicitar={solicitarRecomendacionAI}
+          onSelectOutfit={handleSeleccionarOutfitAI}
+        />
+      </div>
 
-      {/* Modal de Sugerencias */}
       <SugerenciasModal
         isOpen={modalSugerenciasAbierto}
         onClose={handleCerrarModalSugerencias}

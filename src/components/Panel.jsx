@@ -68,8 +68,10 @@ function Panel({
                 />
               </button>
 
-              {resultado?.imageUrl ? <DownloadButton fileUrl={resultado.imageUrl}/> : null}
-
+              {resultado?.imageUrl && !modeloUrl ? <DownloadButton fileUrl={resultado.imageUrl}/> : null}
+              
+              {modeloUrl ? <DownloadButton fileUrl={modeloUrl}/> : null}
+              
               {!modeloUrl && (
                 <button
                   onClick={onGenerarModelo3D}

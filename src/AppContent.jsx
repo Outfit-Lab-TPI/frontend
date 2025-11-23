@@ -16,6 +16,10 @@ import SubscriptionPage from "./pages/Subscription";
 import AdminDashboard from "./pages/AdminDashboard";
 import PendingVerification from "./pages/PendingVerification";
 
+import Unauthorized from "./pages/Unauthorized";
+import { ProtectedRoute } from "./components/routing/ProtectedRoute";
+import { RoleBasedRoute } from "./components/routing/RoleBasedRoute";
+
 export default function AppContent() {
   const location = useLocation();
   const isLanding =
@@ -27,19 +31,87 @@ export default function AppContent() {
 
       <main className="main-content">
         <Routes>
+          {/* Rutas públicas */}
+          <Route path="/" element={<Landing />} />
           <Route path="/landing" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/perfil" element={<Profile />} />
-          <Route path="/dashboard" element={<AdminDashboard />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/brand-home" element={<BrandHome />} />
-          <Route path="/mis-combinaciones" element={<Combinaciones />} />
-          <Route path="/marcas" element={<Marcas />} />
-          <Route path="/marcas/:codigoMarca" element={<MarcaDetalle />} />
-          <Route path="/suscripcion" element={<SubscriptionPage />} />
           <Route path="/pending-verification" element={<PendingVerification />} />
-          <Route path="/" element={<Landing />} />
+
+          {/* Rutas usuario */}
+          <Route
+            path="/home"
+            element={
+              <RoleBasedRoute allowedRoles={['USER']}>
+                <Home />
+              </RoleBasedRoute>
+            }
+          />
+          <Route
+            path="/mis-combinaciones"
+            element={
+              <RoleBasedRoute allowedRoles={['USER']}>
+                <Combinaciones />
+              </RoleBasedRoute>
+            }
+          />
+
+          {/* Rutas marca */}
+          <Route
+            path="/brand-home"
+            element={
+              <RoleBasedRoute allowedRoles={['BRAND']}>
+                <BrandHome />
+              </RoleBasedRoute>
+            }
+          />
+
+          {/* Rutas admin */}
+          <Route
+            path="/dashboard"
+            element={
+              <RoleBasedRoute allowedRoles={['ADMIN']}>
+                <AdminDashboard />
+              </RoleBasedRoute>
+            }
+          />
+
+          {/* Rutas protegidas compartidas (accesibles por múltiples roles) */}
+          <Route
+            path="/perfil"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/marcas"
+            element={
+              <RoleBasedRoute allowedRoles={['USER', 'ADMIN']}>
+                <Marcas />
+              </RoleBasedRoute>
+            }
+          />
+          <Route
+            path="/marcas/:codigoMarca"
+            element={
+              <RoleBasedRoute allowedRoles={['USER', 'ADMIN']}>
+                <MarcaDetalle />
+              </RoleBasedRoute>
+            }
+          />
+          <Route
+            path="/suscripcion"
+            element={
+              <RoleBasedRoute allowedRoles={['USER', 'BRAND']}>
+                <SubscriptionPage />
+              </RoleBasedRoute>
+            }
+          />
+
+          {/* Error routes */}
+          <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

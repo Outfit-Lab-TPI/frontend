@@ -69,10 +69,9 @@ export const adminService = {
   // Obtener todas las marcas para administración
   obtenerMarcasAdmin: async () => {
     try {
-      // TODO: Implementar endpoint cuando esté disponible
-      // return await apiClient.get('/marcas');
+      return await apiClient.get('/marcas/all');
 
-      // Simulación temporal
+      /*// Simulación temporal
       return new Promise((resolve) => {
         setTimeout(() => {
           resolve({
@@ -82,7 +81,7 @@ export const adminService = {
             }
           });
         }, 800);
-      });
+      });*/
     } catch (error) {
       error.isCritical = isCriticalError(error);
       throw error;
@@ -146,9 +145,12 @@ export const adminService = {
   toggleMarcaActiva: async (marcaId, activa) => {
     try {
       // TODO: Implementar endpoint cuando esté disponible
-      // return await apiClient.put(`/marcas/${marcaId}/estado`, { activa });
+      console.log("estado de marca actual: " + activa)
+      let endpoint = !activa ? "desactivate" : "activate";
+      console.log("endpoint marca: " + endpoint)
+      return await apiClient.patch(`/marcas/${endpoint}/${marcaId}`);
 
-      // Simulación temporal
+      /*// Simulación temporal
       return new Promise((resolve) => {
         setTimeout(() => {
           const marcaIndex = mockMarcasAdmin.findIndex(m => m.id === marcaId);
@@ -162,7 +164,7 @@ export const adminService = {
             }
           });
         }, 500);
-      });
+      });*/
     } catch (error) {
       error.isCritical = isCriticalError(error);
       throw error;

@@ -13,28 +13,27 @@ export const usePerfil = (onSuccess) => {
   const [isValidatingImage, setIsValidatingImage] = useState(false);
   const [avatarValidationSuccess, setAvatarValidationSuccess] = useState(null);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isValid, isDirty },
-    setError: setFormError,
-    watch,
-    reset
-  } = useForm({
-    mode: 'onChange'
-  });
+  const { 
+    register, 
+    handleSubmit, 
+    formState: { errors, isValid, isDirty }, 
+    setError: setFormError, clearErrors, setValue, watch, reset
+   } = useForm({ mode: 'onChange' });
+
 
   const password = watch('password');
 
   useEffect(() => {
     if (user) {
+      // User data is now flattened, no need to extract user.user
       reset({
         name: user.name || '',
+        lastName: user.lastName || '',
         email: user.email || '',
         password: '',
         confirmPassword: ''
       });
-      setSelectedImage(user.avatarUrl || null);
+      setSelectedImage(user.userImg || null);
     }
   }, [user, reset]);
 
@@ -108,9 +107,9 @@ export const usePerfil = (onSuccess) => {
 
     try {
       const formData = new FormData();
-
+      console.log(data);
       formData.append('name', data.name);
-      formData.append('lastname', data.lastname);
+      formData.append('lastname', data.lastName);
       formData.append('email', data.email);
 
       if (data.password && data.password.trim() !== '') {
@@ -132,23 +131,23 @@ export const usePerfil = (onSuccess) => {
       
       */
 
-      let userEmail = user.id ? user.id : "german@gmail.com"; //--hardocdeado
-      console.log("ACUALIZANDO PERFIL DEL USUARIO CON ID: ---------------: " + user.id + "- como no tenemos id, mando el email: " + userEmail)
-      const response = await perfilService.actualizarPerfil("german@gmail.com", formData);
+      let userIdOrEmail = user?.id ? user?.id : "german@gmail.com";
+      const response = await perfilService.actualizarPerfil(userIdOrEmail, formData);
 
-      updateUser({
+      /*updateUser({    ----> todavía no existe el update user en el provider asique lo comento pq sino rompe
         ...user,
-        name: response.data.user.name,
-        email: response.data.user.email,
-        avatarUrl: response.data.user.userImg,
+        name: response.user.name ?? user.name,
+        email: response.user.email ?? user.email,
+        lastname: response.user.lastname ?? user.lastname,
+        avatarUrl: response.user.userImg ?? user.avatarUrl,
       });
-
-      setSelectedImage(response.data.user.userImg);
+      */
+      setSelectedImage(response.user.userImg);
 
       reset({
-        name: response.data.user.name,
-        lastName: response.data.user.lastName,
-        email: response.data.user.email,
+        name: response.user.name,
+        lastName: response.user.lastname,
+        email: response.user.email,
         password: '',
         confirmPassword: ''
       });
@@ -157,7 +156,7 @@ export const usePerfil = (onSuccess) => {
         onSuccess();
       }
 
-      return { success: true, message: 'Perfil actualizado correctamente' };
+      return { success: true, message: response.message }; //actualizado corrrectamente
 
     } catch (error) {
       console.error('Error al actualizar perfil:', error);
@@ -192,26 +191,54 @@ export const usePerfil = (onSuccess) => {
       confirmPassword: ''
     });
     setSelectedImage(user?.avatarUrl || null);
+    clearErrors("avatar");
+    setAvatarValidationSuccess(null);
   }, [user, reset]);
 
-  const handleImageChange = useCallback((event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setSelectedImage(e.target.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  }, []);
 
+const handleImageChange = useCallback(async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => setSelectedImage(e.target.result);
+  reader.readAsDataURL(file);
+
+  setIsValidatingImage(true);
+  setAvatarValidationSuccess(null);
+
+  try {
+      const result = await validateFile.bodyValidation([file]);
+
+      if (result === true) {
+        setAvatarValidationSuccess("Imagen válida: Persona completa detectada");
+        clearErrors("avatar");
+      } else {
+        setAvatarValidationSuccess(null);
+        setFormError("avatar", { type: "manual", message: result });
+      }
+    } catch (err) {
+      console.error(err);
+      setAvatarValidationSuccess(null);
+      setFormError("avatar", { type: "manual", message: "Error procesando la imagen" });
+    } finally {
+      setIsValidatingImage(false);
+    }
+  }, [setFormError]);
+
+  // ----- remover imagen ----------------------------------------
   const removeImage = useCallback(() => {
     setSelectedImage(user?.avatarUrl || null);
     const fileInput = document.getElementById('avatar');
     if (fileInput) {
       fileInput.value = '';
+      setFormError("avatar", { type: "manual", message: "" });
     }
+    clearErrors("avatar");
+    setAvatarValidationSuccess(null);
   }, [user?.avatarUrl]);
+  // ----- fin remover imagen ----------------------------------------
+
 
   return {
     register,
