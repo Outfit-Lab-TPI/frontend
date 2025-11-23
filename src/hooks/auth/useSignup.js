@@ -1,58 +1,24 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-
-const API_URL = "http://localhost:8080/api/users/register"; 
+import { signupService } from "../../services/auth/signupService";
+import { Trigger } from "@radix-ui/react-dialog";
+import { validationRules } from "../../lib/validations";
 
 export const useSignup = () => {
     const navigate = useNavigate();
-    
-    const validationRules = {
-        email: {
-            required: "El correo electrónico es obligatorio.",
-            pattern: {
-                value: /^\S+@\S+\.\S+$/,
-                message: "Correo electrónico inválido.",
-            },
-        },
-        name: {
-            required: "El nombre es obligatorio.",
-            minLength: {
-                value: 2,
-                message: "El nombre debe tener al menos 2 caracteres.",
-            },
-        },
-        lastName: {
-            required: "El apellido es obligatorio.",
-            minLength: {
-                value: 2,
-                message: "El apellido debe tener al menos 2 caracteres.",
-            },
-        },
-        password: {
-            required: "La contraseña es obligatoria.",
-            minLength: {
-                value: 8,
-                message: "La contraseña debe tener al menos 8 caracteres.",
-            },
-            pattern: {
-                value: /^(?=.*[A-Z])(?=.*\d).*$/, 
-                message: "Debe contener al menos una mayúscula y un número.",
-            },
-        },
-        confirmPassword: {
-            required: "Confirma la contraseña.",
-        },
-    };
 
     const {
-        register,
-        handleSubmit: hookFormHandleSubmit,
-        formState: { errors, isValid, isSubmitting },
-        setError,
-        getValues,
-    } = useForm({ mode: "onBlur" });
+    register,
+    handleSubmit: hookFormHandleSubmit,
+    trigger,
+    formState: { errors, isValid, isSubmitting },
+    setError,
+    getValues,
+} = useForm({ mode: "onChange" });
 
-    const handleSubmit = hookFormHandleSubmit(async (data) => {
+
+
+    const handleSubmit = (isBrand) => hookFormHandleSubmit(async (data) => {
         
         if (data.password !== data.confirmPassword) {
             setError("confirmPassword", {
@@ -63,23 +29,52 @@ export const useSignup = () => {
         }
 
         try {
-            const response = await fetch(API_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email: data.email,
-                    name: data.name,
-                    lastName: data.lastName, 
-                    password: data.password,
-                }),
-            });
 
-            if (!response.ok) {
-                const errorData = await response.json();
+            let payload;
+
+                if (isBrand) {
+                    // Registro marca
+                    payload = new FormData();
+                    payload.append("email", data.email);
+                    payload.append("name", data.name);
+                    payload.append("lastName", data.lastName);
+                    payload.append("password", data.password);
+
+                    payload.append("brandName", data.nombreMarca || "");
+                    payload.append("urlSite", data.sitioUrl || "");
+
+                    if (data.logoImage?.[0]) {
+                        payload.append("logoBrand", data.logoImage[0]);
+                    }
+                    payload.append("registerAsBrand", true)
+
+                } else {
+                    // Registro user
+                    payload = {
+                        email: data.email,
+                        name: data.name,
+                        lastName: data.lastName,
+                        password: data.password,
+                    };
+                }
+
+                const successData = await signupService(payload, isBrand);
+
+                alert("¡Registro exitoso! Verifica tu email.");
+                navigate("/pending-verification");
+
+                localStorage.setItem('pendingVerificationEmail', data.email);
                 
-                if (response.status === 400 && typeof errorData === 'object') {
+                alert(successData.message || "¡Registro exitoso! Por favor, verifica tu email.");
+                
+                const emailEncoded = encodeURIComponent(data.email);
+                navigate(`/pending-verification?email=${emailEncoded}`); 
+
+        } catch (error) {
+            if (error.response) {
+                const errorData = error.response.data;
+
+                if (error.response.status === 400 && typeof errorData === 'object') {
                     Object.keys(errorData).forEach(field => {
                         setError(field, { type: "server", message: errorData[field] });
                     });
@@ -91,19 +86,13 @@ export const useSignup = () => {
                         message: "Hubo un error al crear la cuenta. Intenta de nuevo." 
                     });
                 }
-                return;
+            } else {
+                console.error("Error de conexión:", error);
+                setError("submit", {
+                    type: "network",
+                    message: "Error de conexión con el servidor. Verifica tu conexión.",
+                });
             }
-
-            const successData = await response.json();
-            alert(successData.message); 
-            navigate("/login"); 
-
-        } catch (error) {
-            console.error("Error de conexión:", error);
-            setError("submit", {
-                type: "network",
-                message: "Error de conexión con el servidor. Verifica tu conexión.",
-            });
         }
     });
 
@@ -115,5 +104,6 @@ export const useSignup = () => {
         isSubmitting,
         validationRules,
         getValues,
+        trigger
     };
 };

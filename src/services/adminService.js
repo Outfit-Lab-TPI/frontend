@@ -10,39 +10,6 @@ const isCriticalError = (error) => {
   return false;
 };
 
-// Datos mock para simular usuarios
-const mockUsuarios = [
-  {
-    id: 1,
-    nombre: 'Carlos',
-    apellido: 'Ramirez',
-    email: 'usuario1@predictor.com',
-    verificado: true,
-    rol: 'administrador',
-    activo: true,
-    fechaCreacion: '2024-01-15'
-  },
-  {
-    id: 2,
-    nombre: 'Lucia',
-    apellido: 'Fernandez',
-    email: 'usuario2@predictor.com',
-    verificado: true,
-    rol: 'administrador',
-    activo: true,
-    fechaCreacion: '2024-02-20'
-  },
-  {
-    id: 3,
-    nombre: 'Miguel',
-    apellido: 'Sanchez',
-    email: 'usuario3@predictor.com',
-    verificado: false,
-    rol: 'administrador',
-    activo: false,
-    fechaCreacion: '2024-03-10'
-  }
-];
 
 // Datos mock para simular marcas de admin
 const mockMarcasAdmin = [
@@ -79,20 +46,20 @@ export const adminService = {
   // Obtener todos los usuarios para administración
   obtenerUsuarios: async () => {
     try {
-      // TODO: Implementar endpoint cuando esté disponible
-      // return await apiClient.get('/usuarios');
+      const response = await apiClient.get('/users/all');
 
-      // Simulación temporal
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve({
-            data: {
-              content: mockUsuarios,
-              totalElements: mockUsuarios.length
-            }
-          });
-        }, 800);
-      });
+      // Agregar un ID temporal único a cada usuario para manejar duplicados
+      const usuariosConId = response.data.map((usuario, index) => ({
+        ...usuario,
+        _tempId: `${usuario.email}-${index}-${Date.now()}`
+      }));
+
+      return {
+        data: {
+          content: usuariosConId,
+          totalElements: usuariosConId.length
+        }
+      };
     } catch (error) {
       error.isCritical = isCriticalError(error);
       throw error;
@@ -102,10 +69,9 @@ export const adminService = {
   // Obtener todas las marcas para administración
   obtenerMarcasAdmin: async () => {
     try {
-      // TODO: Implementar endpoint cuando esté disponible
-      // return await apiClient.get('/marcas');
+      return await apiClient.get('/marcas/all');
 
-      // Simulación temporal
+      /*// Simulación temporal
       return new Promise((resolve) => {
         setTimeout(() => {
           resolve({
@@ -115,7 +81,7 @@ export const adminService = {
             }
           });
         }, 800);
-      });
+      });*/
     } catch (error) {
       error.isCritical = isCriticalError(error);
       throw error;
@@ -126,9 +92,11 @@ export const adminService = {
   cambiarRolUsuario: async (userId, nuevoRol) => {
     try {
       // TODO: Implementar endpoint cuando esté disponible
-      // return await apiClient.put(`/usuarios/${userId}/rol`, { rol: nuevoRol });
+      let endpointToConvert = nuevoRol === 'ADMIN' ? 'convert-to-admin' : 'convert-to-user';
+      console.log(endpointToConvert + " -- nuevo rol->" + nuevoRol)
+      return await apiClient.put(`/users/${endpointToConvert}/${userId}`);
 
-      // Simulación temporal
+      {/*} Simulación temporal
       return new Promise((resolve) => {
         setTimeout(() => {
           const usuarioIndex = mockUsuarios.findIndex(u => u.id === userId);
@@ -142,7 +110,7 @@ export const adminService = {
             }
           });
         }, 500);
-      });
+      });*/}
     } catch (error) {
       error.isCritical = isCriticalError(error);
       throw error;
@@ -150,26 +118,23 @@ export const adminService = {
   },
 
   // Activar/desactivar usuario
-  toggleUsuarioActivo: async (userId, activo) => {
+  // status: true = Activo (desbloqueado)
+  // status: false = Inactivo/Desactivado (bloqueado)
+  toggleUsuarioActivo: async (userEmail, nuevoStatus) => {
     try {
-      // TODO: Implementar endpoint cuando esté disponible
-      // return await apiClient.put(`/usuarios/${userId}/estado`, { activo });
-
-      // Simulación temporal
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          const usuarioIndex = mockUsuarios.findIndex(u => u.id === userId);
-          if (usuarioIndex !== -1) {
-            mockUsuarios[usuarioIndex].activo = activo;
-          }
-          resolve({
-            data: {
-              message: `Usuario ${activo ? 'activado' : 'desactivado'} exitosamente`,
-              usuario: mockUsuarios[usuarioIndex]
-            }
-          });
-        }, 500);
-      });
+      if (nuevoStatus === false) {
+        // Desactivar usuario (cambiar status a false)
+        const response = await apiClient.get('/users/desactivate', {
+          params: { email: userEmail }
+        });
+        return response;
+      } else if (nuevoStatus === true) {
+        // Activar usuario (cambiar status a true)
+        const response = await apiClient.get('/users/activate', {
+          params: { email: userEmail }
+        });
+        return response;
+      }
     } catch (error) {
       error.isCritical = isCriticalError(error);
       throw error;
@@ -180,9 +145,12 @@ export const adminService = {
   toggleMarcaActiva: async (marcaId, activa) => {
     try {
       // TODO: Implementar endpoint cuando esté disponible
-      // return await apiClient.put(`/marcas/${marcaId}/estado`, { activa });
+      console.log("estado de marca actual: " + activa)
+      let endpoint = !activa ? "desactivate" : "activate";
+      console.log("endpoint marca: " + endpoint)
+      return await apiClient.patch(`/marcas/${endpoint}/${marcaId}`);
 
-      // Simulación temporal
+      /*// Simulación temporal
       return new Promise((resolve) => {
         setTimeout(() => {
           const marcaIndex = mockMarcasAdmin.findIndex(m => m.id === marcaId);
@@ -196,7 +164,7 @@ export const adminService = {
             }
           });
         }, 500);
-      });
+      });*/
     } catch (error) {
       error.isCritical = isCriticalError(error);
       throw error;

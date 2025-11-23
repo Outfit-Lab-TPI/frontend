@@ -115,7 +115,6 @@ function NuevaPrenda() {
                   </p>
                 )}
               </div>
-
               {/* Campo Tipo */}
               <div>
                 <label htmlFor="tipo" className="block text-sm text-gray mb-2">

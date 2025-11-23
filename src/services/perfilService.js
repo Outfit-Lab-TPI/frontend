@@ -56,35 +56,30 @@ export const perfilService = {
   actualizarPerfil: async (userId, formData) => {
     try {
       validarFormDataPerfil(formData);
+      const response = await apiClient.put(`/users/update/${userId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
 
-      // TODO: Implementar endpoint para actualizar perfil
-      // const response = await apiClient.put(`/api/perfil/${userId}`, formData, {
-      //   headers: {
-      //     'Content-Type': 'multipart/form-data',
-      //   },
-      // });
-      // return response.data;
-
-      // Simulación temporal
-      console.log('Actualizando perfil en servicio:', { userId, formData });
-
-      // Simular respuesta del backend
-      return {
-        data: {
-          user: {
-            id: userId,
-            name: formData.get('name'),
-            email: formData.get('email'),
-            avatarUrl: formData.has('avatar') ? `/uploads/avatars/${userId}.jpg` : null,
-            avatarGenero: formData.get('avatarGenero') || 'hombre',
-            updatedAt: new Date().toISOString()
-          }
-        }
-      };
     } catch (error) {
       error.isCritical = isCriticalError(error);
       console.error('Error en perfilService.actualizarPerfil:', error);
-      throw error;
+
+      // Manejar errores específicos del perfil
+      if (error.response?.status === 409) {
+        throw new Error('Este email ya está en uso por otra cuenta');
+      } else if (error.response?.status === 401) {
+        throw new Error('Sesión expirada. Por favor, inicia sesión nuevamente.');
+      } else if (error.response?.status === 400) {
+        throw new Error('Datos inválidos. Revisa los campos y vuelve a intentar.');
+      }
+
+      // Para otros errores, usar mensaje del servidor o genérico
+      throw new Error(
+        error.response?.data?.message || 'Error al actualizar el perfil'
+      );
     }
   },
 

@@ -28,7 +28,7 @@ function FilterDropdown({
       {/* Botón de filtros */}
       <button
         onClick={toggleExpanded}
-        className="flex items-center gap-2 p-2.5 rounded-md transition-colors bg-gray/10 text-gray hover:text-white border border-gray/20 hover:border-gray/40"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-md transition-colors bg-gray/10 text-gray hover:text-white border border-gray/20 hover:border-gray/40"
       >
         <Filter className="h-4 w-4" />
         <span className="text-sm font-medium">
@@ -45,7 +45,7 @@ function FilterDropdown({
       </button>
 
       {isExpanded && (
-        <div className="absolute top-full right-[-150px] mt-2 w-72 bg-black border border-gray/20 rounded-lg shadow-xl z-50">
+        <div className="absolute top-full right-0 mt-2 w-72 bg-black border border-gray/20 rounded-lg shadow-xl z-50">
           <div className="p-4">
             <div className="flex items-center justify-between mb-4">
               <span className="text-sm font-medium text-white">

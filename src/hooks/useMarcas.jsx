@@ -14,7 +14,7 @@ export const useMarcas = () => {
     try {
       const response = await marcaService.getAllMarcas();
       const data = response.data;
-
+      console.log(response.data)
       // Extraer las marcas del array content
       setMarcas(data.content || []);
     } catch (err) {

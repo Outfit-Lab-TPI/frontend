@@ -49,7 +49,7 @@ function ConfirmDialog({
         {/* Close button */}
         <button
           onClick={onCancel}
-          className="absolute top-4 right-4 text-gray hover:text-white transition-colors hover:cursor-pointer hover:text-white hover:border-white"
+          className="absolute top-4 right-4 text-gray transition-colors hover:cursor-pointer hover:text-white hover:border-white"
         >
           <X className="h-4 w-4" />
         </button>

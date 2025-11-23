@@ -1,21 +1,37 @@
 import { useEffect, useState } from "react";
 import { X, Info, Plus, Trash2 } from "lucide-react";
 import { usePrendaCRUD } from "../hooks/usePrendaCRUD";
+import { useForm } from "react-hook-form";
 import Button from "./shared/Button";
 
+// function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar }) {
+//   const {
+//     register,
+//     handleSubmit,
+//     errors,
+//     isSubmitting,
+//     watch,
+//     reset,
+//     setValue,
+//     crearPrenda,
+//     editarPrenda,
+//     eliminarPrenda,
+//   } = usePrendaCRUD();
+
 function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar }) {
+
+  const form = useForm();
+
   const {
     register,
     handleSubmit,
-    errors,
-    isSubmitting,
     watch,
     reset,
     setValue,
-    crearPrenda,
-    editarPrenda,
-    eliminarPrenda,
-  } = usePrendaCRUD();
+    formState: { errors, isSubmitting }
+  } = form;
+
+  const { crearPrenda, editarPrenda, eliminarPrenda } = usePrendaCRUD(form);
 
   const [showTooltip, setShowTooltip] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -63,6 +79,8 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
     if (isOpen && prendaParaEditar) {
       setValue("nombre", prendaParaEditar.nombre || "");
       setValue("tipo", prendaParaEditar.tipo || "");
+      setValue("color", prendaParaEditar.color || "");
+      setValue("evento", prendaParaEditar.evento || "");
       setSelectedImage(prendaParaEditar.imagenUrl || null);
     } else if (isOpen && !prendaParaEditar) {
       reset();
@@ -140,12 +158,20 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="w-full max-w-3xl bg-black rounded-lg shadow-xl max-h-[90vh] overflow-y-auto">
+
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={handleClose}
+      />
+
+      {/* Modal */}
+      <div className="relative w-full max-w-4xl bg-black border border-gray/20 rounded-lg shadow-sm shadow-secondary max-h-[90vh] overflow-y-auto">
 
         {/* Contenido del modal */}
         <div className="p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 ">
             {/* Formulario - Lado izquierdo */}
           <div>
             <h2 className="text-2xl text-white font-medium mb-8">
@@ -154,7 +180,7 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
             <form
               id="prenda-modal-form"
               onSubmit={handleSubmit(handleFormSubmit)}
-              className="space-y-6"
+              className="space-y-4"
               aria-label="nueva prenda"
             >
               {/* Campo Nombre */}
@@ -208,6 +234,67 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
                 )}
               </div>
 
+              {/* Campo Color */}
+              <div>
+                <label htmlFor="color" className="block text-sm text-gray mb-2">
+                  Color predominante
+                </label>
+                <select
+                  id="color"
+                  {...register("color", {
+                    required: "Debe seleccionar un color",
+                  })}
+                  className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
+                >
+                  <option value="">Selecciona un color</option>
+                  <option value="negro">Negro</option>
+                  <option value="blanco">Blanco</option>
+                  <option value="gris">Gris</option>
+                  <option value="azul">Azul</option>
+                  <option value="rojo">Rojo</option>
+                  <option value="verde">Verde</option>
+                  <option value="amarillo">Amarillo</option>
+                  <option value="violeta">Violeta</option>
+                  <option value="celeste">Celeste</option>
+                  <option value="rosa">Rosa</option>
+                  <option value="naranja">Naranja</option>
+                  <option value="bordo">Bordó</option>
+                  <option value="marron">Marrón</option>
+                </select>
+                {errors.color && (
+                  <p className="text-error text-sm mt-1">
+                    {errors.color.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Campo Tipo de evento */}
+              <div>
+                <label htmlFor="evento" className="block text-sm text-gray mb-2">
+                  Tipo de evento
+                </label>
+                <select
+                  id="evento"
+                  {...register("evento", {
+                    required: "Debe seleccionar un tipo de evento",
+                  })}
+                  className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
+                >
+                  <option value="">Selecciona un tipo de evento</option>
+                  <option value="informal">Informal</option>
+                  <option value="formal">Formal</option>
+                  <option value="casual">Casual</option>
+                  <option value="elegante">Elegante</option>
+                  <option value="deportivo">Deportivo</option>
+                </select>
+                {errors.evento && (
+                  <p className="text-error text-sm mt-1">
+                    {errors.evento.message}
+                  </p>
+                )}
+              </div>
+
+
               {/* Error de submit */}
               {errors.submit && (
                 <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-3">
@@ -218,8 +305,8 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
           </div>
 
             {/* Área de Imagen - Lado derecho */}
-            <div>
-              <div className="relative">
+            <div className="flex items-center justify-center mt-6">
+              <div className="relative h-full">
                 <div className="flex items-center justify-between gap-2 mb-4">
                   <h4 className="text-lg font-medium text-gray">Imagen</h4>
                   <Button
@@ -234,7 +321,7 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
                 </div>
 
                 {/* Área de upload */}
-                <div className="rounded-md bg-black h-[240px]">
+                <div className="rounded-md bg-black min-w-sm border border-gray h-80">
                   <input
                     id="imagen"
                     type="file"

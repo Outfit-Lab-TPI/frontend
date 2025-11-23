@@ -2,6 +2,7 @@ import { useState } from "react";
 import PrendaGalleryCard from "./PrendaGalleryCard.jsx";
 import FilterDropdown from "./FilterDropdown.jsx";
 import Button from "./shared/Button.jsx";
+import AvatarDropdown from "./AvatarDropdown.jsx";
 import Panel from "../components/Panel.jsx";
 import {
   Drawer,
@@ -33,9 +34,14 @@ export default function ProbadorContenido({
   modeloUrl,
   loadingModelo3D,
   handleGenerarModelo3D,
+  avatarType,
+  onAvatarTypeChange,
+  user,
+  isDrawerOpen,
+  setIsDrawerOpen,
+  setAutoOpenDisabled,
 }) {
   const [busqueda, setBusqueda] = useState("");
-
   const prendasFiltradas = searchGarments(prendas, busqueda);
 
   const prendasCategorizadasFiltradas = {
@@ -43,11 +49,23 @@ export default function ProbadorContenido({
     inferiores: prendasFiltradas.filter((p) => p.tipo === "inferior"),
   };
 
+  function handleOnOpenChange(open) {
+    setIsDrawerOpen(open);
+    if (!open) setAutoOpenDisabled(true);
+  }
+
+  function handleCombineInDrawer() {
+    setIsDrawerOpen(true);
+    setAutoOpenDisabled(true);
+    onCombinarPrendas(avatarType);
+  }
+
   return (
     <div className="w-full lg:w-2/3 flex flex-col px-2">
-      <div className="flex flex-col gap-2">
-        <div className="p-4 bg-gray/10 w-full rounded-md ">
-          <div className="flex flex-wrap justify-between items-start lg:items-center gap-8">
+      <div className="flex flex-col gap-4">
+        {/* Box superior: Título + Avatar + Botón Combinar */}
+        <div className="p-4 bg-gray/10 w-full rounded-md">
+          <div className="flex flex-wrap justify-between items-start lg:items-center gap-6">
             <div className="h-14 flex flex-col justify-center">
               <h4 className="w-fit">Probador Virtual</h4>
               <p className="text-sm text-gray">
@@ -56,23 +74,15 @@ export default function ProbadorContenido({
             </div>
 
             <div className="flex not-sm:flex-wrap w-fit items-center md:justify-around gap-4">
-              <SearchInput
-                value={busqueda}
-                onChange={setBusqueda}
-                placeholder="Buscar prendas..."
-              />
-
-              <FilterDropdown
-                filtros={filtros}
-                marcasDisponibles={marcasDisponibles}
-                coloresDisponibles={coloresDisponibles}
-                onActualizarFiltros={onActualizarFiltros}
-                onLimpiarFiltros={onLimpiarFiltros}
+              <AvatarDropdown
+                avatarType={avatarType}
+                onAvatarTypeChange={onAvatarTypeChange}
+                userHasPhoto={!!user?.foto}
               />
 
               <div className="hidden lg:inline-flex">
                 <Button
-                  onClick={onCombinarPrendas}
+                  onClick={() => onCombinarPrendas(avatarType)}
                   disabled={!canCombine || loadingCombinacion}
                   width="fit"
                   className="text-nowrap"
@@ -81,10 +91,21 @@ export default function ProbadorContenido({
                 </Button>
               </div>
 
-              <Drawer>
+              <div className="lg:hidden">
+                <Button
+                  onClick={() => setIsDrawerOpen(true)}
+                  disabled={!resultado && !modeloUrl}
+                  variant="primary"
+                  width="fit"
+                >
+                  Ver combinación
+                </Button>
+              </div>
+
+              <Drawer open={isDrawerOpen} onOpenChange={handleOnOpenChange}>
                 <DrawerTrigger asChild>
                   <Button
-                    onClick={onCombinarPrendas}
+                    onClick={handleCombineInDrawer}
                     className="lg:hidden text-nowrap"
                     width="fit"
                     disabled={!canCombine || loadingCombinacion}
@@ -107,7 +128,9 @@ export default function ProbadorContenido({
 
                   <div className="p-4 border-t text-white border-gray/20 bg-background flex justify-end">
                     <DrawerClose asChild>
-                      <Button>Cerrar</Button>
+                      <Button onClick={() => setIsDrawerOpen(false)}>
+                        Cerrar
+                      </Button>
                     </DrawerClose>
                   </div>
                 </DrawerContent>
@@ -115,21 +138,42 @@ export default function ProbadorContenido({
             </div>
           </div>
         </div>
-        <p className="text-sm text-gray">
-          * Selecciona una prenda superior e inferior para poder combinarlas
-        </p>
+
+        {/* Box inferior: Búsqueda (izq) + Filtros (der) */}
+        <div className="flex justify-between items-center gap-4">
+          <SearchInput
+            value={busqueda}
+            onChange={setBusqueda}
+            placeholder="Buscar prendas..."
+          />
+
+          <FilterDropdown
+            filtros={filtros}
+            marcasDisponibles={marcasDisponibles}
+            coloresDisponibles={coloresDisponibles}
+            onActualizarFiltros={onActualizarFiltros}
+            onLimpiarFiltros={onLimpiarFiltros}
+          />
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto mt-4 modern-scrollbar">
         {prendasFiltradas && prendasFiltradas.length > 0 ? (
           <div className="space-y-6 max-w-5xl mx-auto">
             <div>
-              <h5 className="bg-gray/5 pt-1 px-2 rounded-sm font-semibold mb-4">
-                Prendas Superiores (
-                {prendasCategorizadasFiltradas.superiores.length})
-              </h5>
+              <div className="bg-gray/5 pt-1 px-2 flex flex-col sm:flex-row justify-between items-center rounded-sm mb-2">
+                <h5 className="font-semibold">
+                  Prendas Superiores (
+                  {prendasCategorizadasFiltradas.superiores.length})
+                </h5>
+                {!selectedSuperior && (
+                  <p className="text-sm text-gray">
+                    * Selecciona una prenda superior para combinarla
+                  </p>
+                )}
+              </div>
 
-              <div className="flex flex-wrap mx-8 items-center gap-6">
+              <div className="grid justify-center grid-cols-[repeat(auto-fit,160px)] mx-4 my-8 gap-6 md:gap-8">
                 {prendasCategorizadasFiltradas.superiores.map(
                   (prenda, index) => (
                     <PrendaGalleryCard
@@ -152,12 +196,19 @@ export default function ProbadorContenido({
             </div>
 
             <div>
-              <h5 className="bg-gray/5 py-1 px-2 rounded-sm font-semibold mb-4">
-                Prendas Inferiores (
-                {prendasCategorizadasFiltradas.inferiores.length})
-              </h5>
+              <div className="bg-gray/5 pt-1 px-2 flex flex-col sm:flex-row justify-between items-center rounded-sm mb-2">
+                <h5 className="font-semibold">
+                  Prendas Inferiores (
+                  {prendasCategorizadasFiltradas.inferiores.length})
+                </h5>
+                {!selectedInferior && (
+                  <p className="text-sm text-gray">
+                    * Selecciona una prenda inferior para combinarla
+                  </p>
+                )}
+              </div>
 
-              <div className="flex flex-wrap mx-8 items-center gap-6">
+              <div className="grid justify-center grid-cols-[repeat(auto-fit,160px)] mx-2 md:mx-4 my-8 gap-5 md:gap-7">
                 {prendasCategorizadasFiltradas.inferiores.map(
                   (prenda, index) => (
                     <PrendaGalleryCard

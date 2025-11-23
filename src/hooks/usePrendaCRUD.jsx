@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 import { prendaService } from '../services/prendaService'
 
 export function usePrendaCRUD() {
@@ -24,10 +25,12 @@ export function usePrendaCRUD() {
       formData.append('codigoMarca', 'puma') // TODO: obtener del auth context
       formData.append('nombre', data.nombre)
       formData.append('tipo', data.tipo)
+      formData.append('color', data.color)
+      formData.append('evento', data.evento)
       formData.append('imagen', data.imagen[0])
 
-      console.log('Creando prenda:', { codigoMarca: 'puma', nombre: data.nombre, tipo: data.tipo })
-      // const response = await prendaService.crearPrenda(formData)
+      const response = await prendaService.crearPrenda(formData)
+      toast.success('Prenda creada exitosamente')
       return true
     } catch (error) {
       console.error('Error al crear prenda:', error)
@@ -59,12 +62,14 @@ export function usePrendaCRUD() {
       const formData = new FormData()
       formData.append('nombre', data.nombre)
       formData.append('tipo', data.tipo)
+      formData.append('color', data.color)
+      formData.append('evento', data.evento)
       if (data.imagen && data.imagen[0]) {
         formData.append('imagen', data.imagen[0])
       }
 
       console.log('Editando prenda:', { id, nombre: data.nombre, tipo: data.tipo })
-      // const response = await prendaService.editarPrenda(id, formData)
+      const response = await prendaService.editarPrenda(id, formData)
       return true
     } catch (error) {
       console.error('Error al editar prenda:', error)
@@ -81,8 +86,7 @@ export function usePrendaCRUD() {
 
   const eliminarPrenda = useCallback(async (id) => {
     try {
-      console.log('Eliminando prenda:', { id })
-      // await prendaService.eliminarPrenda(id)
+      await prendaService.eliminarPrenda(id)
       return true
     } catch (error) {
       console.error('Error al eliminar prenda:', error)
