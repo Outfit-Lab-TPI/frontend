@@ -3,12 +3,18 @@ import { useForm } from 'react-hook-form'
 import { useAuth } from './useAuth'
 import { loginService } from '../../services/auth/loginService'
 import { useNavigate } from 'react-router-dom'
+import { validationRules } from '../../lib/validations'
 
 
 export function useLogin() {
   const { login } = useAuth()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const navigate = useNavigate()
+
+  const loginValidationRules = {
+    email: validationRules.email,
+    password: validationRules.passwordLogin
+  }
 
   const {
     register,
@@ -50,6 +56,7 @@ export function useLogin() {
     handleSubmit: handleSubmit(onSubmit),
     errors,
     isValid,
-    isSubmitting
+    isSubmitting,
+    validationRules: loginValidationRules
   }
 }

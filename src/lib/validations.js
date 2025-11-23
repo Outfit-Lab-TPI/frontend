@@ -39,6 +39,9 @@ export const validationRules = {
   },
   confirmPassword: {
     required: 'Confirma la contraseña.'
+  },
+  passwordLogin: {
+    required: 'La contraseña es obligatoria.'
   }
 }
 
