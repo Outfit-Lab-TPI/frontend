@@ -115,7 +115,7 @@ export const usePerfil = (onSuccess) => {
         formData.append('confirmPassword', data.confirmPassword);
       }
       if (data.avatar && data.avatar[0]) {
-        formData.append('userImg', data.avatar[0]);
+        formData.append('userImg', data.avatar ? data.avatar[0] : '');
       }
 
       // Usar el email del usuario del contexto
@@ -133,7 +133,6 @@ export const usePerfil = (onSuccess) => {
         lastName: response.user.lastname ?? user.lastName,
         userImg: response.user.userImg ?? user.userImg,
       });
-      console.log('Usuario actualizado en el contexto');
       setSelectedImage(response.user.userImg);
 
       reset({
@@ -178,14 +177,15 @@ export const usePerfil = (onSuccess) => {
   const cancelEdit = useCallback(() => {
     reset({
       name: user?.name || '',
+      lastName: user?.lastName || '',
       email: user?.email || '',
       password: '',
       confirmPassword: ''
     });
-    setSelectedImage(user?.avatarUrl || null);
+    setSelectedImage(user?.userImg || null);
     clearErrors("avatar");
     setAvatarValidationSuccess(null);
-  }, [user, reset]);
+  }, [user, reset, clearErrors]);
 
 
 const handleImageChange = useCallback(async (event) => {
@@ -220,15 +220,15 @@ const handleImageChange = useCallback(async (event) => {
 
   // ----- remover imagen ----------------------------------------
   const removeImage = useCallback(() => {
-    setSelectedImage(user?.avatarUrl || null);
+    setSelectedImage(null);
+    setValue('avatar', null);
     const fileInput = document.getElementById('avatar');
     if (fileInput) {
       fileInput.value = '';
-      setFormError("avatar", { type: "manual", message: "" });
     }
     clearErrors("avatar");
     setAvatarValidationSuccess(null);
-  }, [user?.avatarUrl]);
+  }, [setValue, clearErrors]);
   // ----- fin remover imagen ----------------------------------------
 
 

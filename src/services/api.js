@@ -137,13 +137,6 @@ export const subscriptionAPI = {
   }
 };
 
-export const getNotifications = async () => {
-  const res = await axios.get("/marcas/notifications-new-brands");
-  return Array.isArray(res.data) ? res.data : [];
-};
-
-export const checkNotification = async (id) => {
-  await axios.post(`/api/notifications/${id}/check`);
-};
 
 export default apiClient;
+

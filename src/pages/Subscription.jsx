@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import SubscriptionCard from '../components/SubscriptionCard.jsx';
-import { subscriptionAPI as mpService } from '../services/api.js';
 import PaymentStatusDialog from "../components/shared/PaymentStatusDialog.jsx";
+import { useSubscription } from '../hooks/useSubscription.jsx';
+import { useAuth } from '../hooks/auth/useAuth.jsx';
 
 const SubscriptionPage = () => {
-    const [isLoading, setIsLoading] = useState(false);
+    const { user } = useAuth();
+    const { plans, userSubscription, isLoading: subscriptionLoading, error, subscribe, refresh } = useSubscription();
 
-    const [paymentStatus, setPaymentStatus] = useState(null); 
-    const [paymentData, setPaymentData] = useState(null);
+    const [paymentStatus, setPaymentStatus] = useState(null);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
-
         const rawCollectionStatus = params.get("collection_status");
 
         if (rawCollectionStatus) {
@@ -24,103 +24,30 @@ const SubscriptionPage = () => {
 
             setPaymentStatus(normalized);
 
-            setPaymentData({
-                collectionStatus: rawCollectionStatus,
-                collectionId: params.get("collection_id"),
-                paymentId: params.get("payment_id"),
-                externalReference: params.get("external_reference"),
-                paymentType: params.get("payment_type"),
-                merchantOrderId: params.get("merchant_order_id"),
-                preferenceId: params.get("preference_id"),
-            });
+            // Limpiar URL
+            window.history.replaceState({}, document.title, "/suscripcion");
 
-            window.history.replaceState({}, document.title, "/subscription");
+            // Si el pago fue aprobado, refrescar la suscripción del usuario
+            if (normalized === "approved") {
+                setTimeout(() => {
+                    refresh();
+                }, 1000);
+            }
         }
-    }, []);
-
-    const plans = [
-        { 
-            id: 'basic-monthly', 
-            name: 'BÁSICO',
-            price: 5990.00,
-            currency: "ARS",
-            frequency: 'mes', 
-            description: 'Ideal para quienes recién interactúan con su probador virtual.', 
-            features: [
-                '20 Combinaciones en favoritos',
-                'Generación de Outfits (20/día)',
-                'Descargar outfits 3D (limitado)',
-            ],
-            cardColor: '#926490',
-            isPopular:false
-        },
-        { 
-            id: 'standard-monthly', 
-            name: 'ESTÁNDAR',
-            price: 14990.00,
-            currency: "ARS",
-            frequency: 'mes', 
-            description: 'La mejor opción para experimentar con la creación de outfits.',
-            features: [
-                '50 Combinaciones en favoritos',
-                'Generación de Outfits (50/día)',
-                'Descargar outfits 3D (limitado)',
-            ],
-            cardColor: 'from-purple-500 to-indigo-600',
-            isPopular:true
-        },
-        { 
-            id: 'pro-monthly', 
-            name: 'PRO',
-            price: 24990.00,
-            currency: "ARS",
-            frequency: 'mes', 
-            description: 'Máxima capacidad y funciones ilimitadas para profesionales.',
-            features: [
-                'Combinaciones ilimitadas en favoritos',
-                'Generación de Outfits Ilimitada',
-                'Modelos 3D ilimitados',
-                ],
-            cardColor: '#E3C18A',
-            isPopular:false
-        },
-    ];
+    }, [refresh]);
 
     const handleSubscribe = async (planId) => {
-        if (isLoading) return;
-
-        const userEmail = "TESTUSER705245584@testuser.com"; 
-
-        try {
-            setIsLoading(true);
-            const selectedPlan = plans.find(p => p.id === planId);
-            if (!selectedPlan) {
-                console.error("No se encontró el plan seleccionado.");
-                setIsLoading(false);
-                return;
-            }
-
-            const initPointUrl = await mpService.createPreference(
-                selectedPlan.id,
-                userEmail,
-                selectedPlan.price,
-                selectedPlan.currency
-            );
-
-            window.location.href = initPointUrl;
-            
-        } catch (error) {
-            console.error("Fallo la suscripción:", error);
-            alert('Hubo un error al iniciar el pago.');
-        } finally {
-            setIsLoading(false);
+        if (!user) {
+            alert('Debes iniciar sesión para suscribirte');
+            return;
         }
+        await subscribe(planId);
     };
 
     const messageByStatus = {
-        approved: "¡Gracias! Tu pago fue acreditado correctamente.",
+        approved: "¡Gracias! Tu pago fue acreditado correctamente. Tu plan ha sido actualizado.",
         pending: "Tu pago está en proceso. Mercado Pago lo está revisando.",
-        failure: `Hubo un problema con el pago.`
+        failure: `Hubo un problema con el pago. Por favor, intenta nuevamente.`
     };
 
     return (
@@ -133,32 +60,85 @@ const SubscriptionPage = () => {
                 onClose={() => setPaymentStatus(null)}
             />
 
-            {isLoading && (
+            {subscriptionLoading && (
                 <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
                     <div className="text-xl text-white animate-pulse">
-                        Procesando suscripción...
+                        Cargando planes...
                     </div>
                 </div>
             )}
 
-            <h1 className="text-center">Elige tu Plan</h1>
+            {error && (
+                <div className="max-w-2xl mx-auto bg-red-500/10 border border-red-500 rounded-lg p-4 text-red-500">
+                    <p className="font-semibold">Error al cargar planes</p>
+                    <p className="text-sm">{error}</p>
+                </div>
+            )}
 
-            <div className="flex flex-col md:flex-row justify-center items-stretch mt-20  space-y-8 md:space-y-0 md:space-x-10 max-w-6xl mx-auto">
+            <div className="text-center space-y-4">
+                <h1>Elige tu Plan</h1>
+
+                {userSubscription && (
+                    <div className="max-w-2xl mx-auto bg-[#230636]/30 border border-[#926490]/30 rounded-lg p-4">
+                        <p className="text-[#E3C18A] font-semibold">
+                            Plan Actual: {userSubscription.planCode === 'free-monthly' ? 'FREE' : 'PRO'}
+                        </p>
+                        <p className="text-[#FFFCF5]/70 text-sm mt-2">
+                            Estado: {userSubscription.status === 'ACTIVE' ? 'Activo' : userSubscription.status}
+                        </p>
+                        {userSubscription.usage && (
+                            <div className="mt-3 grid grid-cols-3 gap-4 text-sm">
+                                <div>
+                                    <p className="text-[#FFFCF5]/50">Favoritos</p>
+                                    <p className="text-[#E3C18A] font-semibold">
+                                        {userSubscription.usage.favorites?.count || 0}
+                                        {userSubscription.usage.favorites?.max ? `/${userSubscription.usage.favorites.max}` : '/∞'}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-[#FFFCF5]/50">Combinaciones</p>
+                                    <p className="text-[#E3C18A] font-semibold">
+                                        {userSubscription.usage.combinations?.used || 0}
+                                        {userSubscription.usage.combinations?.max ? `/${userSubscription.usage.combinations.max}` : '/∞'}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-[#FFFCF5]/50">Modelos 3D</p>
+                                    <p className="text-[#E3C18A] font-semibold">
+                                        {userSubscription.usage.models?.generated || 0}
+                                        {userSubscription.usage.models?.max ? `/${userSubscription.usage.models.max}` : '/∞'}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            <div className="flex flex-col md:flex-row justify-center items-stretch mt-20 space-y-8 md:space-y-0 md:space-x-10 max-w-6xl mx-auto">
                 {plans.map(plan => (
-                    <SubscriptionCard 
+                    <SubscriptionCard
                         key={plan.id}
                         subscription={plan}
-                        onSubscribe={handleSubscribe} 
+                        onSubscribe={handleSubscribe}
                         customColor={plan.cardColor}
                         isPopular={plan.isPopular}
+                        isCurrentPlan={userSubscription?.planCode === plan.planCode && userSubscription?.status === 'ACTIVE'}
                     />
                 ))}
             </div>
+
+            {plans.length === 0 && !subscriptionLoading && !error && (
+                <div className="text-center text-[#FFFCF5]/50 mt-20">
+                    <p>No hay planes disponibles en este momento.</p>
+                </div>
+            )}
         </div>
     );
 };
 
 export default SubscriptionPage;
+
 
 
 

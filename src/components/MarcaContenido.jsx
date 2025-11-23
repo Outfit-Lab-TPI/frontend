@@ -32,7 +32,6 @@ function MarcaContenido({
   handleGenerarModelo3D,
   avatarType,
   onAvatarTypeChange,
-  user,
   isDrawerOpen,
   setIsDrawerOpen,
   setAutoOpenDisabled,
@@ -106,7 +105,6 @@ function MarcaContenido({
               <AvatarDropdown
                 avatarType={avatarType}
                 onAvatarTypeChange={onAvatarTypeChange}
-                userHasPhoto={user?.avatarUrl ? true : false}
                 disabled={loadingCombinacion}
               />
 

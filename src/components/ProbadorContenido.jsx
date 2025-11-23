@@ -36,7 +36,6 @@ export default function ProbadorContenido({
   handleGenerarModelo3D,
   avatarType,
   onAvatarTypeChange,
-  user,
   isDrawerOpen,
   setIsDrawerOpen,
   setAutoOpenDisabled,
@@ -77,7 +76,6 @@ export default function ProbadorContenido({
               <AvatarDropdown
                 avatarType={avatarType}
                 onAvatarTypeChange={onAvatarTypeChange}
-                userHasPhoto={!!user?.foto}
               />
 
               <div className="hidden lg:inline-flex">

@@ -2,12 +2,6 @@ import apiClient from './api.js';
 
 export const combinacionService = {
   combinarPrendas: async (avatarType, top, bottom, usuario = null) => {
-    let customAvatarUrl = null;
-
-    // Si es custom, incluir la URL del avatar personalizado
-    if (avatarType === 'custom' && usuario?.avatarUrl) {
-      customAvatarUrl = usuario.avatarUrl;
-    }
 
     try {
       const requestData = {
@@ -15,11 +9,6 @@ export const combinacionService = {
         top,
         bottom
       };
-
-      // Incluir avatar personalizado si aplica
-      if (customAvatarUrl) {
-        requestData.customAvatar = customAvatarUrl;
-      }
 
       const response = await apiClient.post('/fashion/combinar-prendas', requestData, {
         timeout: 60000
