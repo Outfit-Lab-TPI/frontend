@@ -30,7 +30,22 @@ export function useLogin() {
     try {
       const userData = await loginService(data.email, data.password)
       login(userData)
-      navigate("/home")
+
+      // Redirect based on user role
+      const userRole = userData?.user?.role || userData?.role
+
+      switch (userRole) {
+        case 'ADMIN':
+          navigate('/dashboard')
+          break
+        case 'BRAND':
+          navigate('/brand-home')
+          break
+        case 'USER':
+        default:
+          navigate('/home')
+          break
+      }
     } catch (error) {
       console.error('Error al iniciar sesión:', error)
       setError('submit', {
