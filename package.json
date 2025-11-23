@@ -11,6 +11,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@mercadopago/sdk-react": "^1.0.6",
     "@radix-ui/react-dialog": "^1.1.15",
     "@react-three/drei": "^10.7.6",
