@@ -11,17 +11,22 @@ export function AuthProvider({ children }) {
     const storedUser = localStorage.getItem('outfitlab-user')
     if (storedUser) {
       try {
-        setUser(JSON.parse(storedUser))
-      } catch {
+        const parsedUser = JSON.parse(storedUser)
+        setUser(parsedUser)
+      } catch (error) {
+        console.error('Error parsing stored user:', error);
         localStorage.removeItem('outfitlab-user')
       }
+    } else {
     }
     setIsLoading(false)
   }, [])
 
   const login = (userData) => {
     setUser(userData)
-    localStorage.setItem('outfitlab-user', JSON.stringify(userData))
+
+    const stringifiedData = JSON.stringify(userData);
+    localStorage.setItem('outfitlab-user', stringifiedData)
   }
 
   const logout = () => {

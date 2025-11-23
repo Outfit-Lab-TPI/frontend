@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { User, Wifi } from "lucide-react";
+import { User } from "lucide-react";
 import Button from "../shared/Button";
 
 function Header() {

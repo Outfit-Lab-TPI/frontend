@@ -4,11 +4,6 @@ import Button from "../components/shared/Button";
 
 function Login() {
   const { register, handleSubmit, errors, isValid, isSubmitting, validationRules } = useLogin();
-  const navigate = useNavigate();
-
-  const handleLoginClick = () => {
-    navigate("/home");
-  };
 
   return (
     <div className="flex items-center justify-center px-4">
@@ -57,12 +52,8 @@ function Login() {
             {errors.submit && (
               <p className="text-error text-sm">{errors.submit.message}</p>
             )}
-            {/* Botón Iniciar sesión */}
             
-            {/* <Button type="submit" disabled={isSubmitting || !isValid}> */}
-            {/*<Button onClick={handleLoginClick}>
-              {isSubmitting ? "Iniciando sesión..." : "Iniciar sesión"}
-            </Button>*/}
+            {/* Botón Iniciar sesión */}
             <Button type="submit" disabled={isSubmitting || !isValid}>
               {isSubmitting ? "Iniciando sesión..." : "Iniciar sesión"}
             </Button>

@@ -20,6 +20,9 @@ function Profile() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
+  // Extract user data from nested structure
+  const userData = user?.user || {};
+
   const onSubmitSuccess = () => {
     setIsEditing(false);
   };
@@ -86,7 +89,7 @@ function Profile() {
                 {/* Header con título y icono de edición */}
                 <div className="flex items-center justify-between mb-8">
                   <h2 className="text-white font-medium">
-                    {user?.name || "Usuario"}
+                    {userData.name || "Usuario"}
                   </h2>
 
                   {/* Icono de edición/cancelar */}
