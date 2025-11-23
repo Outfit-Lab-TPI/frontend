@@ -95,7 +95,7 @@ export const useAdmin = () => {
       setMarcas(prev =>
         prev.map(m =>
           m.brand.codigoMarca === marcaId
-            ? { ...m, status: activa }
+            ? { ...m, status: activa, brandApproved: activa ? true : m.brandApproved }
             : m
         )
       );
