@@ -31,7 +31,7 @@ function RecommendationChat({ categories, loading, recommendations, error, onSol
     const isLoadingRecommendation = loading && recommendations === null;
 
     return (
-        <div className="fixed bottom-4 right-4 z-50">
+        <div className="fixed bottom-4 right-0 z-50 flex flex-col items-end max-w-full">
 
             {/* ---- BOTÓN TIPO "REDACTAR" DE GMAIL ---- */}
             {!open && (
@@ -47,7 +47,7 @@ function RecommendationChat({ categories, loading, recommendations, error, onSol
            {/* ---- PANEL EXPANDIBLE ---- */}
             <div
                 className={`
-                    bg-[#230636] rounded-lg shadow-2xl w-110 transition-all duration-300 overflow-hidden p-3
+                    bg-[#230636] rounded-lg shadow-2xl w-110 transition-all duration-300 overflow-hidden p-3 max-w-full
                     ${open ? 'h-[50vh] sm:h-[50vh] md:h-[50vh] lg:h-[50vh] xl:h-[50vh] opacity-100' : 'h-0 opacity-0'}
                 `}
             >

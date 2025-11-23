@@ -40,7 +40,7 @@ export default function AssistanButtonIA({ setOpen }) {
                 transition-all duration-200 hover:font-bold
                 px-4 py-2 rounded-t-lg shadow-lg hover:bg-[#E3C18A]
                 hover:cursor-pointer flex items-center gap-2
-                overflow-hidden w-110 min-w-auto max-w-auto
+                overflow-hidden w-full max-w-full
             `}
         >
             <span className={`block transition-opacity duration-300`}>
