@@ -44,6 +44,8 @@ export function AuthProvider({ children }) {
   const logout = (navigate) => {
     setUser(null)
     localStorage.removeItem('outfitlab-user')
+    sessionStorage.removeItem('access_token')
+    sessionStorage.removeItem('refresh_token')
 
     if (navigate) {
       navigate('/')
@@ -61,6 +63,10 @@ export function AuthProvider({ children }) {
     localStorage.setItem('outfitlab-user', JSON.stringify(updatedUser))
   }
 
+  const updateUserSubscription = (subscriptionData) => {
+    updateUser({ subscription: subscriptionData })
+  }
+
   const isAdmin = user?.role === 'ADMIN'
   const isBrand = user?.role === 'BRAND'
   const isUser = user?.role === 'USER'
@@ -72,6 +78,7 @@ export function AuthProvider({ children }) {
     login,
     logout,
     updateUser,
+    updateUserSubscription,
     isAdmin,
     isBrand,
     isUser
