@@ -25,16 +25,15 @@ export const usePerfil = (onSuccess) => {
 
   useEffect(() => {
     if (user) {
-      // Extract user data from nested structure
-      const userData = user.user || {};
+      // User data is now flattened, no need to extract user.user
       reset({
-        name: userData.name || '',
-        lastName: userData.lastName || '',
-        email: userData.email || '',
+        name: user.name || '',
+        lastName: user.lastName || '',
+        email: user.email || '',
         password: '',
         confirmPassword: ''
       });
-      setSelectedImage(userData.userImg || null);
+      setSelectedImage(user.userImg || null);
     }
   }, [user, reset]);
 
