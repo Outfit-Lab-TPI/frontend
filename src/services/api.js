@@ -10,13 +10,34 @@ const apiClient = axios.create({
   timeout: 500000,
 });
 
-// Request interceptor for adding auth token
-apiClient.interceptors.request.use(
+// Request interceptor for adding auth token   ----- dejo este de cami por las dudas
+/*apiClient.interceptors.request.use(
   (config) => {
     // Agregar token de autorización si existe en sessionStorage
     const accessToken = sessionStorage.getItem('access_token');
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;    
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);*/
+apiClient.interceptors.request.use(
+  (config) => {
+    const outfitlab_user_str = localStorage.getItem('outfitlab-user');
+    if (outfitlab_user_str) {
+      try {
+        const outfitlab_user = JSON.parse(outfitlab_user_str); // lo parseo pq en el local hay un string
+        const access_token = outfitlab_user.access_token; // desp si que accedo al token para mandarlo
+        if (access_token) {
+          console.log('Token encontrado:', access_token);
+          config.headers.Authorization = `Bearer ${access_token}`;
+        }
+      } catch (err) {
+        console.error('Error parseando outfitlab-user', err);
+      }
     }
     return config;
   },
