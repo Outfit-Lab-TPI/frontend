@@ -107,41 +107,33 @@ export const usePerfil = (onSuccess) => {
 
     try {
       const formData = new FormData();
-      console.log(data);
       formData.append('name', data.name);
       formData.append('lastname', data.lastName);
       formData.append('email', data.email);
-
       if (data.password && data.password.trim() !== '') {
         formData.append('password', data.password);
         formData.append('confirmPassword', data.confirmPassword);
       }
-
       if (data.avatar && data.avatar[0]) {
         formData.append('userImg', data.avatar[0]);
       }
-      /* 
-      
-      --- VER CON CAMI EL TEMA DE QUE YO ESPERO EL "USER EMAIL" COMO VALOR DEL PATH VARIABLE,
-      --- y actualmente me llega undefined (entiendo pq hacen user.id pero pq usan algo del provider
-      --- tal vez no se si será lo de enviar el token o cuando se logueann, dejar en local storage el email y acá
-      --- lo recuperamos para poder enviarlo en el /api/users/update/{email} )
 
-      --- por ahora dejo uno hardcodeado que se que existe en la bdd. 
-      
-      */
+      // Usar el email del usuario del contexto
+      const userEmail = user?.email;
+      if (!userEmail) {
+        throw new Error('No se pudo obtener el email del usuario. Por favor, inicia sesión nuevamente.');
+      }
 
-      let userIdOrEmail = user?.id ? user?.id : "german@gmail.com";
-      const response = await perfilService.actualizarPerfil(userIdOrEmail, formData);
+      const response = await perfilService.actualizarPerfil(userEmail, formData);
 
-      /*updateUser({    ----> todavía no existe el update user en el provider asique lo comento pq sino rompe
-        ...user,
+      // Actualizar el contexto con los nuevos datos
+      updateUser({
         name: response.user.name ?? user.name,
         email: response.user.email ?? user.email,
-        lastname: response.user.lastname ?? user.lastname,
-        avatarUrl: response.user.userImg ?? user.avatarUrl,
+        lastName: response.user.lastname ?? user.lastName,
+        userImg: response.user.userImg ?? user.userImg,
       });
-      */
+      console.log('Usuario actualizado en el contexto');
       setSelectedImage(response.user.userImg);
 
       reset({
