@@ -1,4 +1,4 @@
-import { Edit3, X, LogOut } from "lucide-react";
+import { Edit3, LogOut } from "lucide-react";
 import Button from "../shared/Button";
 import FormField from "../shared/FormField";
 
@@ -14,7 +14,19 @@ function ProfileForm({
   errors,
   isValid,
   isSubmitting,
+  isValidatingImage,
+  avatarValidationSuccess,
 }) {
+  // El formulario no puede ser enviado si:
+  // - Los campos del formulario no son válidos
+  // - Se está enviando el formulario
+  // - Se está validando la imagen
+  // - Hay un error en la imagen (y no hay mensaje de éxito)
+  const isFormDisabled =
+    !isValid ||
+    isSubmitting ||
+    isValidatingImage ||
+    (errors.avatar && !avatarValidationSuccess);
   return (
     <div className="md:col-span-3">
       <form onSubmit={onSubmit} className="h-full flex flex-col justify-between">
@@ -22,19 +34,21 @@ function ProfileForm({
           {/* Header con título y icono de edición */}
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-white font-medium">
-              {user?.name || "Usuario"}
+              {user?.name || "Usuario"} {user?.lastName || ""}
             </h2>
 
-            {/* Icono de edición/cancelar */}
-            <Button
-              type="button"
-              onClick={isEditing ? onCancelEdit : onToggleEdit}
-              variant="text"
-              color="gray"
-              width="fit"
-            >
-              {isEditing ? <X size={20} /> : <Edit3 size={20} />}
-            </Button>
+            {/* Icono de edición solo cuando NO está editando */}
+            {!isEditing && (
+              <Button
+                type="button"
+                onClick={onToggleEdit}
+                variant="text"
+                color="gray"
+                width="fit"
+              >
+                <Edit3 size={20} />
+              </Button>
+            )}
           </div>
 
           {/* Campo Nombre */}
@@ -113,15 +127,24 @@ function ProfileForm({
           </div>
         )}
 
-        {/* Boton de guardar cambios */}
+        {/* Botones de guardar y cancelar */}
         {isEditing && (
-          <Button
-            type="submit"
-            disabled={!isValid || isSubmitting}
-            className="mt-10"
-          >
-            {isSubmitting ? "Guardando..." : "Guardar cambios"}
-          </Button>
+          <div className="flex gap-4 mt-10">
+            <Button
+              type="button"
+              variant="outline"
+              color="gray"
+              onClick={onCancelEdit}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              disabled={isFormDisabled}
+            >
+              {isSubmitting ? "Guardando..." : isValidatingImage ? "Validando imagen..." : "Guardar cambios"}
+            </Button>
+          </div>
         )}
       </form>
     </div>

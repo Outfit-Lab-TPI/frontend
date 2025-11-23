@@ -72,6 +72,8 @@ function UserDataCard() {
           errors={errors}
           isValid={isValid}
           isSubmitting={isSubmitting}
+          isValidatingImage={isValidatingImage}
+          avatarValidationSuccess={avatarValidationSuccess}
         />
 
         {/* Área de Imagen de Perfil - Lado derecho */}
