@@ -11,10 +11,6 @@ export function usePrendaCRUD() {
   const { register, handleSubmit, formState: { errors }, setError, watch, reset, setValue } = form
   const { user } = useAuth()
 
-
-
-//----------------------------------------------------------------------------------------------------------
-// --- NUEVO: estados para colores y ocasiones ---
   const [colores, setColores] = useState([]);
   const [ocaciones, setOcaciones] = useState([]);
   const [climas, setClimas] = useState([]);
@@ -37,21 +33,6 @@ export function usePrendaCRUD() {
   useEffect(() => {
     fetchFiltros();
   }, [fetchFiltros]);
-  //----------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   const crearPrenda = useCallback(async (data) => {
     if (!data.imagen || !data.imagen[0]) {
@@ -78,15 +59,7 @@ export function usePrendaCRUD() {
       formData.append('climaNombre', data.clima)
       formData.append('imagen', data.imagen[0])
 
-
-      console.log('codigoMarca', 'puma') // TODO: obtener del auth context
-      console.log('nombre', data.nombre)
-      console.log('tipo', data.tipo)
-      console.log('colorNombre', data.color)
-      console.log('ocasionesNombres', data.ocacion)
-      console.log('climaNombre', data.clima)
-
-      const response = await prendaService.crearPrenda(formData)
+      await prendaService.crearPrenda(formData)
       toast.success('Prenda creada exitosamente')
       return true
     } catch (error) {
@@ -128,7 +101,7 @@ export function usePrendaCRUD() {
       }
 
       console.log('Editando prenda:', { id, nombre: data.nombre, tipo: data.tipo })
-      const response = await prendaService.editarPrenda(id, formData)
+      await prendaService.editarPrenda(id, formData)
       return true
     } catch (error) {
       console.error('Error al editar prenda:', error)
