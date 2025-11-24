@@ -51,7 +51,7 @@ const COLORS = ["#8b5cf6", "#ec4899", "#22d3ee", "#fbbf24", "#4ade80"];
 
 export default function BrandDashboard() {
   const { user } = useAuth();
-  const brandCode = user?.brand || "puma";
+  const brandCode = user?.brand.codigoMarca || "puma";
   const brand = brandCode.charAt(0).toUpperCase() + brandCode.slice(1);
   const [tab, setTab] = useState("free");
   const [membership] = useState("premium");
