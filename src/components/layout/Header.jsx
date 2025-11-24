@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { User, BarChart3, Store, Shirt } from "lucide-react";
+import { User, BarChart3, Store, Shirt, Layers  } from "lucide-react";
 import NotificationDropdown from '../NotificationDropdown'
 import Button from "../shared/Button";
 
@@ -94,6 +94,18 @@ function Header() {
 
                 {
                   (user.role === "USER") && (
+                    <>
+
+                      <Link to="/home">
+                          <Button
+                            size="sm"
+                            className="bg-transparent border border-white/40 text-white hover:bg-white/10 flex items-center gap-2"
+                          >
+                            <Layers   className="w-4 h-4" />
+                            <span className="hidden sm:inline">Probador</span>
+                          </Button>
+                      </Link>
+
                       <Link to="/marcas">
                         <Button
                           size="sm"
@@ -103,6 +115,7 @@ function Header() {
                           <span className="hidden sm:inline">Ver marcas</span>
                         </Button>
                       </Link>
+                    </>
                   )
                 }
         
