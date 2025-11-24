@@ -1,13 +1,20 @@
 import apiClient from './api.js';
 
+const buildUpgradeError = (error) => {
+  const data = error.response?.data || {};
+  if (error.response?.status === 403 && data.upgradeRequired) {
+    const err = new Error(data.error || 'Has alcanzado el límite de tu plan');
+    err.upgradeRequired = true;
+    err.limitType = data.limitType;
+    err.currentUsage = data.currentUsage;
+    err.maxAllowed = data.maxAllowed;
+    return err;
+  }
+  return null;
+};
+
 export const combinacionService = {
   combinarPrendas: async (avatarType, top, bottom, usuario = null) => {
-    let customAvatarUrl = null;
-
-    // Si es custom, incluir la URL del avatar personalizado
-    if (avatarType === 'custom' && usuario?.avatarUrl) {
-      customAvatarUrl = usuario.avatarUrl;
-    }
 
     try {
       const requestData = {
@@ -16,16 +23,14 @@ export const combinacionService = {
         bottom
       };
 
-      // Incluir avatar personalizado si aplica
-      if (customAvatarUrl) {
-        requestData.customAvatar = customAvatarUrl;
-      }
-
       const response = await apiClient.post('/fashion/combinar-prendas', requestData, {
         timeout: 60000
       });
       return response.data;
     } catch (error) {
+      const upgradeError = buildUpgradeError(error);
+      if (upgradeError) throw upgradeError;
+
       console.error("Error en combinacionService:", error);
 
       // Manejo específico de errores relacionados con avatar custom

@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { User, ChevronDown, Check } from "lucide-react";
+import { useAuth } from "../hooks/auth/useAuth";
 
 function AvatarDropdown({
   avatarType,
   onAvatarTypeChange,
-  userHasPhoto,
   disabled = false
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { user } = useAuth();
+  const userHasPhoto = Boolean(user?.userImg);
 
   const avatarOptions = [
     { value: 'man', label: 'Hombre' },

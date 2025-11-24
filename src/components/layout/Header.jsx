@@ -1,8 +1,30 @@
 import { Link } from "react-router-dom";
 import { User } from "lucide-react";
+import NotificationDropdown from '../NotificationDropdown'
 import Button from "../shared/Button";
+import { useAuth } from './../../hooks/auth/useAuth'
 
 function Header() {
+
+  const { user } = useAuth()
+  let destino = "/";
+
+  if(user){
+    switch (user.role) {
+      case "ADMIN":
+        destino = "/dashboard";
+        break;
+      case "BRAND":
+        destino = "/brand-home";
+        break;
+      case "USER":
+        destino = "/home";
+        break;
+      default:
+        destino = "/home";
+    }
+  }
+
   return (
     <header
       className="header bg-[#0a050e]/90 backdrop-blur-md border-b border-[#926490]/20"
@@ -14,8 +36,9 @@ function Header() {
         height: "60px",
       }}
     >
+      
       <Link
-        to="/home"
+        to={destino}
         style={{
           textDecoration: "none",
           height: "fit-content",
@@ -31,24 +54,40 @@ function Header() {
       </Link>
 
       <div className="flex items-center gap-4">
-        <Link to="/marcas">
-          <Button size="sm" className="bg-transparent border-white/40">
-            Ver marcas
-          </Button>
-        </Link>
 
-        <Link to="/perfil">
-          <div
-            className="size-10 rounded-full 
-              bg-(--secondary) 
-              flex items-center justify-center 
-              cursor-pointer 
-              transition-colors duration-300 
-              hover:bg-(--primary)"
-          >
-            <User size={20} color="var(--white)" />
-          </div>
-        </Link>
+        {/* si NO hay user, no muestro nada */}
+        {
+          user && (
+            <>
+              {/* ADMIN → notificaciones */}
+              {user.role === "ADMIN" && <NotificationDropdown />}
+          
+              {/* ADMIN y USER → Ver marcas */}
+              {(user.role === "ADMIN" || user.role === "USER") && (
+                <Link to="/marcas">
+                  <Button size="sm" className="bg-transparent border-white/40">
+                    Ver marcas
+                  </Button>
+                </Link>
+              )}
+        
+              {/* Todos los roles → Perfil */}
+              <Link to="/perfil">
+                <div
+                  className="size-10 rounded-full 
+                    bg-(--secondary) 
+                    flex items-center justify-center 
+                    cursor-pointer 
+                    transition-colors duration-300 
+                    hover:bg-(--primary)"
+                >
+                  <User size={20} color="var(--white)" />
+                </div>
+              </Link>
+            </>
+          )
+        }
+
       </div>
     </header>
   );

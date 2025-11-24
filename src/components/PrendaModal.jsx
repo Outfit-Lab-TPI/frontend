@@ -3,7 +3,7 @@ import { X, Info, Plus, Trash2 } from "lucide-react";
 import { usePrendaCRUD } from "../hooks/usePrendaCRUD";
 import { useForm } from "react-hook-form";
 import Button from "./shared/Button";
-
+import { validarImagenDeRopa } from './../lib/clothingValidation'
 // function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar }) {
 //   const {
 //     register,
@@ -31,10 +31,11 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
     formState: { errors, isSubmitting }
   } = form;
 
-  const { crearPrenda, editarPrenda, eliminarPrenda } = usePrendaCRUD(form);
+  const { crearPrenda, editarPrenda, eliminarPrenda, colores, ocaciones, climas } = usePrendaCRUD(form);
 
   const [showTooltip, setShowTooltip] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+
 
   const watchedValues = watch(['nombre', 'tipo']);
   const [nombre, tipo] = watchedValues;
@@ -77,10 +78,13 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
   // Efecto para cargar datos cuando se abre en modo edición
   useEffect(() => {
     if (isOpen && prendaParaEditar) {
+      console.log("VALORE DEL USSE EFFECT DE PRENDA CUANDO ABRIMOS EL MODAL")
+      console.log(prendaParaEditar)
       setValue("nombre", prendaParaEditar.nombre || "");
       setValue("tipo", prendaParaEditar.tipo || "");
       setValue("color", prendaParaEditar.color || "");
-      setValue("evento", prendaParaEditar.evento || "");
+      setValue("ocacion", prendaParaEditar.ocacion || "");
+      setValue("clima", prendaParaEditar.clima || "");
       setSelectedImage(prendaParaEditar.imagenUrl || null);
     } else if (isOpen && !prendaParaEditar) {
       reset();
@@ -88,8 +92,31 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
     }
   }, [isOpen, prendaParaEditar, setValue, reset]);
 
-  const handleImageChange = (event) => {
+  const handleImageChange = async (event) => {
     imageRegister.onChange(event);
+
+    const file = event.target.files[0];
+    if (file) {
+
+      const resultado = await validarImagenDeRopa(file);
+
+      if (!resultado.ok) {
+        alert(resultado.message || "La imagen no es de ropa.");
+        return; // 🔥 frenamos todo
+      }
+    
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setSelectedImage(e.target.result);
+      };
+      reader.readAsDataURL(file);
+
+    } else {
+      if (!isEditing) {
+        setSelectedImage(null);
+      }
+    }
+    /*imageRegister.onChange(event);
 
     const file = event.target.files[0];
     if (file) {
@@ -102,7 +129,7 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
       if (!isEditing) {
         setSelectedImage(null);
       }
-    }
+    }*/
   };
 
   const removeImage = () => {
@@ -135,7 +162,8 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
   };
 
   const handleEliminar = async () => {
-    if (window.confirm(`¿Estás seguro de que quieres eliminar "${prendaParaEditar?.nombre}"?`)) {
+    console.log(prendaParaEditar);
+
       try {
         const resultado = await eliminarPrenda(prendaParaEditar?.garmentCode || prendaParaEditar?.codigo);
         if (resultado && onEliminar) {
@@ -145,7 +173,6 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
       } catch (error) {
         console.error("Error al eliminar prenda:", error);
       }
-    }
   };
 
   const handleClose = () => {
@@ -239,27 +266,16 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
                 <label htmlFor="color" className="block text-sm text-gray mb-2">
                   Color predominante
                 </label>
+                {/* Select de colores */}
                 <select
                   id="color"
-                  {...register("color", {
-                    required: "Debe seleccionar un color",
-                  })}
+                  {...register("color", { required: "Debe seleccionar un color" })}
                   className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
                 >
                   <option value="">Selecciona un color</option>
-                  <option value="negro">Negro</option>
-                  <option value="blanco">Blanco</option>
-                  <option value="gris">Gris</option>
-                  <option value="azul">Azul</option>
-                  <option value="rojo">Rojo</option>
-                  <option value="verde">Verde</option>
-                  <option value="amarillo">Amarillo</option>
-                  <option value="violeta">Violeta</option>
-                  <option value="celeste">Celeste</option>
-                  <option value="rosa">Rosa</option>
-                  <option value="naranja">Naranja</option>
-                  <option value="bordo">Bordó</option>
-                  <option value="marron">Marrón</option>
+                  {colores.map((c) => (
+                    <option key={c.id} value={c.nombre}>{c.nombre}</option>
+                  ))}
                 </select>
                 {errors.color && (
                   <p className="text-error text-sm mt-1">
@@ -271,26 +287,57 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
               {/* Campo Tipo de evento */}
               <div>
                 <label htmlFor="evento" className="block text-sm text-gray mb-2">
-                  Tipo de evento
+                  Ocaciones (ctrol + click para seleccionar más de una)
                 </label>
+
                 <select
-                  id="evento"
-                  {...register("evento", {
-                    required: "Debe seleccionar un tipo de evento",
+                  id="ocasionesNombres"
+                  multiple
+                  size={5}
+                  {...register("ocasionesNombres", {
+                    required: "Debe seleccionar al menos una ocasión",
                   })}
+                  onChange={(e) => {
+                    const values = Array.from(e.target.selectedOptions, option => option.value);
+                    setValue("ocacion", values);
+                  }}
+                  className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"               
+                  >
+                  {ocaciones.map((o) => (
+                    <option key={o.id} value={o.nombre}>
+                      {o.nombre}
+                    </option>
+                  ))}
+                </select>
+                
+                {errors.ocasionesNombres && (
+                  <p className="text-error text-sm mt-1">
+                    {errors.ocasionesNombres.message}
+                  </p>
+                )}
+              </div>
+              
+
+              {/* Campo Clima */}
+              <div>
+                <label htmlFor="clima" className="block text-sm text-gray mb-2">
+                  Clima predominante
+                </label>
+
+                {/* Select de climas */}
+                <select
+                  id="clima"
+                  {...register("clima", { required: "Debe seleccionar un clima" })}
                   className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
                 >
-                  <option value="">Selecciona un tipo de evento</option>
-                  <option value="informal">Informal</option>
-                  <option value="formal">Formal</option>
-                  <option value="casual">Casual</option>
-                  <option value="elegante">Elegante</option>
-                  <option value="deportivo">Deportivo</option>
+                  <option value="">Selecciona un clima</option>
+                  {climas.map((c) => (
+                    <option key={c.id} value={c.nombre}>{c.nombre}</option>
+                  ))}
                 </select>
-                {errors.evento && (
-                  <p className="text-error text-sm mt-1">
-                    {errors.evento.message}
-                  </p>
+                
+                {errors.clima && (
+                  <p className="text-error text-sm mt-1">{errors.clima.message}</p>
                 )}
               </div>
 

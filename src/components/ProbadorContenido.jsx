@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/drawer";
 import { searchGarments } from "@/lib/searchUtils.js";
 import SearchInput from "./shared/SearchInput.jsx";
+import UpgradeModal from "./shared/UpgradeModal.jsx";
 
 export default function ProbadorContenido({
   prendas,
@@ -36,10 +37,11 @@ export default function ProbadorContenido({
   handleGenerarModelo3D,
   avatarType,
   onAvatarTypeChange,
-  user,
   isDrawerOpen,
   setIsDrawerOpen,
   setAutoOpenDisabled,
+  upgradeCombinacion,
+  onCloseUpgrade,
 }) {
   const [busqueda, setBusqueda] = useState("");
   const prendasFiltradas = searchGarments(prendas, busqueda);
@@ -77,7 +79,6 @@ export default function ProbadorContenido({
               <AvatarDropdown
                 avatarType={avatarType}
                 onAvatarTypeChange={onAvatarTypeChange}
-                userHasPhoto={!!user?.foto}
               />
 
               <div className="hidden lg:inline-flex">
@@ -236,6 +237,20 @@ export default function ProbadorContenido({
           </div>
         )}
       </div>
+      <UpgradeModal
+        open={!!upgradeCombinacion}
+        onClose={onCloseUpgrade}
+        info={
+          upgradeCombinacion && {
+            message:
+              upgradeCombinacion.message ||
+              "Alcanzaste el límite de tu plan, debes actualizarlo para continuar.",
+            limitType: upgradeCombinacion.limitType || "combinaciones",
+            currentUsage: upgradeCombinacion.currentUsage,
+            maxAllowed: upgradeCombinacion.maxAllowed,
+          }
+        }
+      />
     </div>
   );
 }

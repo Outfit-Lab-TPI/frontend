@@ -20,9 +20,12 @@ export const prendaService = {
   editarPrenda: async (id, formData) => {
     try {
       console.log('Editando prenda en servicio:', { id, formData })
-
+      console.log(formData)
+      formData.forEach((value, key) => {
+        console.log(key, value);
+      });
       // TODO: Implementar endpoint para editar prenda
-      const response = await apiClient.put(`/garments/update/${id}`, formData, {
+      const response = await apiClient.patch(`/garments/update/${id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -49,8 +52,22 @@ export const prendaService = {
       console.error('Error en prendaService.eliminarPrenda:', error)
       throw error
     }
-  }
+  },
+
+
+  getFiltros: async () => {
+    try {
+      const response = await apiClient.get("/categories/recommendation");
+      return response.data; // viene: { climas, ocasiones, colores }
+    } catch (error) {
+      console.error("Error al obtener filtros:", error);
+      throw error;
+    }
+  },
 }
+
+
+
           
 const validarFormDataPrenda = (formData) => {
   if (!formData.has('codigoMarca')) {

@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios from "axios";
+import { refreshToken } from "./auth/refreshTokenService";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -10,56 +11,151 @@ const apiClient = axios.create({
   timeout: 500000,
 });
 
-// Request interceptor for adding auth token   ----- dejo este de cami por las dudas
-/*apiClient.interceptors.request.use(
-  (config) => {
-    // Agregar token de autorización si existe en sessionStorage
-    const accessToken = sessionStorage.getItem('access_token');
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+let isRefreshingToken = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
     }
-    return config;    
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);*/
+  });
+
+  failedQueue = [];
+};
+
+const getAccessToken = () => sessionStorage.getItem("access_token");
+const getRefreshToken = () => sessionStorage.getItem("refresh_token");
+
+// Helper para debugging - eliminar en producción
+window.debugTokens = () => {
+  const access = sessionStorage.getItem("access_token");
+  const refresh = sessionStorage.getItem("refresh_token");
+  const user = sessionStorage.getItem("outfitlab-user");
+
+  return { access, refresh, user: user ? JSON.parse(user) : null };
+};
+
 apiClient.interceptors.request.use(
-  (config) => {
-    const outfitlab_user_str = localStorage.getItem('outfitlab-user');
-    if (outfitlab_user_str) {
-      try {
-        const outfitlab_user = JSON.parse(outfitlab_user_str); // lo parseo pq en el local hay un string
-        const access_token = outfitlab_user.access_token; // desp si que accedo al token para mandarlo
-        if (access_token) {
-          console.log('Token encontrado:', access_token);
-          config.headers.Authorization = `Bearer ${access_token}`;
-        }
-      } catch (err) {
-        console.error('Error parseando outfitlab-user', err);
-      }
+  config => {
+    const access_token = getAccessToken();
+    if (access_token) {
+      config.headers.Authorization = `Bearer ${access_token}`;
     }
     return config;
   },
-  (error) => {
+  error => {
     return Promise.reject(error);
   }
 );
 
-// Response interceptor for error handling
+// Response interceptor - Maneja errores y refresh automático
 apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.code === 'ECONNABORTED') {
-      console.error('Request timeout');
-    } else if (error.response) {
-      console.error('Server error:', error.response.status);
-    } else if (error.request) {
-      console.error('Network error: No response received');
+  response => response,
+  async error => {
+    const originalRequest = error.config;
+
+    if (error.code === "ECONNABORTED") {
+      console.error("Request timeout");
+      return Promise.reject(error);
     }
+
+    if (error.request && !error.response) {
+      console.error("Network error: No response received");
+      return Promise.reject(error);
+    }
+
+    // Manejo de error 401 (token expirado/inválido)
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshingToken) {
+        // Si ya se está refrescando, agregar a la cola
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then(token => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return apiClient(originalRequest);
+          })
+          .catch(err => {
+            console.log("Request de la cola falló:", err);
+            return Promise.reject(err);
+          });
+      }
+
+      originalRequest._retry = true;
+      isRefreshingToken = true;
+
+      const refresh_token = getRefreshToken();
+
+      if (!refresh_token) {
+        processQueue(error, null);
+        isRefreshingToken = false;
+        handleLogout();
+        return Promise.reject(error);
+      }
+
+      try {
+        const response = await refreshToken(refresh_token);
+
+        const {
+          access_token,
+          refresh_token: new_refresh_token,
+          user,
+        } = response;
+
+        sessionStorage.setItem("access_token", access_token);
+        sessionStorage.setItem("refresh_token", new_refresh_token);
+        sessionStorage.setItem("outfitlab-user", JSON.stringify(user));
+
+        originalRequest.headers.Authorization = `Bearer ${access_token}`;
+
+        processQueue(null, access_token);
+
+        // Disparar evento personalizado para actualizar AuthContext
+        window.dispatchEvent(
+          new CustomEvent("tokenRefreshed", {
+            detail: {
+              access_token,
+              refresh_token: new_refresh_token,
+              user,
+            },
+          })
+        );
+
+        isRefreshingToken = false;
+
+        return apiClient(originalRequest);
+      } catch (refreshError) {
+        processQueue(refreshError, null);
+        isRefreshingToken = false;
+        handleLogout();
+        return Promise.reject(refreshError);
+      }
+    }
+
+    // Manejo de error 500 relacionado con JWT
+    if (error.response?.status === 500) {
+      const errorMessage = error.response?.data?.message || error.message || "";
+      if (
+        errorMessage.toLowerCase().includes("jwt") ||
+        errorMessage.toLowerCase().includes("token")
+      ) {
+        handleLogout();
+      } else {
+        console.error("Server error:", error.response.status);
+      }
+    }
+
     return Promise.reject(error);
   }
 );
+
+const handleLogout = () => {
+  // Disparar evento personalizado para que AuthContext maneje el logout completo
+  window.dispatchEvent(new CustomEvent("authLogout"));
+};
 
 // Funciones de utilidad para manejo de tokens
 export const authUtils = {
@@ -106,6 +202,34 @@ export const authUtils = {
    */
   isAuthenticated: () => {
     return !!sessionStorage.getItem('access_token');
+  }
+};
+
+//Endpoints para mercado pago
+export const subscriptionAPI = {
+  /**
+   * Solicita al backend de Java que cree una Preferencia de Pago Único.
+   * @param {string} planId - El ID interno de tu plan
+   * @param {string} userEmail - Email del pagador
+   * @param {number} price - El precio del item
+   * @param {string} currency - La moneda (ej. "USD" o "ARS")
+   * @returns {Promise<string>} Retorna la URL de redirección (initPoint) de Mercado Pago.
+   */
+  createPreference: (planId, userEmail, price, currency) => {
+    const payload = {
+      planId,
+      userEmail,
+      price,
+      currency
+    };
+
+    return apiClient.post(
+      '/mp/crear-suscripcion',
+      payload
+    )
+    .then(response => {
+        return response.data.initPoint; 
+    });
   }
 };
 
