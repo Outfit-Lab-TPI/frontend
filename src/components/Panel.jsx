@@ -26,13 +26,15 @@ function Panel({
     if (!resultado?.imageUrl) return;
 
     try {
+      console.log('[Favorito][UI] Toggle combinación', {
+        imageUrl: resultado.imageUrl,
+        estadoActual: esFavorita
+      });
       const nuevoEstado = !esFavorita;
       setEsFavorita(nuevoEstado);
 
-      await toggleCombinacionFavorita(
-        resultado.imageUrl,
-        nuevoEstado
-      );
+      // No enviar boolean como callback: sólo mandamos la URL de la combinación
+      await toggleCombinacionFavorita(resultado.imageUrl);
     } catch (error) {
       console.error('Error al cambiar favorito:', error);
       setEsFavorita(!nuevoEstado);

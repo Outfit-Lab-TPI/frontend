@@ -55,18 +55,23 @@ function Header() {
 
       <div className="flex items-center gap-4">
 
-        {/* si NO hay user, no muestro nada*/}
+        {/* si NO hay user, no muestro nada */}
         {
           user && (
             <>
-              {user.role === "ADMIN" && <NotificationDropdown />}  {/* si hay user, y es ADMIN, te muestro las notif, marcas y perfil*/}
-                {/* si hay user, pero NO es admin, solo muestro marcas y perfil*/}
-              <Link to="/marcas">
-                <Button size="sm" className="bg-transparent border-white/40">
-                  Ver marcas
-                </Button>
-              </Link>
-
+              {/* ADMIN → notificaciones */}
+              {user.role === "ADMIN" && <NotificationDropdown />}
+          
+              {/* ADMIN y USER → Ver marcas */}
+              {(user.role === "ADMIN" || user.role === "USER") && (
+                <Link to="/marcas">
+                  <Button size="sm" className="bg-transparent border-white/40">
+                    Ver marcas
+                  </Button>
+                </Link>
+              )}
+        
+              {/* Todos los roles → Perfil */}
               <Link to="/perfil">
                 <div
                   className="size-10 rounded-full 
@@ -82,6 +87,7 @@ function Header() {
             </>
           )
         }
+
       </div>
     </header>
   );

@@ -8,10 +8,13 @@ export const subscriptionService = {
      * Obtiene todos los planes de suscripción disponibles
      * @returns {Promise<Array>} Array de planes con estructura: { id, planCode, name, price, feature1, feature2, feature3 }
      */
-    getAllPlans: async () => {
+    getAllPlans: async (email) => {
         try {
-            const response = await apiClient.get('/mp/subscriptions');
-            return response.data.data || [];
+            const response = await apiClient.get('/mp/subscriptions', {
+                params: email ? { email } : undefined
+            });
+            const data = response.data?.data ?? response.data;
+            return Array.isArray(data) ? data : [];
         } catch (error) {
             throw new Error(
                 error.response?.data?.error ||
@@ -23,13 +26,12 @@ export const subscriptionService = {
 
     /**
      * Obtiene la suscripción actual del usuario
-     * @param {string} email - Email del usuario
      * @returns {Promise<Object>} Objeto con: { planCode, status, usage: { combinations, favorites, models } }
      */
     getUserSubscription: async (email) => {
         try {
             const response = await apiClient.get(`/mp/user-subscription`, {
-                params: { email }
+                params: email ? { email } : undefined
             });
             return response.data;
         } catch (error) {
@@ -71,31 +73,5 @@ export const subscriptionService = {
                 'Error al crear la preferencia de pago'
             );
         }
-    },
-
-    /**
-     * Transforma un plan del backend al formato esperado por el frontend
-     * @param {Object} backendPlan - Plan del backend
-     * @returns {Object} Plan formateado para el frontend
-     */
-    transformPlanToFrontend: (backendPlan) => {
-        return {
-            id: backendPlan.planCode,
-            planCode: backendPlan.planCode,
-            name: backendPlan.name,
-            price: backendPlan.price,
-            currency: 'ARS',
-            frequency: 'mes',
-            description: backendPlan.planCode === 'free-monthly'
-                ? 'Plan gratuito para comenzar a usar Outfit Lab'
-                : 'Máxima capacidad y funciones ilimitadas para profesionales',
-            features: [
-                backendPlan.feature1,
-                backendPlan.feature2,
-                backendPlan.feature3
-            ].filter(Boolean), // Filtrar valores null/undefined
-            cardColor: backendPlan.planCode === 'free-monthly' ? '#926490' : '#E3C18A',
-            isPopular: backendPlan.planCode === 'pro-monthly'
-        };
     }
 };

@@ -1,5 +1,23 @@
 import apiClient from './api.js';
 
+const buildUpgradeError = (error, fallbackMessage) => {
+  const data = error.response?.data || {};
+  if (error.response?.status === 403 && data.upgradeRequired) {
+    const err = new Error(data.error || fallbackMessage || 'Has alcanzado el límite de tu plan');
+    err.upgradeRequired = true;
+    err.limitType = data.limitType;
+    err.currentUsage = data.currentUsage;
+    err.maxAllowed = data.maxAllowed;
+    return err;
+  }
+
+  return new Error(
+    data?.message ||
+    fallbackMessage ||
+    'Ocurrió un error al procesar la solicitud'
+  );
+};
+
 export const favoritosService = {
   // Prendas favoritas
   agregarPrendaFavorita: async (garmentCode) => {
@@ -7,10 +25,7 @@ export const favoritosService = {
       const response = await apiClient.get(`/garments/favorite/add/${garmentCode}`);
       return response.data;
     } catch (error) {
-      throw new Error(
-        error.response?.data?.message ||
-        'Error al agregar prenda a favoritos'
-      );
+      throw buildUpgradeError(error, 'Error al agregar prenda a favoritos');
     }
   },
 
@@ -58,10 +73,7 @@ export const favoritosService = {
       const response = await apiClient.get(`/combinations/favorite/add?combinationUrl=${encodedUrl}`);
       return response.data;
     } catch (error) {
-      throw new Error(
-        error.response?.data?.message ||
-        'Error al agregar combinación a favoritos'
-      );
+      throw buildUpgradeError(error, 'Error al agregar combinación a favoritos');
     }
   },
 
