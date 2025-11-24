@@ -45,8 +45,12 @@ describe('usePrendaCRUD', () => {
       const mockData = {
         nombre: 'Camiseta Nike',
         tipo: 'SUPERIOR',
+        color: 'Rojo',
+        evento: 'Casual',
         imagen: [new File([''], 'test.jpg', { type: 'image/jpeg' })]
       }
+
+      prendaService.crearPrenda.mockResolvedValueOnce({ success: true })
 
       const { result } = renderHook(() => usePrendaCRUD())
 
@@ -59,10 +63,9 @@ describe('usePrendaCRUD', () => {
       // then
       expect(response).toBe(true)
       expect(result.current.isSubmitting).toBe(false)
-      expect(console.log).toHaveBeenCalledWith(
-        'Creando prenda:',
-        { codigoMarca: 'puma', nombre: 'Camiseta Nike', tipo: 'SUPERIOR' }
-      )
+      expect(prendaService.crearPrenda).toHaveBeenCalled()
+      const callArgs = prendaService.crearPrenda.mock.calls[0][0]
+      expect(callArgs).toBeInstanceOf(FormData)
     })
 
     it('debe manejar error cuando no se proporciona imagen', async () => {
@@ -323,6 +326,7 @@ describe('usePrendaCRUD', () => {
     it('debe eliminar una prenda exitosamente', async () => {
       // given
       const mockId = 'ABC123'
+      prendaService.eliminarPrenda.mockResolvedValueOnce({ success: true })
 
       const { result } = renderHook(() => usePrendaCRUD())
 
@@ -334,10 +338,7 @@ describe('usePrendaCRUD', () => {
 
       // then
       expect(response).toBe(true)
-      expect(console.log).toHaveBeenCalledWith(
-        'Eliminando prenda:',
-        { id: 'ABC123' }
-      )
+      expect(prendaService.eliminarPrenda).toHaveBeenCalledWith('ABC123')
     })
 
     /*
