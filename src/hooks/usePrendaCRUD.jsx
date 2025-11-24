@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { prendaService } from '../services/prendaService'
@@ -8,6 +8,54 @@ export function usePrendaCRUD() {
 
   const form = useForm({ mode: 'onChange' })
   const { register, handleSubmit, formState: { errors }, setError, watch, reset, setValue } = form
+
+
+
+
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------------
+// --- NUEVO: estados para colores y ocasiones ---
+  const [colores, setColores] = useState([]);
+  const [ocaciones, setOcaciones] = useState([]);
+  const [climas, setClimas] = useState([]);
+
+  const fetchFiltros = useCallback(async () => {
+    try {
+      const { colores, ocasiones, climas } = await prendaService.getFiltros();
+
+      setColores(colores || []);
+      setOcaciones(ocasiones || []);
+      setClimas(climas || []);
+    } catch (error) {
+      console.error("Error cargando filtros:", error);
+      setColores([]);
+      setOcaciones([]);
+      setClimas([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchFiltros();
+  }, [fetchFiltros]);
+  //----------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const crearPrenda = useCallback(async (data) => {
     if (!data.imagen || !data.imagen[0]) {
@@ -62,8 +110,10 @@ export function usePrendaCRUD() {
       const formData = new FormData()
       formData.append('nombre', data.nombre)
       formData.append('tipo', data.tipo)
-      formData.append('color', data.color)
-      formData.append('evento', data.evento)
+      formData.append('colorNombre', data.color)     //ojo q mando los ids de los records de la bdd
+      formData.append('ocasionesNombres', data.ocacion) //ojo q mando los ids de los records de la bdd
+      formData.append('climaNombre', data.clima)     //ojo q mando los ids de los records de la bdd
+
       if (data.imagen && data.imagen[0]) {
         formData.append('imagen', data.imagen[0])
       }
@@ -105,5 +155,8 @@ export function usePrendaCRUD() {
     crearPrenda,
     editarPrenda,
     eliminarPrenda,
+    colores,
+    ocaciones,
+    climas,
   }
 }
