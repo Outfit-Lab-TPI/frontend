@@ -6,7 +6,12 @@ export const useCombinacion = () => {
   const [error, setError] = useState(null);
   const [resultado, setResultado] = useState(null);
 
-  const combinarPrendas = async (esHombre, prendaSuperior, prendaInferior, usuario = null) => {
+  const combinarPrendas = async (
+    esHombre,
+    prendaSuperior,
+    prendaInferior,
+    usuario = null
+  ) => {
     if (!validarCombinacion(esHombre, prendaSuperior, prendaInferior)) {
       return null;
     }
@@ -22,15 +27,25 @@ export const useCombinacion = () => {
         esHombre,
         prendaSuperior.imagenUrl,
         prendaInferior.imagenUrl,
-        usuario  // Pasar información del usuario para avatar personalizado
+        usuario
       );
-
       setResultado(response);
+
+      if (response) {
+        await combinacionService.registerCombinationAttempt({
+          userEmail: usuario?.email || null,
+          prendaSupCode: prendaSuperior.garmentCode,
+          prendaInfCode: prendaInferior.garmentCode,
+          imageUrl: response.imageUrl,
+        });
+      }
+
       return response;
     } catch (err) {
-      const errorMessage = err.response?.data?.message ||
-                          err.message ||
-                          'Error al combinar las prendas';
+      const errorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        "Error al combinar las prendas";
       setError(errorMessage);
       return null;
     } finally {
@@ -39,24 +54,23 @@ export const useCombinacion = () => {
   };
 
   const validarCombinacion = (esHombre, prendaSuperior, prendaInferior) => {
-    if (typeof esHombre !== 'boolean') {
-      setError('El tipo de avatar debe ser especificado');
+    if (typeof esHombre !== "boolean") {
+      setError("El tipo de avatar debe ser especificado");
       return false;
     }
 
     if (!prendaSuperior?.imagenUrl) {
-      setError('Debe seleccionar una prenda superior');
+      setError("Debe seleccionar una prenda superior");
       return false;
     }
 
     if (!prendaInferior?.imagenUrl) {
-      setError('Debe seleccionar una prenda inferior');
+      setError("Debe seleccionar una prenda inferior");
       return false;
     }
 
     return true;
   };
-
 
   const limpiarResultado = () => {
     setResultado(null);
