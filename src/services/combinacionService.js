@@ -47,7 +47,6 @@ export const combinacionService = {
     userEmail,
     prendaSupCode,
     prendaInfCode,
-    marcaId,
     imageUrl,
   }) => {
     try {
@@ -55,7 +54,6 @@ export const combinacionService = {
         userEmail,
         prendaSupCode,
         prendaInfCode,
-        marcaId,
         imageUrl,
       });
       return response.data;

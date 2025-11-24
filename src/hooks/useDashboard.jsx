@@ -1,18 +1,32 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "@/services/api.js";
 
 export function useTopPrendas(topN = 5, brandCode = "") {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-    axios
-      .get("/api/dashboard/top-prendas", { params: { topN, brandCode } })
-      .then((res) => setData(res.data))
-      .catch((err) => setError(err))
-      .finally(() => setLoading(false));
+    const fetchTopPrendas = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await apiClient.get("/dashboard/top-prendas", {
+          params: { topN, brandCode },
+        });
+        setData(res.data);
+      } catch (err) {
+        setError(
+          err.response?.data?.message ||
+            err.message ||
+            "Error cargando top prendas"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTopPrendas();
   }, [topN, brandCode]);
 
   return { data, loading, error };
@@ -20,16 +34,28 @@ export function useTopPrendas(topN = 5, brandCode = "") {
 
 export function useActividadPorDias() {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-    axios
-      .get("/api/dashboard/actividad-por-dias")
-      .then((res) => setData(res.data))
-      .catch((err) => setError(err))
-      .finally(() => setLoading(false));
+    const fetchActividad = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await apiClient.get("/dashboard/actividad-por-dias");
+        setData(res.data);
+      } catch (err) {
+        setError(
+          err.response?.data?.message ||
+            err.message ||
+            "Error cargando actividad"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActividad();
   }, []);
 
   return { data, loading, error };
@@ -37,16 +63,30 @@ export function useActividadPorDias() {
 
 export function useTopCombos(topN = 5, brandCode = "") {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-    axios
-      .get("/api/dashboard/top-combos", { params: { topN, brandCode } })
-      .then((res) => setData(res.data))
-      .catch((err) => setError(err))
-      .finally(() => setLoading(false));
+    const fetchTopCombos = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await apiClient.get("/dashboard/top-combos", {
+          params: { topN, brandCode },
+        });
+        setData(res.data);
+      } catch (err) {
+        setError(
+          err.response?.data?.message ||
+            err.message ||
+            "Error cargando top combos"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTopCombos();
   }, [topN, brandCode]);
 
   return { data, loading, error };
@@ -54,16 +94,28 @@ export function useTopCombos(topN = 5, brandCode = "") {
 
 export function useColorConversion() {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-    axios
-      .get("/api/dashboard/color-conversion")
-      .then((res) => setData(res.data))
-      .catch((err) => setError(err))
-      .finally(() => setLoading(false));
+    const fetchColorConversion = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await apiClient.get("/dashboard/color-conversion");
+        setData(res.data);
+      } catch (err) {
+        setError(
+          err.response?.data?.message ||
+            err.message ||
+            "Error cargando color conversion"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchColorConversion();
   }, []);
 
   return { data, loading, error };

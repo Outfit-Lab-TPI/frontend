@@ -1,4 +1,11 @@
-import React, { useState, useMemo } from "react";
+import {
+  useActividadPorDias,
+  useColorConversion,
+  useTopCombos,
+  useTopPrendas,
+} from "@/hooks/useDashboard";
+import React, { useState, useMemo, useEffect } from "react";
+import { COLOR_MAP } from "@/lib/constants";
 import {
   BarChart,
   Bar,
@@ -13,16 +20,10 @@ import {
   Line,
   AreaChart,
   Area,
-  RadarChart,
-  Radar,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
   CartesianGrid,
-  Legend,
 } from "recharts";
 
-function Tabs({ value, onChange, children }) {
+function Tabs({ children }) {
   return <div>{children}</div>;
 }
 function TabsList({ children }) {
@@ -41,174 +42,82 @@ function TabsTrigger({ value, active, onClick, disabled, children }) {
     </button>
   );
 }
-function TabsContent({ value, active, children }) {
+function TabsContent({ active, children }) {
   return active ? <div>{children}</div> : null;
 }
-
-// ---------------- MOCK DATA (realista - por marca) ----------------
-const STYLES = ["deportivo", "casual", "oversize", "urbano", "elegante"];
-
-// generate 15 garments mock
-const GARMENTS = [
-  "Tech Hoodie",
-  "Air Max Tee",
-  "Club Jogger",
-  "Dri-FIT Elite",
-  "Therma Hoodie",
-  "Pro Compression",
-  "Court Shorts",
-  "Windrunner",
-  "ACG Fleece",
-  "Air Pants",
-  "Court Jacket",
-  "Runner Tee",
-  "Training Vest",
-  "Cargo Pants",
-  "Light Wind Tee",
-].map((name, i) => {
-  const estilo = STYLES[i % STYLES.length];
-  const pruebas = Math.floor(40 + Math.random() * 220);
-  const favoritos = Math.floor(pruebas * (0.08 + Math.random() * 0.35));
-  // daily series last 30 days
-  const daily = Array.from({ length: 30 }, (_, d) => ({
-    dia: d + 1,
-    pruebas: Math.max(
-      0,
-      Math.round(
-        (pruebas / 30) *
-          (0.6 + Math.random() * 1.4) *
-          (1 + Math.sin((d + i) / 6) * 0.2)
-      )
-    ),
-  }));
-  return {
-    id: `g_${i}`,
-    nombre: `${name}`,
-    estilo,
-    color: ["negro", "blanco", "gris", "azul", "rojo"][i % 5],
-    pruebas,
-    favoritos,
-    daily,
-    imagenUrl: `https://via.placeholder.com/64?text=${encodeURIComponent(
-      name.split(" ")[0]
-    )}`,
-    descripcion: `${name} — estilo ${estilo}`,
-  };
-});
 
 const COLORS = ["#8b5cf6", "#ec4899", "#22d3ee", "#fbbf24", "#4ade80"];
 
 export default function BrandDashboard() {
   const [tab, setTab] = useState("free");
   const [membership] = useState("premium");
+  const [selectedGarment, setSelectedGarment] = useState({
+    daily: [],
+  });
   const isPremium = membership === "premium";
 
-  // ------------- FREE METRICS DATA -------------
-  // 1) Prendas más probadas (top 10)
-  const topPruebas = useMemo(() => {
-    return [...GARMENTS].sort((a, b) => b.pruebas - a.pruebas).slice(0, 10);
-  }, []);
+  const { data: topPrendasData, loading: loadingPrendas } = useTopPrendas(
+    10,
+    "puma"
+  );
+  const { data: actividadData, loading: loadingActividad } =
+    useActividadPorDias();
+  const { data: topCombosData, loading: loadingCombos } = useTopCombos(
+    10,
+    "puma"
+  );
+  const { data: colorConvData, loading: loadingColor } = useColorConversion();
 
-  const [selectedGarment, setSelectedGarment] = useState(topPruebas[0]);
-  // 2) Estilos más usados (porcentaje)
-  const estilosMap = useMemo(() => {
-    const m = {};
-    GARMENTS.forEach((g) => (m[g.estilo] = (m[g.estilo] || 0) + g.pruebas));
-    const total = Object.values(m).reduce((a, b) => a + b, 0) || 1;
-    return Object.entries(m).map(([estilo, val], i) => ({
-      estilo,
+  const topPruebas = useMemo(() => {
+    if (!topPrendasData) return [];
+    return topPrendasData
+      .sort((a, b) => b.pruebas - a.pruebas)
+      .slice(0, 10)
+      .map((g) => ({
+        ...g,
+        descripcion: g.nombre,
+      }));
+  }, [topPrendasData]);
+
+  useEffect(() => {
+    if (topPruebas.length > 0) setSelectedGarment(topPruebas[0]);
+  }, [topPruebas]);
+
+  const coloresMap = useMemo(() => {
+    if (!colorConvData) return [];
+    const map = {};
+    colorConvData.forEach(
+      (g) => (map[g.color] = (map[g.color] || 0) + g.pruebas)
+    );
+    const total = Object.values(map).reduce((a, b) => a + b, 0) || 1;
+    return Object.entries(map).map(([color, val]) => ({
+      color,
       val,
       pct: +((val / total) * 100).toFixed(1),
-      color: COLORS[i % COLORS.length],
     }));
-  }, []);
+  }, [colorConvData]);
 
-  // 3) Evolución: combinaciones probadas por día (sum across garments daily)
-  const evolucion30 = useMemo(() => {
-    const arr = Array.from({ length: 30 }, (_, d) => ({
-      dia: `${d + 1}`,
-      pruebas: 0,
+  const actividadDiaria = useMemo(() => {
+    if (!actividadData) return [];
+    return actividadData.map((d) => ({
+      dia: `${d.dia}`,
+      pruebas: d.pruebas,
     }));
-    GARMENTS.forEach((g) =>
-      g.daily.forEach((dd, idx) => (arr[idx].pruebas += dd.pruebas))
-    );
-    return arr.map((x) => ({ ...x }));
-  }, []);
+  }, [actividadData]);
 
-  // 4) Combinaciones más populares (mock many combos)
   const combos = useMemo(() => {
-    const tops = GARMENTS.filter(
-      (g) =>
-        g.nombre.toLowerCase().includes("tee") ||
-        g.nombre.toLowerCase().includes("hoodie") ||
-        g.nombre.toLowerCase().includes("jacket") ||
-        g.nombre.toLowerCase().includes("vest")
-    ).slice(0, 8);
-    const bottoms = GARMENTS.filter(
-      (g) =>
-        g.nombre.toLowerCase().includes("jogger") ||
-        g.nombre.toLowerCase().includes("pants") ||
-        g.nombre.toLowerCase().includes("shorts")
-    ).slice(0, 8);
-
-    const list = [];
-    tops.forEach((t) =>
-      bottoms.forEach((b) => {
-        const score = Math.floor(
-          20 + Math.random() * Math.min(t.pruebas, b.pruebas)
-        );
-        list.push({
-          superior: t.nombre,
-          inferior: b.nombre,
-          pruebas: score,
-          thumbs: Math.floor(score * (0.05 + Math.random() * 0.4)),
-          imgSup: t.imagenUrl,
-          imgInf: b.imagenUrl,
-        });
-      })
-    );
-    return list.sort((a, b) => b.pruebas - a.pruebas).slice(0, 12);
-  }, []);
-
-  // 5) Tendencia por prenda (daily series provided in GARMENTS)
-  const tendenciaTop = useMemo(() => {
-    return topPruebas
-      .slice(0, 5)
-      .map((g) => ({ nombre: g.nombre, data: g.daily }));
-  }, [topPruebas]);
-
-  // 6) Pruebas vs Favoritos (compare)
-  const vsData = useMemo(() => {
-    return topPruebas.map((g) => ({
-      nombre: g.nombre,
-      pruebas: g.pruebas,
-      favoritos: g.favoritos,
+    if (!topCombosData) return [];
+    return topCombosData.map((c) => ({
+      superior: c.superior,
+      inferior: c.inferior,
+      imgSup: c.imgSup,
+      imgInf: c.imgInf,
+      pruebas: c.pruebas,
+      thumbs: c.thumbs || 0,
     }));
-  }, [topPruebas]);
+  }, [topCombosData]);
 
-  // 7) Estilos con mayor tasa de conversión a favoritos
-  const estiloConversion = useMemo(() => {
-    const m = {};
-    GARMENTS.forEach((g) => {
-      if (!m[g.estilo]) m[g.estilo] = { pruebas: 0, favoritos: 0 };
-      m[g.estilo].pruebas += g.pruebas;
-      m[g.estilo].favoritos += g.favoritos;
-    });
-    return Object.entries(m)
-      .map(([estilo, vals], i) => ({
-        estilo,
-        conversion: +(
-          (vals.favoritos / Math.max(vals.pruebas, 1)) *
-          100
-        ).toFixed(1),
-        pruebas: vals.pruebas,
-        favoritos: vals.favoritos,
-        color: COLORS[i % COLORS.length],
-      }))
-      .sort((a, b) => b.conversion - a.conversion);
-  }, []);
-
-  function ItemList({ items, onSelect }) {
+  function ItemList({ items }) {
     return (
       <div className="mt-3 space-y-2 max-h-72 overflow-auto">
         {items.map((it) => (
@@ -231,18 +140,32 @@ export default function BrandDashboard() {
   }
 
   const tendenciaSingle = useMemo(() => {
-    if (!selectedGarment) return [];
+    if (!selectedGarment || !selectedGarment.daily) return [];
     return selectedGarment.daily.map((d, i) => ({
       dia: `${i + 1}`,
       pruebas: d.pruebas,
     }));
   }, [selectedGarment]);
 
+  if (loadingPrendas || loadingActividad || loadingCombos || loadingColor) {
+    return (
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+        <div className="relative w-24 h-24">
+          <div className="absolute top-0 left-0 w-24 h-24 border-4 border-gray-700 border-t-purple-500 rounded-full animate-spin"></div>
+          <div className="absolute top-0 left-0 w-24 h-24 border-4 border-gray-700 border-t-pink-400 rounded-full animate-spin [animation-delay:0.2s]"></div>
+        </div>
+        <div className="text-gray-300 text-lg font-medium">
+          Cargando métricas...
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen p-6 text-white">
       <div className="max-w-7xl mx-auto">
         <header className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">Brand Dashboard — Nike</h1>
+          <h1 className="text-2xl font-semibold">Dashboard — Puma</h1>
           <div className="text-sm text-gray-300">
             Membresía:{" "}
             <span className="font-medium text-white">{membership}</span>
@@ -303,23 +226,28 @@ export default function BrandDashboard() {
               {/* Estilos (Pie) */}
               <div className="bg-gray-900 p-4 rounded-lg border border-gray-800">
                 <div className="mb-2">
-                  <h2 className="text-lg font-medium">Estilos más usados</h2>
+                  <h2 className="text-lg font-medium">Colores más usados</h2>
                   <div className="text-xs text-gray-400">
-                    Distribución por estilo (últimos 30 días)
+                    Distribución por color (últimos 30 días)
                   </div>
                 </div>
                 <div className="h-72">
                   <ResponsiveContainer width="100%" height="65%">
                     <PieChart>
                       <Pie
-                        data={estilosMap}
+                        data={coloresMap}
+                        fontSize={12}
+                        fontWeight={600}
                         dataKey="val"
-                        nameKey="estilo"
+                        nameKey="color"
                         outerRadius={80}
-                        label={(entry) => `${entry.estilo} (${entry.pct}%)`}
+                        label={(entry) => `${entry.color} (${entry.pct}%)`}
                       >
-                        {estilosMap.map((e, i) => (
-                          <Cell key={i} fill={e.color} />
+                        {coloresMap.map((e) => (
+                          <Cell
+                            key={e.color}
+                            fill={COLOR_MAP[e.color.toUpperCase()] || COLORS[0]}
+                          />
                         ))}
                       </Pie>
                       <Tooltip />
@@ -327,22 +255,22 @@ export default function BrandDashboard() {
                   </ResponsiveContainer>
 
                   <div className="mt-3 text-sm">
-                    {estilosMap.map((e) => (
+                    {coloresMap.map((e) => (
                       <div
-                        key={e.estilo}
-                        className="flex items-center gap-3 text-gray-200"
+                        key={e.color}
+                        className="flex ml-20 items-center gap-3 text-gray-200"
                       >
                         <span
                           style={{
                             width: 12,
                             height: 12,
-                            background: e.color,
+                            background: COLOR_MAP[e.color],
                             display: "inline-block",
                             borderRadius: 3,
                           }}
                         />
                         <div className="ml-2">
-                          {e.estilo} — {e.pct}% ({e.val} pruebas)
+                          {e.color} — {e.pct}% ({e.val} pruebas)
                         </div>
                       </div>
                     ))}
@@ -362,7 +290,7 @@ export default function BrandDashboard() {
                 </div>
                 <div style={{ height: 280 }}>
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={evolucion30}>
+                    <AreaChart data={actividadDiaria}>
                       <CartesianGrid stroke="#111" />
                       <XAxis dataKey="dia" tick={{ fill: "#ddd" }} />
                       <YAxis tick={{ fill: "#ddd" }} />
@@ -450,7 +378,7 @@ export default function BrandDashboard() {
                 <div className="bg-gray-900 p-4 rounded-lg border border-gray-800">
                   <div className="mb-2">
                     <h2 className="text-lg font-medium">
-                      Tendencia por prenda (top 5)
+                      Tendencia por prenda
                     </h2>
                     <div className="text-xs text-gray-400">
                       Pruebas diarias — detectar moda / caída
@@ -459,11 +387,11 @@ export default function BrandDashboard() {
                   <select
                     className="bg-gray-800 text-white p-1 rounded mb-2"
                     value={selectedGarment?.id}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setSelectedGarment(
-                        topPruebas.find((g) => g.id === e.target.value)
-                      )
-                    }
+                        topPruebas.find((g) => g.id == e.target.value)
+                      );
+                    }}
                   >
                     {topPruebas.map((g) => (
                       <option key={g.id} value={g.id}>
@@ -473,7 +401,7 @@ export default function BrandDashboard() {
                   </select>
                   <div style={{ height: 300 }}>
                     <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={tendenciaSingle}>
+                      <LineChart data={tendenciaSingle || []}>
                         <CartesianGrid stroke="#111" />
                         <XAxis dataKey="dia" tick={{ fill: "#ddd" }} />
                         <YAxis tick={{ fill: "#ddd" }} />
@@ -488,89 +416,6 @@ export default function BrandDashboard() {
                     </ResponsiveContainer>
                   </div>
                 </div>
-
-                {/* Pruebas vs Favoritos */}
-                <div className="col-span-3 bg-gray-900 p-4 rounded-lg border border-gray-800">
-                  <div className="mb-2">
-                    <h2 className="text-lg font-medium">
-                      Pruebas vs Favoritos
-                    </h2>
-                    <div className="text-xs text-gray-400">
-                      Comparativa para detectar productos que atraen pero no se
-                      guardan
-                    </div>
-                  </div>
-                  <div style={{ height: 320 }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={vsData}>
-                        <CartesianGrid stroke="#111" />
-                        <XAxis dataKey="nombre" tick={{ fill: "#ddd" }} />
-                        <YAxis tick={{ fill: "#ddd" }} />
-                        <Tooltip />
-                        <Legend />
-                        <Bar
-                          dataKey="pruebas"
-                          name="Pruebas"
-                          fill={COLORS[0]}
-                        />
-                        <Bar
-                          dataKey="favoritos"
-                          name="Favoritos"
-                          fill={COLORS[4]}
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-
-                {/* Estilos conversión (premium extra) */}
-                <div className="col-span-3 bg-gray-900 p-4 rounded-lg border border-gray-800">
-                  <div className="mb-2">
-                    <h2 className="text-lg font-medium">
-                      Estilos — tasa de conversión a favoritos
-                    </h2>
-                    <div className="text-xs text-gray-400">
-                      Qué estilos convierten más (favoritos / pruebas)
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {estiloConversion.map((e, i) => (
-                      <div key={e.estilo} className="bg-gray-800 p-3 rounded">
-                        <div className="flex items-center justify-between">
-                          <div className="text-sm font-medium">{e.estilo}</div>
-                          <div className="text-xs text-gray-300">
-                            {e.conversion}%
-                          </div>
-                        </div>
-                        <div className="mt-2 h-24">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                              <Pie
-                                data={[
-                                  { name: "favoritos", value: e.favoritos },
-                                  {
-                                    name: "resto",
-                                    value: e.pruebas - e.favoritos,
-                                  },
-                                ]}
-                                dataKey="value"
-                                nameKey="name"
-                                innerRadius={20}
-                                outerRadius={40}
-                              >
-                                <Cell fill={e.color} />
-                                <Cell fill="#222" />
-                              </Pie>
-                            </PieChart>
-                          </ResponsiveContainer>
-                        </div>
-                        <div className="mt-2 text-xs text-gray-300">
-                          {e.favoritos} favoritos · {e.pruebas} pruebas
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
               </div>
             ) : (
               <div className="mt-8 text-center text-gray-300">
@@ -582,42 +427,4 @@ export default function BrandDashboard() {
       </div>
     </div>
   );
-
-  // render multiple Line components for tendenciaTop
-  function tendenzaLines(list) {
-    // reconstruct combined x-axis: day 1..30
-    const merged = Array.from({ length: 30 }, (_, i) => ({ dia: i + 1 }));
-    const datasets = list.map((g, idx) => ({
-      key: g.nombre,
-      color: COLORS[idx % COLORS.length],
-      values: g.data,
-    }));
-
-    // convert to format Recharts expects: array of points with each key
-    const combined = merged.map((p, i) => {
-      const obj = { dia: p.dia };
-      datasets.forEach((ds) => (obj[ds.key] = ds.values[i].pruebas));
-      return obj;
-    });
-
-    return datasets.map((ds) => (
-      <Line
-        key={ds.key}
-        type="monotone"
-        dataKey={ds.key}
-        stroke={ds.color}
-        dot={false}
-      />
-    ));
-  }
-
-  function mergeTendencia(list) {
-    const merged = Array.from({ length: 30 }, (_, i) => ({ dia: `${i + 1}` }));
-    list.forEach((g) => {
-      g.data.forEach((d, idx) => {
-        merged[idx][g.nombre] = d.pruebas;
-      });
-    });
-    return merged;
-  }
 }
