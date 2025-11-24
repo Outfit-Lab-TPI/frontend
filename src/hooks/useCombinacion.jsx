@@ -5,6 +5,7 @@ export const useCombinacion = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [resultado, setResultado] = useState(null);
+  const [upgradeInfo, setUpgradeInfo] = useState(null);
 
   const combinarPrendas = async (avatarType, prendaSuperior, prendaInferior, usuario = null) => {
     if (!validarCombinacion(avatarType, prendaSuperior, prendaInferior, usuario)) {
@@ -14,6 +15,7 @@ export const useCombinacion = () => {
     setLoading(true);
     setError(null);
     setResultado(null);
+    setUpgradeInfo(null);
 
     try {
       let response;
@@ -36,6 +38,38 @@ export const useCombinacion = () => {
       return response;
     } catch (err) {
       let errorMessage;
+
+      // Manejo explícito de 403 aunque no venga upgradeRequired
+      if (err.response?.status === 403) {
+        const data = err.response?.data || {};
+        errorMessage =
+          data.error ||
+          data.message ||
+          err.message ||
+          'Has alcanzado el límite de tu plan';
+
+        setUpgradeInfo({
+          message: errorMessage,
+          limitType: data.limitType || 'combinaciones',
+          currentUsage: data.currentUsage,
+          maxAllowed: data.maxAllowed
+        });
+        setError(errorMessage);
+        return null;
+      }
+
+      if (err.upgradeRequired) {
+        const { currentUsage, maxAllowed, limitType } = err;
+        errorMessage = `${err.message || 'Límite alcanzado'} (${currentUsage}/${maxAllowed} ${limitType || ''})`;
+        setError(errorMessage);
+        setUpgradeInfo({
+          message: err.message || 'Has alcanzado el límite de tu plan',
+          limitType,
+          currentUsage,
+          maxAllowed
+        });
+        return null;
+      }
 
       // Manejar errores específicos para avatares personalizados
       if (avatarType === 'custom' && (err.response?.status === 400 || err.response?.status === 404)) {
@@ -82,7 +116,10 @@ export const useCombinacion = () => {
   const limpiarResultado = () => {
     setResultado(null);
     setError(null);
+    setUpgradeInfo(null);
   };
+
+  const limpiarUpgrade = () => setUpgradeInfo(null);
 
   return {
     combinarPrendas,
@@ -91,5 +128,7 @@ export const useCombinacion = () => {
     resultado,
     limpiarResultado,
     setResultado,
+    upgradeInfo,
+    limpiarUpgrade,
   };
 };

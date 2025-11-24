@@ -78,10 +78,13 @@ const SubscriptionPage = () => {
             <div className="text-center space-y-4">
                 <h1>Elige tu Plan</h1>
 
-                {userSubscription && (
+                {user?.role === 'USER' && userSubscription && (
                     <div className="max-w-2xl mx-auto bg-[#230636]/30 border border-[#926490]/30 rounded-lg p-4">
                         <p className="text-[#E3C18A] font-semibold">
-                            Plan Actual: {userSubscription.planCode === 'free-monthly' ? 'FREE' : 'PRO'}
+                            Plan Actual: {(() => {
+                                const planActual = plans.find(p => p.planCode === userSubscription.planCode);
+                                return planActual?.name || userSubscription.planCode || '-';
+                            })()}
                         </p>
                         <p className="text-[#FFFCF5]/70 text-sm mt-2">
                             Estado: {userSubscription.status === 'ACTIVE' ? 'Activo' : userSubscription.status}
@@ -116,16 +119,19 @@ const SubscriptionPage = () => {
             </div>
 
             <div className="flex flex-col md:flex-row justify-center items-stretch mt-20 space-y-8 md:space-y-0 md:space-x-10 max-w-6xl mx-auto">
-                {plans.map(plan => (
-                    <SubscriptionCard
-                        key={plan.id}
-                        subscription={plan}
-                        onSubscribe={handleSubscribe}
-                        customColor={plan.cardColor}
-                        isPopular={plan.isPopular}
-                        isCurrentPlan={userSubscription?.planCode === plan.planCode && userSubscription?.status === 'ACTIVE'}
-                    />
-                ))}
+                {plans.map(plan => {
+                    const isCurrent = userSubscription?.planCode === plan.planCode && userSubscription?.status === 'ACTIVE';
+                    return (
+                        <SubscriptionCard
+                            key={plan.id}
+                            subscription={plan}
+                            onSubscribe={handleSubscribe}
+                            customColor={plan.cardColor}
+                            isPopular={plan.isPopular}
+                            isCurrentPlan={isCurrent}
+                        />
+                    );
+                })}
             </div>
 
             {plans.length === 0 && !subscriptionLoading && !error && (
@@ -138,7 +144,4 @@ const SubscriptionPage = () => {
 };
 
 export default SubscriptionPage;
-
-
-
 

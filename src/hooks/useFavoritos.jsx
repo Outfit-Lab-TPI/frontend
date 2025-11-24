@@ -5,6 +5,20 @@ export const useFavoritos = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const manejarLimite = (err) => {
+    if (err.upgradeRequired) {
+      const detalle = err.currentUsage !== undefined && err.maxAllowed !== undefined
+        ? ` (${err.currentUsage}/${err.maxAllowed})`
+        : '';
+      const mensaje = err.message || 'Has alcanzado el límite de tu plan';
+      setError(`${mensaje}${detalle}`);
+      // Notificación simple para que el usuario reciba feedback inmediato
+      alert(`${mensaje}${detalle}. Actualiza tu plan para continuar.`);
+      return true;
+    }
+    return false;
+  };
+
   const togglePrendaFavorita = async (codigoPrenda, esFavorita, onSuccess) => {
     try {
       setLoading(true);
@@ -18,6 +32,7 @@ export const useFavoritos = () => {
 
       return resultado;
     } catch (err) {
+      if (manejarLimite(err)) throw err;
       setError(err.message);
       throw err;
     } finally {
@@ -29,6 +44,9 @@ export const useFavoritos = () => {
     try {
       setLoading(true);
       setError(null);
+      // Debug: revisar qué usuario/token tenemos antes de llamar al backend
+      const rawUser = localStorage.getItem('outfitlab-user');
+      console.log('[Favorito][Hook] Usuario almacenado localmente:', rawUser);
       const resultado = await favoritosService.toggleCombinacionFavorita(codigoCombinacion);
 
       if (onSuccess) {
@@ -37,6 +55,7 @@ export const useFavoritos = () => {
 
       return resultado;
     } catch (err) {
+      if (manejarLimite(err)) throw err;
       setError(err.message);
       throw err;
     } finally {

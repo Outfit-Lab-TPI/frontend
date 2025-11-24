@@ -45,6 +45,8 @@ export default function Home() {
     error: errorCombinacion,
     resultado,
     limpiarResultado,
+    upgradeInfo: upgradeCombinacion,
+    limpiarUpgrade,
   } = useCombinacion();
   const {
     generarModelo3D,
@@ -309,6 +311,8 @@ export default function Home() {
         modeloUrl={modeloUrl}
         loadingModelo3D={loadingModelo3D}
         handleGenerarModelo3D={handleGenerarModelo3D}
+        upgradeCombinacion={upgradeCombinacion}
+        onCloseUpgrade={limpiarUpgrade}
         avatarType={avatarType}
         onAvatarTypeChange={handleAvatarTypeChange}
         user={user}
