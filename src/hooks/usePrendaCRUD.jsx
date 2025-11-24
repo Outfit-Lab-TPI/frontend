@@ -73,9 +73,18 @@ export function usePrendaCRUD() {
       formData.append('codigoMarca', 'puma') // TODO: obtener del auth context
       formData.append('nombre', data.nombre)
       formData.append('tipo', data.tipo)
-      formData.append('color', data.color)
-      formData.append('evento', data.evento)
+      formData.append('colorNombre', data.color)
+      formData.append('ocasionesNombres', data.ocacion)
+      formData.append('climaNombre', data.clima)
       formData.append('imagen', data.imagen[0])
+
+
+      console.log('codigoMarca', 'puma') // TODO: obtener del auth context
+      console.log('nombre', data.nombre)
+      console.log('tipo', data.tipo)
+      console.log('colorNombre', data.color)
+      console.log('ocasionesNombres', data.ocacion)
+      console.log('climaNombre', data.clima)
 
       const response = await prendaService.crearPrenda(formData)
       toast.success('Prenda creada exitosamente')
@@ -110,9 +119,9 @@ export function usePrendaCRUD() {
       const formData = new FormData()
       formData.append('nombre', data.nombre)
       formData.append('tipo', data.tipo)
-      formData.append('colorNombre', data.color)     //ojo q mando los ids de los records de la bdd
-      formData.append('ocasionesNombres', data.ocacion) //ojo q mando los ids de los records de la bdd
-      formData.append('climaNombre', data.clima)     //ojo q mando los ids de los records de la bdd
+      formData.append('colorNombre', data.color)
+      formData.append('ocasionesNombres', data.ocacion)
+      formData.append('climaNombre', data.clima)
 
       if (data.imagen && data.imagen[0]) {
         formData.append('imagen', data.imagen[0])
