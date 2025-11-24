@@ -130,14 +130,14 @@ export const usePerfil = (onSuccess) => {
       updateUser({
         name: response.user.name ?? user.name,
         email: response.user.email ?? user.email,
-        lastName: response.user.lastname ?? user.lastName,
+        lastName: response.user.lastName ?? user.lastName,
         userImg: response.user.userImg ?? user.userImg,
       });
       setSelectedImage(response.user.userImg);
 
       reset({
         name: response.user.name,
-        lastName: response.user.lastname,
+        lastName: response.user.lastName,
         email: response.user.email,
         password: '',
         confirmPassword: ''
