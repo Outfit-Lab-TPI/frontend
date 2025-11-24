@@ -7,8 +7,16 @@ export const useCombinacion = () => {
   const [resultado, setResultado] = useState(null);
   const [upgradeInfo, setUpgradeInfo] = useState(null);
 
-  const combinarPrendas = async (avatarType, prendaSuperior, prendaInferior, usuario = null) => {
-    if (!validarCombinacion(avatarType, prendaSuperior, prendaInferior, usuario)) return null
+  const combinarPrendas = async (
+    avatarType,
+    prendaSuperior,
+    prendaInferior,
+    usuario = null
+  ) => {
+    if (
+      !validarCombinacion(avatarType, prendaSuperior, prendaInferior, usuario)
+    )
+      return null;
 
     setLoading(true);
     setError(null);
@@ -22,15 +30,27 @@ export const useCombinacion = () => {
         avatarType,
         prendaSuperior.imagenUrl,
         prendaInferior.imagenUrl,
-        usuario  // Pasar información del usuario para avatar personalizado
+        usuario
       );
-
       setResultado(response);
 
       // Si se usó fallback, mostrar mensaje informativo
       if (response.usedFallback && response.fallbackMessage) {
         // El error será más informativo que un error real
         setError(`ℹ️ ${response.fallbackMessage}`);
+      }
+
+      if (response) {
+        try {
+          await combinacionService.registerCombinationAttempt({
+            userEmail: usuario?.email || null,
+            prendaSupCode: prendaSuperior.garmentCode,
+            prendaInfCode: prendaInferior.garmentCode,
+            imageUrl: response.imageUrl,
+          });
+        } catch (error) {
+          console.error("Error registrando intento de combinación:", error);
+        }
       }
 
       return response;
@@ -70,12 +90,17 @@ export const useCombinacion = () => {
       }
 
       // Manejar errores específicos para avatares personalizados
-      if (avatarType === 'custom' && (err.response?.status === 400 || err.response?.status === 404)) {
-        errorMessage = 'No se pudo usar tu foto de perfil. Por favor, asegúrate de tener una imagen válida subida.';
+      if (
+        avatarType === "custom" &&
+        (err.response?.status === 400 || err.response?.status === 404)
+      ) {
+        errorMessage =
+          "No se pudo usar tu foto de perfil. Por favor, asegúrate de tener una imagen válida subida.";
       } else {
-        errorMessage = err.response?.data?.message ||
-                      err.message ||
-                      'Error al combinar las prendas';
+        errorMessage =
+          err.response?.data?.message ||
+          err.message ||
+          "Error al combinar las prendas";
       }
 
       setError(errorMessage);
@@ -85,31 +110,37 @@ export const useCombinacion = () => {
     }
   };
 
-  const validarCombinacion = (avatarType, prendaSuperior, prendaInferior, usuario) => {
-    if (!avatarType || !['man', 'woman', 'custom'].includes(avatarType)) {
-      setError('El tipo de avatar debe ser especificado correctamente');
+  const validarCombinacion = (
+    avatarType,
+    prendaSuperior,
+    prendaInferior,
+    usuario
+  ) => {
+    if (!avatarType || !["man", "woman", "custom"].includes(avatarType)) {
+      setError("El tipo de avatar debe ser especificado correctamente");
       return false;
     }
 
     // Validar que el usuario tenga foto si selecciona avatar personalizado
-    if (avatarType === 'custom' && (!usuario?.userImg)) {
-      setError('Debes tener una foto de perfil para usar esta opción. Por favor, sube una foto en tu perfil.');
+    if (avatarType === "custom" && !usuario?.userImg) {
+      setError(
+        "Debes tener una foto de perfil para usar esta opción. Por favor, sube una foto en tu perfil."
+      );
       return false;
     }
 
     if (!prendaSuperior?.imagenUrl) {
-      setError('Debe seleccionar una prenda superior');
+      setError("Debe seleccionar una prenda superior");
       return false;
     }
 
     if (!prendaInferior?.imagenUrl) {
-      setError('Debe seleccionar una prenda inferior');
+      setError("Debe seleccionar una prenda inferior");
       return false;
     }
 
     return true;
   };
-
 
   const limpiarResultado = () => {
     setResultado(null);
