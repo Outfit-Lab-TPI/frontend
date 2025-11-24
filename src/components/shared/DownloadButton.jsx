@@ -6,19 +6,17 @@ export default function DownloadButton ({fileUrl}){
 
         try {
             const extension = fileUrl.split(".").pop().toLowerCase();
-            let response;
-            if(extension === 'glb'){
-                response = modelo3DService.downloadModel(fileUrl)
-            }else {
-                response = await fetch(fileUrl, {
-                    mode: "cors"
-                });
+            let blob;
+            if (extension === 'glb') {
+                blob = await modelo3DService.downloadModel(fileUrl);
+            } else {
+                const response = await fetch(fileUrl, { mode: "cors" });
+                if(!response.ok){
+                    throw new Error("No se pudo descargar el archivo.")
+                }
+                blob = await response.blob();
             }
-            
-            if(!response.ok){
-                throw new Error("No se pudo descargar el archivo.")
-            }
-            const blob = await response.blob();
+
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement("a");
 
@@ -35,6 +33,13 @@ export default function DownloadButton ({fileUrl}){
 
             window.URL.revokeObjectURL(url);
         } catch (error) {
+            if (error.upgradeRequired) {
+                const detail = error.currentUsage !== undefined && error.maxAllowed !== undefined
+                  ? ` (${error.currentUsage}/${error.maxAllowed})`
+                  : '';
+                alert(`${error.message || 'Has alcanzado el límite de modelos 3D'}${detail}. Actualiza tu plan para continuar.`);
+                return;
+            }
             console.error("Error descargando imagen:", error);
         }
     };
