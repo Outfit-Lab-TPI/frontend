@@ -1,16 +1,11 @@
 import apiClient from './api.js';
 import { fetchMockCombinacionesFavoritas } from '../utils/mockData.js';
 
-// Configuración para usar mock data temporalmente
 const USE_MOCK_DATA = false;
 
 const isCriticalError = (error) => {
-  // Errores de servidor 5xx
   if (error.response && error.response.status >= 500) return true;
-
-  // Sin respuesta del servidor
   if (error.request && !error.response) return true;
-
   return false;
 };
 
@@ -24,34 +19,6 @@ const validarFormDataPerfil = (formData) => {
 };
 
 export const perfilService = {
-  // Obtener perfil del usuario
-  obtenerPerfil: async (userId) => {
-    try {
-      // TODO: Implementar endpoint para obtener perfil
-      // const response = await apiClient.get(`/api/perfil/${userId}`);
-      // return response.data;
-
-      // Simulación temporal
-      return {
-        data: {
-          user: {
-            id: userId,
-            name: 'Usuario Mock',
-            email: 'usuario@example.com',
-            avatarUrl: null,
-            avatarGenero: 'hombre', // Preferencia por defecto
-            createdAt: new Date().toISOString()
-          }
-        }
-      };
-    } catch (error) {
-      error.isCritical = isCriticalError(error);
-      throw new Error(
-        error.response?.data?.message || 'Error al obtener el perfil'
-      );
-    }
-  },
-
   // Actualizar perfil del usuario
   actualizarPerfil: async (userId, formData) => {
     try {
@@ -67,11 +34,8 @@ export const perfilService = {
       error.isCritical = isCriticalError(error);
       console.error('Error en perfilService.actualizarPerfil:', error);
 
-      // Manejar errores específicos del perfil
       if (error.response?.status === 409) {
         throw new Error('Este email ya está en uso por otra cuenta');
-      } else if (error.response?.status === 401) {
-        throw new Error('Sesión expirada. Por favor, inicia sesión nuevamente.');
       } else if (error.response?.status === 400) {
         throw new Error('Datos inválidos. Revisa los campos y vuelve a intentar.');
       }
