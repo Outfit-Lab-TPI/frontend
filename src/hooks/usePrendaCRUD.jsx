@@ -2,18 +2,14 @@ import { useState, useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { prendaService } from '../services/prendaService'
+import { useAuth } from './auth/useAuth'
 
 export function usePrendaCRUD() {
   const [isSubmitting, setIsSubmitting] = useState(false)
-
+  
   const form = useForm({ mode: 'onChange' })
   const { register, handleSubmit, formState: { errors }, setError, watch, reset, setValue } = form
-
-
-
-
-
-
+  const { user } = useAuth()
 
 
 
@@ -70,7 +66,11 @@ export function usePrendaCRUD() {
 
     try {
       const formData = new FormData()
-      formData.append('codigoMarca', 'puma') // TODO: obtener del auth context
+
+      console.log("MARCA DEL USER LOGUEADO:" + user.brand?.codigoMarca);
+      let codigoMarcaDeUserDeSession = user.brand.codigoMarca; 
+
+      formData.append('codigoMarca', codigoMarcaDeUserDeSession) //'puma'  TODO: obtener del auth context
       formData.append('nombre', data.nombre)
       formData.append('tipo', data.tipo)
       formData.append('colorNombre', data.color)

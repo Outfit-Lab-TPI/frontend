@@ -139,7 +139,8 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
   };
 
   const handleEliminar = async () => {
-    if (window.confirm(`¿Estás seguro de que quieres eliminar "${prendaParaEditar?.nombre}"?`)) {
+    console.log(prendaParaEditar);
+
       try {
         const resultado = await eliminarPrenda(prendaParaEditar?.garmentCode || prendaParaEditar?.codigo);
         if (resultado && onEliminar) {
@@ -149,7 +150,6 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
       } catch (error) {
         console.error("Error al eliminar prenda:", error);
       }
-    }
   };
 
   const handleClose = () => {
