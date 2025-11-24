@@ -57,12 +57,13 @@ describe('usePerfil', () => {
   describe('Actualización de perfil (onSubmit)', () => {
     it('debe actualizar perfil exitosamente', async () => {
       // given
-      const mockUser = { id: 'user123', name: 'Test User', email: 'test@example.com', avatarUrl: null }
+      const mockUser = { id: 'user123', name: 'Test User', email: 'test@example.com', lastName: 'Old', userImg: null }
       const mockUpdatedUser = {
         id: 'user123',
         name: 'Updated User',
         email: 'updated@example.com',
-        avatarUrl: '/avatar.jpg'
+        lastName: 'Test',
+        userImg: '/avatar.jpg'
       }
       const mockUpdateUser = vi.fn()
       const mockOnSuccess = vi.fn()
@@ -74,15 +75,15 @@ describe('usePerfil', () => {
       })
 
       perfilService.actualizarPerfil.mockResolvedValueOnce({
-        data: {
-          user: mockUpdatedUser
-        }
+        user: mockUpdatedUser,
+        message: 'Perfil actualizado correctamente'
       })
 
       const { result } = renderHook(() => usePerfil(mockOnSuccess))
 
       const formData = {
         name: 'Updated User',
+        lastName: 'Test',
         email: 'updated@example.com',
         password: '',
         avatar: null
@@ -97,11 +98,10 @@ describe('usePerfil', () => {
       // then
       expect(perfilService.actualizarPerfil).toHaveBeenCalled()
       expect(mockUpdateUser).toHaveBeenCalledWith({
-        ...mockUser,
         name: 'Updated User',
         email: 'updated@example.com',
-        avatarUrl: '/avatar.jpg',
-        avatarGenero: undefined
+        lastName: 'Test',
+        userImg: '/avatar.jpg'
       })
       expect(mockOnSuccess).toHaveBeenCalled()
       expect(response).toEqual({ success: true, message: 'Perfil actualizado correctamente' })
@@ -121,15 +121,15 @@ describe('usePerfil', () => {
       })
 
       perfilService.actualizarPerfil.mockResolvedValueOnce({
-        data: {
-          user: { ...mockUser, avatarUrl: '/new-avatar.jpg' }
-        }
+        user: { ...mockUser, userImg: '/new-avatar.jpg' },
+        message: 'Perfil actualizado correctamente'
       })
 
       const { result } = renderHook(() => usePerfil(null))
 
       const formData = {
         name: 'Test User',
+        lastName: 'Test',
         email: 'test@example.com',
         password: '',
         avatar: [avatarFile]
@@ -143,7 +143,7 @@ describe('usePerfil', () => {
       // then
       expect(perfilService.actualizarPerfil).toHaveBeenCalled()
       const callArgs = perfilService.actualizarPerfil.mock.calls[0]
-      expect(callArgs[0]).toBe('user123')
+      expect(callArgs[0]).toBe('test@example.com')
       expect(callArgs[1]).toBeInstanceOf(FormData)
     })
 

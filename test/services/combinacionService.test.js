@@ -74,7 +74,7 @@ describe('combinacionService', () => {
       // then
       expect(apiClient.post).toHaveBeenCalledWith(
         '/fashion/combinar-prendas',
-        { avatarType: 'custom', top, bottom, customAvatar: 'https://example.com/user-avatar.jpg' },  // Incluye customAvatar cuando hay imagen personalizada
+        { avatarType: 'custom', top, bottom },
         { timeout: 60000 }
       )
     })

@@ -1,24 +1,55 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { renderHook, act } from '@testing-library/react'
+import { renderHook, act, waitFor } from '@testing-library/react'
 import { usePrendaCRUD } from '../../src/hooks/usePrendaCRUD.jsx'
 import { prendaService } from '../../src/services/prendaService'
+import { toast } from 'react-toastify'
 
-// Mock del servicio
+// Mock de prendaService
 vi.mock('../../src/services/prendaService', () => ({
   prendaService: {
     crearPrenda: vi.fn(),
     editarPrenda: vi.fn(),
-    eliminarPrenda: vi.fn()
+    eliminarPrenda: vi.fn(),
+    getFiltros: vi.fn()
   }
+}))
+
+// Mock de react-toastify
+vi.mock('react-toastify', () => ({
+  toast: {
+    success: vi.fn(),
+    error: vi.fn()
+  }
+}))
+
+// Mock de useAuth
+const mockUser = {
+  email: 'brand@test.com',
+  name: 'Test Brand',
+  role: 'BRAND',
+  brand: {
+    codigoMarca: 'nike'
+  }
+}
+
+vi.mock('../../src/hooks/auth/useAuth', () => ({
+  useAuth: vi.fn(() => ({
+    user: mockUser
+  }))
 }))
 
 // Mock de react-hook-form
 const mockSetError = vi.fn()
 const mockReset = vi.fn()
 const mockSetValue = vi.fn()
-const mockHandleSubmit = vi.fn()
-const mockRegister = vi.fn()
 const mockWatch = vi.fn()
+const mockRegister = vi.fn(() => ({
+  onChange: vi.fn(),
+  onBlur: vi.fn(),
+  ref: vi.fn(),
+  name: 'field'
+}))
+const mockHandleSubmit = vi.fn((fn) => fn)
 
 vi.mock('react-hook-form', () => ({
   useForm: () => ({
@@ -35,339 +66,430 @@ vi.mock('react-hook-form', () => ({
 describe('usePrendaCRUD', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    console.log = vi.fn()
     console.error = vi.fn()
+    console.log = vi.fn()
+  })
+
+  describe('fetchFiltros', () => {
+    it('debe cargar filtros exitosamente al inicializar', async () => {
+      // given
+      const mockFiltros = {
+        colores: ['ROJO', 'AZUL', 'VERDE'],
+        ocasiones: ['CASUAL', 'FORMAL'],
+        climas: ['CALIDO', 'FRIO']
+      }
+      prendaService.getFiltros.mockResolvedValueOnce(mockFiltros)
+
+      // when
+      const { result } = renderHook(() => usePrendaCRUD())
+
+      // then
+      await waitFor(() => {
+        expect(prendaService.getFiltros).toHaveBeenCalled()
+        expect(result.current.colores).toEqual(mockFiltros.colores)
+        expect(result.current.ocaciones).toEqual(mockFiltros.ocasiones)
+        expect(result.current.climas).toEqual(mockFiltros.climas)
+      })
+    })
+
+    it('debe manejar error al cargar filtros', async () => {
+      // given
+      prendaService.getFiltros.mockRejectedValueOnce(new Error('Error de red'))
+
+      // when
+      const { result } = renderHook(() => usePrendaCRUD())
+
+      // then
+      await waitFor(() => {
+        expect(result.current.colores).toEqual([])
+        expect(result.current.ocaciones).toEqual([])
+        expect(result.current.climas).toEqual([])
+      })
+    })
+
+    it('debe manejar respuesta con valores undefined', async () => {
+      // given
+      prendaService.getFiltros.mockResolvedValueOnce({
+        colores: undefined,
+        ocasiones: undefined,
+        climas: undefined
+      })
+
+      // when
+      const { result } = renderHook(() => usePrendaCRUD())
+
+      // then
+      await waitFor(() => {
+        expect(result.current.colores).toEqual([])
+        expect(result.current.ocaciones).toEqual([])
+        expect(result.current.climas).toEqual([])
+      })
+    })
   })
 
   describe('crearPrenda', () => {
-    it('debe crear una prenda exitosamente', async () => {
+    it('debe crear prenda exitosamente', async () => {
       // given
-      const mockData = {
-        nombre: 'Camiseta Nike',
-        tipo: 'SUPERIOR',
-        imagen: [new File([''], 'test.jpg', { type: 'image/jpeg' })]
-      }
+      prendaService.getFiltros.mockResolvedValueOnce({
+        colores: ['ROJO'],
+        ocasiones: ['CASUAL'],
+        climas: ['CALIDO']
+      })
+      prendaService.crearPrenda.mockResolvedValueOnce({ id: 1 })
 
       const { result } = renderHook(() => usePrendaCRUD())
 
+      await waitFor(() => {
+        expect(result.current.colores).toBeDefined()
+      })
+
+      const mockFile = new File(['content'], 'test.jpg', { type: 'image/jpeg' })
+      const formData = {
+        nombre: 'Camiseta Test',
+        tipo: 'superior',
+        color: 'ROJO',
+        ocacion: 'CASUAL',
+        clima: 'CALIDO',
+        imagen: [mockFile]
+      }
+
       // when
-      let response
+      let createResult
       await act(async () => {
-        response = await result.current.crearPrenda(mockData)
+        createResult = await result.current.crearPrenda(formData)
       })
 
       // then
-      expect(response).toBe(true)
+      expect(createResult).toBe(true)
+      expect(prendaService.crearPrenda).toHaveBeenCalled()
+      expect(toast.success).toHaveBeenCalledWith('Prenda creada exitosamente')
       expect(result.current.isSubmitting).toBe(false)
-      expect(console.log).toHaveBeenCalledWith(
-        'Creando prenda:',
-        { codigoMarca: 'puma', nombre: 'Camiseta Nike', tipo: 'SUPERIOR' }
-      )
     })
 
-    it('debe manejar error cuando no se proporciona imagen', async () => {
+    it('debe validar que se proporcione imagen', async () => {
       // given
-      const mockData = {
-        nombre: 'Camiseta Nike',
-        tipo: 'SUPERIOR',
+      prendaService.getFiltros.mockResolvedValueOnce({
+        colores: [],
+        ocasiones: [],
+        climas: []
+      })
+
+      const { result } = renderHook(() => usePrendaCRUD())
+
+      await waitFor(() => {
+        expect(result.current.colores).toBeDefined()
+      })
+
+      const formData = {
+        nombre: 'Camiseta Test',
+        tipo: 'superior',
+        color: 'ROJO',
+        ocacion: 'CASUAL',
+        clima: 'CALIDO',
         imagen: null
       }
 
-      const { result } = renderHook(() => usePrendaCRUD())
-
       // when
-      let response
+      let createResult
       await act(async () => {
-        response = await result.current.crearPrenda(mockData)
+        createResult = await result.current.crearPrenda(formData)
       })
 
       // then
-      expect(response).toBeUndefined()
+      expect(createResult).toBeUndefined()
       expect(mockSetError).toHaveBeenCalledWith('imagen', {
         type: 'manual',
         message: 'Debe seleccionar una imagen'
       })
+      expect(prendaService.crearPrenda).not.toHaveBeenCalled()
     })
 
-    it('debe manejar error cuando imagen es un array vacío', async () => {
+    it('debe manejar error 400 (datos inválidos)', async () => {
       // given
-      const mockData = {
-        nombre: 'Camiseta Nike',
-        tipo: 'SUPERIOR',
-        imagen: []
-      }
-
-      const { result } = renderHook(() => usePrendaCRUD())
-
-      // when
-      let response
-      await act(async () => {
-        response = await result.current.crearPrenda(mockData)
+      prendaService.getFiltros.mockResolvedValueOnce({
+        colores: [],
+        ocasiones: [],
+        climas: []
       })
-
-      // then
-      expect(response).toBeUndefined()
-      expect(mockSetError).toHaveBeenCalledWith('imagen', {
-        type: 'manual',
-        message: 'Debe seleccionar una imagen'
-      })
-    })
-
-    // Nota: Los siguientes tests están comentados porque las llamadas a los servicios
-    // están comentadas en la implementación actual del hook
-
-    /*
-    it('debe manejar errores de la API con status 400', async () => {
-      // given
-      const mockData = {
-        nombre: 'Camiseta Nike',
-        tipo: 'SUPERIOR',
-        imagen: [new File([''], 'test.jpg', { type: 'image/jpeg' })]
-      }
-
-      const error = {
+      prendaService.crearPrenda.mockRejectedValueOnce({
         response: { status: 400 }
-      }
-
-      vi.mocked(prendaService.crearPrenda).mockRejectedValueOnce(error)
+      })
 
       const { result } = renderHook(() => usePrendaCRUD())
 
+      await waitFor(() => {
+        expect(result.current.colores).toBeDefined()
+      })
+
+      const mockFile = new File(['content'], 'test.jpg', { type: 'image/jpeg' })
+      const formData = {
+        nombre: 'Camiseta Test',
+        tipo: 'superior',
+        color: 'ROJO',
+        ocacion: 'CASUAL',
+        clima: 'CALIDO',
+        imagen: [mockFile]
+      }
+
       // when
-      let response
+      let createResult
       await act(async () => {
-        response = await result.current.crearPrenda(mockData)
+        createResult = await result.current.crearPrenda(formData)
       })
 
       // then
-      expect(response).toBe(false)
+      expect(createResult).toBe(false)
       expect(mockSetError).toHaveBeenCalledWith('submit', {
         type: 'manual',
         message: 'Datos inválidos. Verifica la información ingresada.'
       })
-      expect(result.current.isSubmitting).toBe(false)
-    })*/
+    })
 
-    /*
-    it('debe manejar errores de la API con status 413', async () => {
+    it('debe manejar error 413 (imagen demasiado grande)', async () => {
       // given
-      const mockData = {
-        nombre: 'Camiseta Nike',
-        tipo: 'SUPERIOR',
-        imagen: [new File([''], 'test.jpg', { type: 'image/jpeg' })]
-      }
-
-      const error = {
+      prendaService.getFiltros.mockResolvedValueOnce({
+        colores: [],
+        ocasiones: [],
+        climas: []
+      })
+      prendaService.crearPrenda.mockRejectedValueOnce({
         response: { status: 413 }
-      }
-
-      vi.mocked(prendaService.crearPrenda).mockRejectedValueOnce(error)
+      })
 
       const { result } = renderHook(() => usePrendaCRUD())
 
+      await waitFor(() => {
+        expect(result.current.colores).toBeDefined()
+      })
+
+      const mockFile = new File(['content'], 'test.jpg', { type: 'image/jpeg' })
+      const formData = {
+        nombre: 'Camiseta Test',
+        tipo: 'superior',
+        color: 'ROJO',
+        ocacion: 'CASUAL',
+        clima: 'CALIDO',
+        imagen: [mockFile]
+      }
+
       // when
-      let response
+      let createResult
       await act(async () => {
-        response = await result.current.crearPrenda(mockData)
+        createResult = await result.current.crearPrenda(formData)
       })
 
       // then
-      expect(response).toBe(false)
+      expect(createResult).toBe(false)
       expect(mockSetError).toHaveBeenCalledWith('submit', {
         type: 'manual',
         message: 'La imagen es demasiado grande. Intenta con una imagen más pequeña.'
       })
-    })*/
+    })
 
-    /*
-    it('debe manejar errores de servidor 5xx', async () => {
+    it('debe manejar error 5xx (error de servidor)', async () => {
       // given
-      const mockData = {
-        nombre: 'Camiseta Nike',
-        tipo: 'SUPERIOR',
-        imagen: [new File([''], 'test.jpg', { type: 'image/jpeg' })]
-      }
-
-      const error = {
+      prendaService.getFiltros.mockResolvedValueOnce({
+        colores: [],
+        ocasiones: [],
+        climas: []
+      })
+      prendaService.crearPrenda.mockRejectedValueOnce({
         response: { status: 500 }
-      }
-
-      vi.mocked(prendaService.crearPrenda).mockRejectedValueOnce(error)
+      })
 
       const { result } = renderHook(() => usePrendaCRUD())
 
+      await waitFor(() => {
+        expect(result.current.colores).toBeDefined()
+      })
+
+      const mockFile = new File(['content'], 'test.jpg', { type: 'image/jpeg' })
+      const formData = {
+        nombre: 'Camiseta Test',
+        tipo: 'superior',
+        color: 'ROJO',
+        ocacion: 'CASUAL',
+        clima: 'CALIDO',
+        imagen: [mockFile]
+      }
+
       // when
-      let response
+      let createResult
       await act(async () => {
-        response = await result.current.crearPrenda(mockData)
+        createResult = await result.current.crearPrenda(formData)
       })
 
       // then
-      expect(response).toBe(false)
+      expect(createResult).toBe(false)
       expect(mockSetError).toHaveBeenCalledWith('submit', {
         type: 'manual',
         message: 'Ha ocurrido un error. Por favor intenta más tarde.'
       })
-    })*/
-
-    /*
-    it('debe manejar errores genéricos', async () => {
-      // given
-      const mockData = {
-        nombre: 'Camiseta Nike',
-        tipo: 'SUPERIOR',
-        imagen: [new File([''], 'test.jpg', { type: 'image/jpeg' })]
-      }
-
-      const error = new Error('Network error')
-
-      vi.mocked(prendaService.crearPrenda).mockRejectedValueOnce(error)
-
-      const { result } = renderHook(() => usePrendaCRUD())
-
-      // when
-      let response
-      await act(async () => {
-        response = await result.current.crearPrenda(mockData)
-      })
-
-      // then
-      expect(response).toBe(false)
-      expect(mockSetError).toHaveBeenCalledWith('submit', {
-        type: 'manual',
-        message: 'Error al crear la prenda.'
-      })
-    })*/
+    })
   })
 
   describe('editarPrenda', () => {
-    it('debe editar una prenda exitosamente con imagen', async () => {
+    it('debe editar prenda exitosamente sin cambiar imagen', async () => {
       // given
-      const mockId = 'ABC123'
-      const mockData = {
-        nombre: 'Camiseta Editada',
-        tipo: 'SUPERIOR',
-        imagen: [new File([''], 'test-edited.jpg', { type: 'image/jpeg' })]
-      }
+      prendaService.getFiltros.mockResolvedValueOnce({
+        colores: [],
+        ocasiones: [],
+        climas: []
+      })
+      prendaService.editarPrenda.mockResolvedValueOnce({ success: true })
 
       const { result } = renderHook(() => usePrendaCRUD())
 
-      // when
-      let response
-      await act(async () => {
-        response = await result.current.editarPrenda(mockId, mockData)
+      await waitFor(() => {
+        expect(result.current.colores).toBeDefined()
       })
 
-      // then
-      expect(response).toBe(true)
-      expect(result.current.isSubmitting).toBe(false)
-      expect(console.log).toHaveBeenCalledWith(
-        'Editando prenda:',
-        { id: 'ABC123', nombre: 'Camiseta Editada', tipo: 'SUPERIOR' }
-      )
-    })
-
-    it('debe editar una prenda exitosamente sin cambiar imagen', async () => {
-      // given
-      const mockId = 'ABC123'
-      const mockData = {
+      const formData = {
         nombre: 'Camiseta Editada',
-        tipo: 'SUPERIOR',
+        tipo: 'superior',
+        color: 'AZUL',
+        ocacion: 'FORMAL',
+        clima: 'FRIO',
         imagen: null
       }
 
-      const { result } = renderHook(() => usePrendaCRUD())
-
       // when
-      let response
+      let editResult
       await act(async () => {
-        response = await result.current.editarPrenda(mockId, mockData)
+        editResult = await result.current.editarPrenda(1, formData)
       })
 
       // then
-      expect(response).toBe(true)
+      expect(editResult).toBe(true)
+      expect(prendaService.editarPrenda).toHaveBeenCalledWith(1, expect.any(FormData))
       expect(result.current.isSubmitting).toBe(false)
     })
 
-    /*
-    it('debe manejar errores al editar prenda', async () => {
+    it('debe editar prenda exitosamente con nueva imagen', async () => {
       // given
-      const mockId = 'ABC123'
-      const mockData = {
-        nombre: 'Camiseta Editada',
-        tipo: 'SUPERIOR'
-      }
-
-      const error = new Error('Error de servidor')
-      vi.mocked(prendaService.editarPrenda).mockRejectedValueOnce(error)
+      prendaService.getFiltros.mockResolvedValueOnce({
+        colores: [],
+        ocasiones: [],
+        climas: []
+      })
+      prendaService.editarPrenda.mockResolvedValueOnce({ success: true })
 
       const { result } = renderHook(() => usePrendaCRUD())
 
+      await waitFor(() => {
+        expect(result.current.colores).toBeDefined()
+      })
+
+      const mockFile = new File(['new-content'], 'new-image.jpg', { type: 'image/jpeg' })
+      const formData = {
+        nombre: 'Camiseta Editada',
+        tipo: 'superior',
+        color: 'AZUL',
+        ocacion: 'FORMAL',
+        clima: 'FRIO',
+        imagen: [mockFile]
+      }
+
       // when
-      let response
+      let editResult
       await act(async () => {
-        response = await result.current.editarPrenda(mockId, mockData)
+        editResult = await result.current.editarPrenda(1, formData)
       })
 
       // then
-      expect(response).toBe(false)
+      expect(editResult).toBe(true)
+      expect(prendaService.editarPrenda).toHaveBeenCalled()
+    })
+
+    it('debe manejar error al editar prenda', async () => {
+      // given
+      prendaService.getFiltros.mockResolvedValueOnce({
+        colores: [],
+        ocasiones: [],
+        climas: []
+      })
+      prendaService.editarPrenda.mockRejectedValueOnce(new Error('Error al editar'))
+
+      const { result } = renderHook(() => usePrendaCRUD())
+
+      await waitFor(() => {
+        expect(result.current.colores).toBeDefined()
+      })
+
+      const formData = {
+        nombre: 'Camiseta Editada',
+        tipo: 'superior',
+        color: 'AZUL',
+        ocacion: 'FORMAL',
+        clima: 'FRIO',
+        imagen: null
+      }
+
+      // when
+      let editResult
+      await act(async () => {
+        editResult = await result.current.editarPrenda(1, formData)
+      })
+
+      // then
+      expect(editResult).toBe(false)
       expect(mockSetError).toHaveBeenCalledWith('submit', {
         type: 'manual',
         message: 'Error al actualizar la prenda.'
       })
-      expect(result.current.isSubmitting).toBe(false)
-    })*/
+    })
   })
 
   describe('eliminarPrenda', () => {
-    it('debe eliminar una prenda exitosamente', async () => {
+    it('debe eliminar prenda exitosamente', async () => {
       // given
-      const mockId = 'ABC123'
+      prendaService.getFiltros.mockResolvedValueOnce({
+        colores: [],
+        ocasiones: [],
+        climas: []
+      })
+      prendaService.eliminarPrenda.mockResolvedValueOnce({ success: true })
 
       const { result } = renderHook(() => usePrendaCRUD())
 
+      await waitFor(() => {
+        expect(result.current.colores).toBeDefined()
+      })
+
       // when
-      let response
+      let deleteResult
       await act(async () => {
-        response = await result.current.eliminarPrenda(mockId)
+        deleteResult = await result.current.eliminarPrenda(1)
       })
 
       // then
-      expect(response).toBe(true)
-      expect(console.log).toHaveBeenCalledWith(
-        'Eliminando prenda:',
-        { id: 'ABC123' }
-      )
+      expect(deleteResult).toBe(true)
+      expect(prendaService.eliminarPrenda).toHaveBeenCalledWith(1)
     })
 
-    /*
-    it('debe manejar errores al eliminar prenda', async () => {
+    it('debe manejar error al eliminar prenda', async () => {
       // given
-      const mockId = 'ABC123'
-      const error = new Error('Error al eliminar')
-      vi.mocked(prendaService.eliminarPrenda).mockRejectedValueOnce(error)
+      prendaService.getFiltros.mockResolvedValueOnce({
+        colores: [],
+        ocasiones: [],
+        climas: []
+      })
+      prendaService.eliminarPrenda.mockRejectedValueOnce(new Error('Error al eliminar'))
 
       const { result } = renderHook(() => usePrendaCRUD())
 
+      await waitFor(() => {
+        expect(result.current.colores).toBeDefined()
+      })
+
       // when
-      let response
+      let deleteResult
       await act(async () => {
-        response = await result.current.eliminarPrenda(mockId)
+        deleteResult = await result.current.eliminarPrenda(1)
       })
 
       // then
-      expect(response).toBe(false)
-      expect(console.error).toHaveBeenCalledWith('Error al eliminar prenda:', error)
-    })*/
-  })
-
-  describe('propiedades del hook', () => {
-    it('debe inicializar isSubmitting en false', () => {
-      // given / when
-      const { result } = renderHook(() => usePrendaCRUD())
-
-      // then
-      expect(result.current.isSubmitting).toBe(false)
+      expect(deleteResult).toBe(false)
     })
   })
 
