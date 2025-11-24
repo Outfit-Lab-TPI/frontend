@@ -2,31 +2,46 @@
 
 export const validationRules = {
   name: {
-    required: 'El nombre es requerido',
-    minLength: {
-      value: 2,
-      message: 'El nombre debe tener al menos 2 caracteres'
-    }
+    required: 'El nombre es obligatorio.',
+  },
+  lastName: {
+    required: 'El apellido es obligatorio.',
   },
   email: {
-    required: 'El email es requerido',
+    required: 'El correo electrónico es obligatorio.',
     pattern: {
-      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-      message: 'Email inválido'
+      value: /^\S+@\S+\.\S+$/,
+      message: 'Correo electrónico inválido.'
     }
   },
   password: {
-    required: 'La contraseña es requerida',
+    required: 'La contraseña es obligatoria.',
     minLength: {
-      value: 6,
-      message: 'La contraseña debe tener al menos 6 caracteres'
+      value: 8,
+      message: 'La contraseña debe tener al menos 8 caracteres.'
+    },
+    pattern: {
+      value: /^(?=.*[A-Z])(?=.*\d).*$/,
+      message: 'Debe contener al menos una mayúscula y un número.'
     }
   },
   passwordOptional: {
-    minLength: {
-      value: 6,
-      message: 'La contraseña debe tener al menos 6 caracteres'
+    validate: {
+      minLength: (value) => {
+        if (!value || value.trim() === '') return true;
+        return value.length >= 8 || 'La contraseña debe tener al menos 8 caracteres.';
+      },
+      pattern: (value) => {
+        if (!value || value.trim() === '') return true;
+        return /^(?=.*[A-Z])(?=.*\d).*$/.test(value) || 'Debe contener al menos una mayúscula y un número.';
+      }
     }
+  },
+  confirmPassword: {
+    required: 'Confirma la contraseña.'
+  },
+  passwordLogin: {
+    required: 'La contraseña es obligatoria.'
   }
 }
 

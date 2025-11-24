@@ -95,7 +95,6 @@ export const favoritosService = {
       try {
         const { content = [] } = await favoritosService.obtenerCombinacionesFavoritas();
         const esFavorita = content.some(c => c.combinationUrl === combinationUrl);
-        console.log('ESTADO DE FAVORITA: ----- ', esFavorita);
         
         return esFavorita? await favoritosService.quitarCombinacionFavorita(combinationUrl) : await favoritosService.agregarCombinacionFavorita(combinationUrl);
       } catch (error) {

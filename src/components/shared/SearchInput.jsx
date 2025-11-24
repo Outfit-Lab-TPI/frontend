@@ -6,13 +6,13 @@ export default function SearchInput({
   placeholder = "Buscar...",
 }) {
   return (
-    <div className="relative w-40 lg:w-48">
+    <div className="relative w-80">
       <input
         type="text"
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="px-3 py-2 rounded-md bg-gray/10 border border-gray/30 text-sm w-full text-white pr-8 focus:ring-2 focus:ring-primary"
+        className="px-3 py-1.5 rounded-md bg-gray/10 border border-gray/30 text-sm w-full text-white pr-8 focus:ring-2 focus:ring-primary"
       />
 
       {value?.length > 0 && (

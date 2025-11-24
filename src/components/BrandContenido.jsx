@@ -64,7 +64,7 @@ function BrandContenido({
         </div>
 
       {/* Galería de prendas */}
-      <div className="flex-1 overflow-y-auto mt-4 modern-scrollbar">
+      <div className="flex-1 overflow-y-auto w-full mt-4 modern-scrollbar">
         {prendasCategorizadas.superiores.length > 0 ||
         prendasCategorizadas.inferiores.length > 0 ? (
           <div className="space-y-6 max-w-5xl mx-auto">
@@ -80,6 +80,7 @@ function BrandContenido({
                     prenda={prenda}
                     onSelect={onEditarPrenda}
                   />
+                  
                 ))}
               </div>
               {prendasCategorizadas.superiores.length === 0 && (

@@ -31,7 +31,7 @@ describe("useCombinacion", () => {
             });
 
             expect(result.current.error).toBe(
-            "El tipo de avatar debe ser especificado"
+            "El tipo de avatar debe ser especificado correctamente"
             );
             expect(result.current.loading).toBe(false);
         });
@@ -40,7 +40,7 @@ describe("useCombinacion", () => {
             const { result } = renderHook(() => useCombinacion());
 
             await act(async () => {
-            await result.current.combinarPrendas(true, null, prendaInferior);
+            await result.current.combinarPrendas('man', null, prendaInferior);
             });
 
             expect(result.current.error).toBe("Debe seleccionar una prenda superior");
@@ -50,7 +50,7 @@ describe("useCombinacion", () => {
             const { result } = renderHook(() => useCombinacion());
 
             await act(async () => {
-            await result.current.combinarPrendas(true, prendaSuperior, null);
+            await result.current.combinarPrendas('man', prendaSuperior, null);
             });
 
             expect(result.current.error).toBe("Debe seleccionar una prenda inferior");
@@ -64,7 +64,7 @@ describe("useCombinacion", () => {
 
             await act(async () => {
             const response = await result.current.combinarPrendas(
-                true,
+                'man',
                 prendaSuperior,
                 prendaInferior
             );
@@ -75,7 +75,7 @@ describe("useCombinacion", () => {
             expect(result.current.resultado).toEqual(mockResponse);
             expect(result.current.error).toBe(null);
             expect(combinacionService.combinarPrendas).toHaveBeenCalledWith(
-            true,
+            'man',
             "url-superior.jpg",
             "url-inferior.jpg",
             null
@@ -91,7 +91,7 @@ describe("useCombinacion", () => {
 
             await act(async () => {
             await result.current.combinarPrendas(
-                true,
+                'man',
                 prendaSuperior,
                 prendaInferior
             );
@@ -111,7 +111,7 @@ describe("limpiarResultado", () => {
 
     // Provocar un error real
     await act(async () => {
-      await result.current.combinarPrendas(true, null, null)
+      await result.current.combinarPrendas('man', null, null)
     })
 
     expect(result.current.error).toBe('Debe seleccionar una prenda superior') // o el error que surja

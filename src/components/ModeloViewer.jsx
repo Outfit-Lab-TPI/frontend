@@ -6,6 +6,7 @@ function ModeloViewer({ modeloUrl, className = "" }) {
   return (
     <div className={`w-full h-full ${className}`}>
       <Canvas
+         style={{ background: "#ffffff" }}
          camera={{
           position: [0, 1.5, 4],
           fov: 45,
@@ -13,18 +14,11 @@ function ModeloViewer({ modeloUrl, className = "" }) {
           far: 1000
         }}
       >
-        <Environment preset="studio" />
-        <ambientLight intensity={0.6} />
-
-        <directionalLight
-          position={[5, 10, 7]}
-          intensity={1}
-          castShadow
-          shadow-mapSize-width={2048}
-          shadow-mapSize-height={2048}
-        />
-        <directionalLight position={[-5, 2, -5]} intensity={0.5} />
-
+        <Environment preset="sunset" />
+        <ambientLight intensity={0.15} />
+        <directionalLight position={[2, 30, 3]} intensity={0} />
+        <directionalLight position={[0, 30, -5]} intensity={1}/>
+        
         <OrbitControls
           enablePan={true}
           enableZoom={true}

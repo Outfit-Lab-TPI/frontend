@@ -2,18 +2,20 @@ import { useState, useEffect } from "react";
 import { useMarcaDetail } from "../hooks/useMarcaDetail.jsx";
 import BrandContenido from "../components/BrandContenido.jsx";
 import PrendaModal from "../components/PrendaModal.jsx";
+import { useAuth } from '../hooks/auth/useAuth.jsx'
 
 export default function BrandHome() {
   // TODO: Obtener codigoMarca del user context cuando esté implementado el auth
-  // const { user } = useAuth();
-  // const codigoMarca = user?.codigoMarca;
-  const codigoMarca = "puma"; // Hardcodeado temporalmente
+   const { user } = useAuth();
+   const codigoMarca = user.brand.codigoMarca;
+  //const codigoMarca = "puma"; // Hardcodeado temporalmente
 
   const {
     marcaDetail,
     loading,
     error,
     criticalError,
+    refetch
   } = useMarcaDetail(codigoMarca);
 
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -34,6 +36,7 @@ export default function BrandHome() {
       try {
         // TODO: Implementar hook para eliminar prenda
         console.log("Eliminando prenda:", prenda);
+        await refetch(); 
         // await eliminarPrenda(prenda.garmentCode || prenda.codigo);
       } catch (error) {
         console.error("Error al eliminar prenda:", error);
@@ -46,10 +49,10 @@ export default function BrandHome() {
     setPrendaParaEditar(null);
   };
 
-  const handleGuardarPrenda = () => {
+  const handleGuardarPrenda = async () => {
     // El modal se encargará de la lógica de guardado
     handleCerrarModal();
-    // TODO: Recargar datos de la marca
+    await refetch(); 
   };
 
   useEffect(() => {

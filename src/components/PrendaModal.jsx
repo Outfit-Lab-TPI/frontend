@@ -1,24 +1,41 @@
 import { useEffect, useState } from "react";
 import { X, Info, Plus, Trash2 } from "lucide-react";
 import { usePrendaCRUD } from "../hooks/usePrendaCRUD";
+import { useForm } from "react-hook-form";
 import Button from "./shared/Button";
+import { validarImagenDeRopa } from './../lib/clothingValidation'
+// function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar }) {
+//   const {
+//     register,
+//     handleSubmit,
+//     errors,
+//     isSubmitting,
+//     watch,
+//     reset,
+//     setValue,
+//     crearPrenda,
+//     editarPrenda,
+//     eliminarPrenda,
+//   } = usePrendaCRUD();
 
 function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar }) {
+
+  const form = useForm();
+
   const {
     register,
     handleSubmit,
-    errors,
-    isSubmitting,
     watch,
     reset,
     setValue,
-    crearPrenda,
-    editarPrenda,
-    eliminarPrenda,
-  } = usePrendaCRUD();
+    formState: { errors, isSubmitting }
+  } = form;
+
+  const { crearPrenda, editarPrenda, eliminarPrenda, colores, ocaciones, climas } = usePrendaCRUD(form);
 
   const [showTooltip, setShowTooltip] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+
 
   const watchedValues = watch(['nombre', 'tipo']);
   const [nombre, tipo] = watchedValues;
@@ -61,8 +78,13 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
   // Efecto para cargar datos cuando se abre en modo edición
   useEffect(() => {
     if (isOpen && prendaParaEditar) {
+      console.log("VALORE DEL USSE EFFECT DE PRENDA CUANDO ABRIMOS EL MODAL")
+      console.log(prendaParaEditar)
       setValue("nombre", prendaParaEditar.nombre || "");
       setValue("tipo", prendaParaEditar.tipo || "");
+      setValue("color", prendaParaEditar.color || "");
+      setValue("ocacion", prendaParaEditar.ocacion || "");
+      setValue("clima", prendaParaEditar.clima || "");
       setSelectedImage(prendaParaEditar.imagenUrl || null);
     } else if (isOpen && !prendaParaEditar) {
       reset();
@@ -70,8 +92,31 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
     }
   }, [isOpen, prendaParaEditar, setValue, reset]);
 
-  const handleImageChange = (event) => {
+  const handleImageChange = async (event) => {
     imageRegister.onChange(event);
+
+    const file = event.target.files[0];
+    if (file) {
+
+      const resultado = await validarImagenDeRopa(file);
+
+      if (!resultado.ok) {
+        alert(resultado.message || "La imagen no es de ropa.");
+        return; // 🔥 frenamos todo
+      }
+    
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setSelectedImage(e.target.result);
+      };
+      reader.readAsDataURL(file);
+
+    } else {
+      if (!isEditing) {
+        setSelectedImage(null);
+      }
+    }
+    /*imageRegister.onChange(event);
 
     const file = event.target.files[0];
     if (file) {
@@ -84,7 +129,7 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
       if (!isEditing) {
         setSelectedImage(null);
       }
-    }
+    }*/
   };
 
   const removeImage = () => {
@@ -117,7 +162,8 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
   };
 
   const handleEliminar = async () => {
-    if (window.confirm(`¿Estás seguro de que quieres eliminar "${prendaParaEditar?.nombre}"?`)) {
+    console.log(prendaParaEditar);
+
       try {
         const resultado = await eliminarPrenda(prendaParaEditar?.garmentCode || prendaParaEditar?.codigo);
         if (resultado && onEliminar) {
@@ -127,7 +173,6 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
       } catch (error) {
         console.error("Error al eliminar prenda:", error);
       }
-    }
   };
 
   const handleClose = () => {
@@ -140,12 +185,20 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="w-full max-w-3xl bg-black rounded-lg shadow-xl max-h-[90vh] overflow-y-auto">
+
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={handleClose}
+      />
+
+      {/* Modal */}
+      <div className="relative w-full max-w-4xl bg-black border border-gray/20 rounded-lg shadow-sm shadow-secondary max-h-[90vh] overflow-y-auto">
 
         {/* Contenido del modal */}
         <div className="p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 ">
             {/* Formulario - Lado izquierdo */}
           <div>
             <h2 className="text-2xl text-white font-medium mb-8">
@@ -154,7 +207,7 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
             <form
               id="prenda-modal-form"
               onSubmit={handleSubmit(handleFormSubmit)}
-              className="space-y-6"
+              className="space-y-4"
               aria-label="nueva prenda"
             >
               {/* Campo Nombre */}
@@ -208,6 +261,87 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
                 )}
               </div>
 
+              {/* Campo Color */}
+              <div>
+                <label htmlFor="color" className="block text-sm text-gray mb-2">
+                  Color predominante
+                </label>
+                {/* Select de colores */}
+                <select
+                  id="color"
+                  {...register("color", { required: "Debe seleccionar un color" })}
+                  className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
+                >
+                  <option value="">Selecciona un color</option>
+                  {colores.map((c) => (
+                    <option key={c.id} value={c.nombre}>{c.nombre}</option>
+                  ))}
+                </select>
+                {errors.color && (
+                  <p className="text-error text-sm mt-1">
+                    {errors.color.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Campo Tipo de evento */}
+              <div>
+                <label htmlFor="evento" className="block text-sm text-gray mb-2">
+                  Ocaciones (ctrol + click para seleccionar más de una)
+                </label>
+
+                <select
+                  id="ocasionesNombres"
+                  multiple
+                  size={5}
+                  {...register("ocasionesNombres", {
+                    required: "Debe seleccionar al menos una ocasión",
+                  })}
+                  onChange={(e) => {
+                    const values = Array.from(e.target.selectedOptions, option => option.value);
+                    setValue("ocacion", values);
+                  }}
+                  className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"               
+                  >
+                  {ocaciones.map((o) => (
+                    <option key={o.id} value={o.nombre}>
+                      {o.nombre}
+                    </option>
+                  ))}
+                </select>
+                
+                {errors.ocasionesNombres && (
+                  <p className="text-error text-sm mt-1">
+                    {errors.ocasionesNombres.message}
+                  </p>
+                )}
+              </div>
+              
+
+              {/* Campo Clima */}
+              <div>
+                <label htmlFor="clima" className="block text-sm text-gray mb-2">
+                  Clima predominante
+                </label>
+
+                {/* Select de climas */}
+                <select
+                  id="clima"
+                  {...register("clima", { required: "Debe seleccionar un clima" })}
+                  className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
+                >
+                  <option value="">Selecciona un clima</option>
+                  {climas.map((c) => (
+                    <option key={c.id} value={c.nombre}>{c.nombre}</option>
+                  ))}
+                </select>
+                
+                {errors.clima && (
+                  <p className="text-error text-sm mt-1">{errors.clima.message}</p>
+                )}
+              </div>
+
+
               {/* Error de submit */}
               {errors.submit && (
                 <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-3">
@@ -218,8 +352,8 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
           </div>
 
             {/* Área de Imagen - Lado derecho */}
-            <div>
-              <div className="relative">
+            <div className="flex items-center justify-center mt-6">
+              <div className="relative h-full">
                 <div className="flex items-center justify-between gap-2 mb-4">
                   <h4 className="text-lg font-medium text-gray">Imagen</h4>
                   <Button
@@ -234,7 +368,7 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
                 </div>
 
                 {/* Área de upload */}
-                <div className="rounded-md bg-black h-[240px]">
+                <div className="rounded-md bg-black min-w-sm border border-gray h-80">
                   <input
                     id="imagen"
                     type="file"

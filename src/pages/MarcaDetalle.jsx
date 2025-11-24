@@ -44,11 +44,15 @@ function MarcaDetalle() {
   const { togglePrendaFavorita, toggleCombinacionFavorita } = useFavoritos();
   const [selectedSuperior, setSelectedSuperior] = useState(null);
   const [selectedInferior, setSelectedInferior] = useState(null);
-  // Determinar género del avatar basado en las preferencias del usuario
-  const esHombre = user?.avatarGenero === 'mujer' ? false : true; // Default a hombre si no hay preferencia
+  const [avatarType, setAvatarType] = useState(() => {
+    if (user?.avatarUrl) return "custom";
+    return user?.avatarGenero === "mujer" ? "woman" : "man";
+  });
   const [lastCombination, setLastCombination] = useState(null);
   const [modalSugerenciasAbierto, setModalSugerenciasAbierto] = useState(false);
   const [prendaParaSugerencias, setPrendaParaSugerencias] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [autoOpenDisabled, setAutoOpenDisabled] = useState(false);
 
   const handleSelectPrenda = (prenda) => {
     if (prenda.tipo === "superior") {
@@ -67,15 +71,15 @@ function MarcaDetalle() {
 
     if (!lastCombination) return true;
 
-    if (esHombre !== lastCombination.esHombre) return true;
+    if (avatarType !== lastCombination.avatarType) return true;
 
     return !(
       selectedSuperior.nombre === lastCombination.superior &&
       selectedInferior.nombre === lastCombination.inferior
     );
-  }, [selectedSuperior, selectedInferior, esHombre, lastCombination]);
+  }, [selectedSuperior, selectedInferior, avatarType, lastCombination]);
 
-  const handleCombinarPrendas = async () => {
+  const handleCombinarPrendas = async (selectedAvatarType = avatarType) => {
     if (canCombine) {
       limpiarResultado();
       limpiarModelo();
@@ -83,10 +87,15 @@ function MarcaDetalle() {
       setLastCombination({
         superior: selectedSuperior?.nombre,
         inferior: selectedInferior?.nombre,
-        esHombre: esHombre,
+        avatarType: selectedAvatarType,
       });
 
-      await combinarPrendas(esHombre, selectedSuperior, selectedInferior, user);
+      await combinarPrendas(
+        selectedAvatarType,
+        selectedSuperior,
+        selectedInferior,
+        user
+      );
     }
   };
 
@@ -117,15 +126,16 @@ function MarcaDetalle() {
       setLastCombination({
         superior: sugerencia.topGarment.nombre,
         inferior: sugerencia.bottomGarment.nombre,
-        esHombre: esHombre,
+        avatarType: avatarType,
       });
 
       await combinarPrendas(
-        esHombre,
+        avatarType,
         sugerencia.topGarment,
         sugerencia.bottomGarment,
         user
       );
+      setIsDrawerOpen(true);
     } catch (error) {
       console.error("Error al aplicar sugerencia:", error);
     }
@@ -135,6 +145,10 @@ function MarcaDetalle() {
     setModalSugerenciasAbierto(false);
     setPrendaParaSugerencias(null);
     limpiarSugerencias();
+  };
+
+  const handleAvatarTypeChange = (newAvatarType) => {
+    setAvatarType(newAvatarType);
   };
 
   const handleToggleFavorita = async (prenda) => {
@@ -169,6 +183,25 @@ function MarcaDetalle() {
       console.error("Error al cambiar favorito de combinación:", error);
     }
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobile = window.innerWidth < 1024;
+
+      if (isMobile && (resultado || modeloUrl) && !autoOpenDisabled) {
+        setIsDrawerOpen(true);
+        setAutoOpenDisabled(true);
+      }
+
+      if (!isMobile) {
+        if (isDrawerOpen) setIsDrawerOpen(false);
+        if (autoOpenDisabled) setAutoOpenDisabled(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [resultado, modeloUrl, autoOpenDisabled, isDrawerOpen]);
 
   useEffect(() => {
     if (criticalError) {
@@ -243,6 +276,11 @@ function MarcaDetalle() {
         modeloUrl={modeloUrl}
         loadingModelo3D={loadingModelo3D}
         handleGenerarModelo3D={handleGenerarModelo3D}
+        avatarType={avatarType}
+        onAvatarTypeChange={handleAvatarTypeChange}
+        isDrawerOpen={isDrawerOpen}
+        setIsDrawerOpen={setIsDrawerOpen}
+        setAutoOpenDisabled={setAutoOpenDisabled}
       />
 
       {(marcaDetail.garmentTop?.content?.length > 0 ||

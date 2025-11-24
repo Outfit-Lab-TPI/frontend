@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { SquareArrowOutUpRight, Check } from "lucide-react";
 import PrendaGalleryCard from "./PrendaGalleryCard.jsx";
 import Button from "./shared/Button.jsx";
+import AvatarDropdown from "./AvatarDropdown.jsx";
 import Panel from "../components/Panel.jsx";
 import {
   Drawer,
@@ -29,6 +30,11 @@ function MarcaContenido({
   modeloUrl,
   loadingModelo3D,
   handleGenerarModelo3D,
+  avatarType,
+  onAvatarTypeChange,
+  isDrawerOpen,
+  setIsDrawerOpen,
+  setAutoOpenDisabled,
 }) {
   const [soloFavoritosSuperiores, setSoloFavoritosSuperiores] = useState(false);
   const [soloFavoritosInferiores, setSoloFavoritosInferiores] = useState(false);
@@ -50,9 +56,20 @@ function MarcaContenido({
     };
   }, [marcaDetail, soloFavoritosSuperiores, soloFavoritosInferiores, busqueda]);
 
+  function handleOnOpenChange(open) {
+    setIsDrawerOpen(open);
+    if (!open) setAutoOpenDisabled(true);
+  }
+
+  function handleCombineInDrawer() {
+    setIsDrawerOpen(true);
+    setAutoOpenDisabled(true);
+    onCombinarPrendas(avatarType);
+  }
+
   return (
     <div className="w-full lg:w-2/3 flex flex-col px-2">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-4">
         <GoBackButton url={"/marcas"} />
         <div className="p-4 bg-gray/10 w-full rounded-md max-w-[600px] lg:max-w-full">
           <div className="flex flex-col lg:flex-row flex-wrap justify-between items-start lg:items-center gap-6">
@@ -84,27 +101,39 @@ function MarcaContenido({
               </div>
             </div>
 
-            <div className="flex flex-wrap not-lg:w-full items-center gap-6">
-              <SearchInput
-                value={busqueda}
-                onChange={setBusqueda}
-                placeholder="Buscar prendas..."
+            <div className="flex items-center gap-4 flex-wrap">
+              <AvatarDropdown
+                avatarType={avatarType}
+                onAvatarTypeChange={onAvatarTypeChange}
+                disabled={loadingCombinacion}
               />
+
               <div className="hidden lg:inline-flex">
                 <Button
-                  onClick={onCombinarPrendas}
+                  onClick={() => onCombinarPrendas(avatarType)}
                   disabled={!canCombine || loadingCombinacion}
-                  width="full"
+                  width="fit"
                   className="text-nowrap"
                 >
                   {loadingCombinacion ? "Combinando..." : "Combinar prendas"}
                 </Button>
               </div>
 
-              <Drawer>
+              <div className="lg:hidden">
+                <Button
+                  onClick={() => setIsDrawerOpen(true)}
+                  disabled={!resultado && !modeloUrl}
+                  variant="primary"
+                  width="fit"
+                >
+                  Ver combinación
+                </Button>
+              </div>
+
+              <Drawer open={isDrawerOpen} onOpenChange={handleOnOpenChange}>
                 <DrawerTrigger asChild>
                   <Button
-                    onClick={onCombinarPrendas}
+                    onClick={handleCombineInDrawer}
                     className="lg:hidden text-nowrap"
                     width="fit"
                     disabled={!canCombine || loadingCombinacion}
@@ -127,7 +156,9 @@ function MarcaContenido({
 
                   <div className="p-4 border-t text-white border-gray/20 bg-background flex justify-end">
                     <DrawerClose asChild>
-                      <Button>Cerrar</Button>
+                      <Button onClick={() => setIsDrawerOpen(false)}>
+                        Cerrar
+                      </Button>
                     </DrawerClose>
                   </div>
                 </DrawerContent>
@@ -135,6 +166,16 @@ function MarcaContenido({
             </div>
           </div>
         </div>
+
+        {/* Box inferior: Solo búsqueda (MarcaContenido no necesita filtros adicionales) */}
+        <div className="flex justify-start">
+          <SearchInput
+            value={busqueda}
+            onChange={setBusqueda}
+            placeholder="Buscar prendas..."
+          />
+        </div>
+
         <p className="text-sm text-gray">
           * Selecciona una prenda superior e inferior para poder combinarlas
         </p>
@@ -172,7 +213,7 @@ function MarcaContenido({
                   <span className="text-sm text-white">Solo favoritos</span>
                 </label>
               </div>
-              <div className="flex flex-wrap gap-4 mx-8 items-center">
+              <div className="grid justify-center grid-cols-[repeat(auto-fit,160px)] mx-4 my-8 gap-6 md:gap-8">
                 {prendasCategorizadas.superiores.map((prenda, index) => (
                   <PrendaGalleryCard
                     key={`superior-${index}`}
@@ -217,7 +258,7 @@ function MarcaContenido({
                   <span className="text-sm text-white">Solo favoritos</span>
                 </label>
               </div>
-              <div className="flex flex-wrap gap-4 mx-8 items-center">
+              <div className="grid justify-center grid-cols-[repeat(auto-fit,160px)] mx-4 my-8 gap-6 md:gap-8">
                 {prendasCategorizadas.inferiores.map((prenda, index) => (
                   <PrendaGalleryCard
                     key={`inferior-${index}`}

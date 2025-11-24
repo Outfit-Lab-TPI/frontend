@@ -5,12 +5,11 @@ export const prendaService = {
     try {
       validarFormDataPrenda(formData)
 
-      const response = await apiClient.post('/crear-prenda', formData, {
+      const response = await apiClient.post('/garments/new', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
-
       return response
     } catch (error) {
       console.error('Error en prendaService.crearPrenda:', error)
@@ -21,16 +20,19 @@ export const prendaService = {
   editarPrenda: async (id, formData) => {
     try {
       console.log('Editando prenda en servicio:', { id, formData })
-
+      console.log(formData)
+      formData.forEach((value, key) => {
+        console.log(key, value);
+      });
       // TODO: Implementar endpoint para editar prenda
-      // const response = await apiClient.put(`/prendas/${id}`, formData, {
-      //   headers: {
-      //     'Content-Type': 'multipart/form-data',
-      //   },
-      // })
-      // return response
+      const response = await apiClient.patch(`/garments/update/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      return response
 
-      return { data: { mensaje: 'Prenda editada exitosamente (mock)' } }
+      //return { data: { mensaje: 'Prenda editada exitosamente (mock)' } }
     } catch (error) {
       console.error('Error en prendaService.editarPrenda:', error)
       throw error
@@ -42,16 +44,30 @@ export const prendaService = {
       console.log('Eliminando prenda en servicio:', { id })
 
       // TODO: Implementar endpoint para eliminar prenda
-      // const response = await apiClient.delete(`/prendas/${id}`)
-      // return response
+      const response = await apiClient.delete(`/garments/delete/${id}`)
+      return response
 
-      return { data: { mensaje: 'Prenda eliminada exitosamente (mock)' } }
+      //return { data: { mensaje: 'Prenda eliminada exitosamente (mock)' } }
     } catch (error) {
       console.error('Error en prendaService.eliminarPrenda:', error)
       throw error
     }
-  }
+  },
+
+
+  getFiltros: async () => {
+    try {
+      const response = await apiClient.get("/categories/recommendation");
+      return response.data; // viene: { climas, ocasiones, colores }
+    } catch (error) {
+      console.error("Error al obtener filtros:", error);
+      throw error;
+    }
+  },
 }
+
+
+
           
 const validarFormDataPrenda = (formData) => {
   if (!formData.has('codigoMarca')) {

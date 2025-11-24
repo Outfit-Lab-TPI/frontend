@@ -1,4 +1,5 @@
 import { Heart } from "lucide-react";
+import DownloadButton from "./shared/DownloadButton";
 
 function CombinacionCard({ combinacion, onVerDetalle, onToggleFavorita }) {
   const handleFavoritoClick = (e) => {
@@ -32,6 +33,8 @@ function CombinacionCard({ combinacion, onVerDetalle, onToggleFavorita }) {
             className="w-3 h-3 transition-colors text-red-500 fill-red-500"
           />
         </button>
+
+        <DownloadButton fileUrl={combinacion.combinationUrl}/>
       </div>
     </div>
   );

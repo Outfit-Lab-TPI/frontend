@@ -14,7 +14,7 @@ export const marcaService = {
   getAllMarcas: async () => {
     try {
       return await apiClient.get('/marcas');
-      // return fetchMockMarcas();
+      //return fetchMockMarcas();
     } catch (error) {
       // Agregar información sobre si es un error crítico
       error.isCritical = isCriticalError(error);
@@ -25,7 +25,7 @@ export const marcaService = {
   getMarcaByCode: async (codigoMarca) => {
     try {
       return await apiClient.get(`/marcas/${codigoMarca}`);
-      // return fetchMockMarcaDetail(codigoMarca);
+      //return fetchMockMarcaDetail(codigoMarca);
     } catch (error) {
       // Agregar información sobre si es un error crítico
       error.isCritical = isCriticalError(error);

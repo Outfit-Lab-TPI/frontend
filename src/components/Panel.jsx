@@ -3,6 +3,7 @@ import { VscPerson } from "react-icons/vsc";
 import { useState, useEffect } from "react";
 import ModeloViewer from "./ModeloViewer.jsx";
 import { useFavoritos } from "../hooks/useFavoritos.jsx";
+import DownloadButton from "./shared/DownloadButton.jsx";
 
 function Panel({
   loadingCombinacion,
@@ -67,6 +68,10 @@ function Panel({
                 />
               </button>
 
+              {resultado?.imageUrl && !modeloUrl ? <DownloadButton fileUrl={resultado.imageUrl}/> : null}
+              
+              {modeloUrl ? <DownloadButton fileUrl={modeloUrl}/> : null}
+              
               {!modeloUrl && (
                 <button
                   onClick={onGenerarModelo3D}
@@ -80,6 +85,8 @@ function Panel({
                   )}
                 </button>
               )}
+
+              
             </div>
 
             {modeloUrl ? (

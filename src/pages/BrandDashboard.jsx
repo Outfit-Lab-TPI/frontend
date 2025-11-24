@@ -6,6 +6,7 @@ import {
 } from "@/hooks/useDashboard";
 import React, { useState, useMemo, useEffect } from "react";
 import { COLOR_MAP } from "@/lib/constants";
+import { useAuth } from "@/hooks/auth/useAuth";
 import {
   BarChart,
   Bar,
@@ -49,22 +50,24 @@ function TabsContent({ active, children }) {
 const COLORS = ["#8b5cf6", "#ec4899", "#22d3ee", "#fbbf24", "#4ade80"];
 
 export default function BrandDashboard() {
+  const { user } = useAuth();
+  const brandCode = user?.brand || "puma";
+  const brand = brandCode.charAt(0).toUpperCase() + brandCode.slice(1);
   const [tab, setTab] = useState("free");
   const [membership] = useState("premium");
+  const isPremium = membership === "premium";
   const [selectedGarment, setSelectedGarment] = useState({
     daily: [],
   });
-  const isPremium = membership === "premium";
-
   const { data: topPrendasData, loading: loadingPrendas } = useTopPrendas(
     10,
-    "puma"
+    brandCode
   );
   const { data: actividadData, loading: loadingActividad } =
     useActividadPorDias();
   const { data: topCombosData, loading: loadingCombos } = useTopCombos(
     10,
-    "puma"
+    brandCode
   );
   const { data: colorConvData, loading: loadingColor } = useColorConversion();
 
@@ -165,7 +168,7 @@ export default function BrandDashboard() {
     <div className="min-h-screen p-6 text-white">
       <div className="max-w-7xl mx-auto">
         <header className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">Dashboard — Puma</h1>
+          <h1 className="text-2xl font-semibold">Dashboard — {brand}</h1>
           <div className="text-sm text-gray-300">
             Membresía:{" "}
             <span className="font-medium text-white">{membership}</span>
