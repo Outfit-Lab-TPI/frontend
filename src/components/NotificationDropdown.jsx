@@ -8,12 +8,10 @@ const NotificationDropdown = () => {
   const [localNotifications, setLocalNotifications] = useState([]);
   const dropdownRef = useRef(null);
 
-  // Mantener localNotifications sincronizado con notifications del hook
   React.useEffect(() => {
     setLocalNotifications(notifications);
   }, [notifications]);
 
-  // Cerrar dropdown si se hace click afuera
   React.useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -25,8 +23,7 @@ const NotificationDropdown = () => {
   }, []);
 
   const handleApprove = async (codigoMarca) => {
-    await approveBrand(codigoMarca); // Llama tu función original
-    // Eliminar la notificación aprobada del estado local para re-render
+    await approveBrand(codigoMarca);
     setLocalNotifications((prev) =>
       prev.filter((n) => n.brand.codigoMarca !== codigoMarca)
     );
@@ -38,7 +35,7 @@ const NotificationDropdown = () => {
         className="relative text-gray-700 hover:text-gray-900 focus:outline-none"
         onClick={() => setOpen(!open)}
       >
-        <FiBell size={24} />
+        <FiBell size={24} className="text-white hover:cursor-pointer"/>
         {localNotifications.length > 0 && (
           <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white bg-red-500 rounded-full">
             {localNotifications.length}

@@ -80,6 +80,7 @@ function BrandContenido({
                     prenda={prenda}
                     onSelect={onEditarPrenda}
                   />
+                  
                 ))}
               </div>
               {prendasCategorizadas.superiores.length === 0 && (

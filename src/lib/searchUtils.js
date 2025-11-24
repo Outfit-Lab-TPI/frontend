@@ -9,7 +9,8 @@ function garmentIncludesText(p, text) {
   return (
     normalizeForSearch(p.nombre).includes(text) ||
     normalizeForSearch(p.marcaNombre).includes(text) ||
-    normalizeForSearch(p.garmentCode).includes(text)
+    normalizeForSearch(p.garmentCode).includes(text) ||
+    normalizeForSearch(p.color).includes(text)
   );
 }
 

@@ -14,8 +14,8 @@ import Marcas from "./pages/Marcas";
 import MarcaDetalle from "./pages/MarcaDetalle";
 import SubscriptionPage from "./pages/Subscription";
 import AdminDashboard from "./pages/AdminDashboard";
+import BrandDashboard from "./pages/BrandDashboard";
 import PendingVerification from "./pages/PendingVerification";
-
 import Unauthorized from "./pages/Unauthorized";
 import { ProtectedRoute } from "./components/routing/ProtectedRoute";
 import { RoleBasedRoute } from "./components/routing/RoleBasedRoute";
@@ -36,13 +36,16 @@ export default function AppContent() {
           <Route path="/landing" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/pending-verification" element={<PendingVerification />} />
+          <Route
+            path="/pending-verification"
+            element={<PendingVerification />}
+          />
 
           {/* Rutas usuario */}
           <Route
             path="/home"
             element={
-              <RoleBasedRoute allowedRoles={['USER']}>
+              <RoleBasedRoute allowedRoles={["USER"]}>
                 <Home />
               </RoleBasedRoute>
             }
@@ -50,7 +53,7 @@ export default function AppContent() {
           <Route
             path="/mis-combinaciones"
             element={
-              <RoleBasedRoute allowedRoles={['USER']}>
+              <RoleBasedRoute allowedRoles={["USER"]}>
                 <Combinaciones />
               </RoleBasedRoute>
             }
@@ -60,8 +63,17 @@ export default function AppContent() {
           <Route
             path="/brand-home"
             element={
-              <RoleBasedRoute allowedRoles={['BRAND']}>
+              <RoleBasedRoute allowedRoles={["BRAND"]}>
                 <BrandHome />
+              </RoleBasedRoute>
+            }
+          />
+
+          <Route
+            path="/reportes"
+            element={
+              <RoleBasedRoute allowedRoles={["BRAND"]}>
+                <BrandDashboard />
               </RoleBasedRoute>
             }
           />
@@ -70,7 +82,7 @@ export default function AppContent() {
           <Route
             path="/dashboard"
             element={
-              <RoleBasedRoute allowedRoles={['ADMIN']}>
+              <RoleBasedRoute allowedRoles={["ADMIN"]}>
                 <AdminDashboard />
               </RoleBasedRoute>
             }
@@ -88,7 +100,7 @@ export default function AppContent() {
           <Route
             path="/marcas"
             element={
-              <RoleBasedRoute allowedRoles={['USER', 'ADMIN']}>
+              <RoleBasedRoute allowedRoles={["USER", "ADMIN"]}>
                 <Marcas />
               </RoleBasedRoute>
             }
@@ -96,7 +108,7 @@ export default function AppContent() {
           <Route
             path="/marcas/:codigoMarca"
             element={
-              <RoleBasedRoute allowedRoles={['USER', 'ADMIN']}>
+              <RoleBasedRoute allowedRoles={["USER", "ADMIN"]}>
                 <MarcaDetalle />
               </RoleBasedRoute>
             }
@@ -104,7 +116,7 @@ export default function AppContent() {
           <Route
             path="/suscripcion"
             element={
-              <RoleBasedRoute allowedRoles={['USER', 'BRAND']}>
+              <RoleBasedRoute allowedRoles={["USER", "BRAND"]}>
                 <SubscriptionPage />
               </RoleBasedRoute>
             }
