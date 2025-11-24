@@ -1,10 +1,5 @@
 import apiClient from './api.js';
 
-const getRandomModel = () => {
-  const randomIndex = Math.floor(Math.random() * MODELOS_MOCK.length);
-  return MODELOS_MOCK[randomIndex];
-};
-
 const buildUpgradeError = (error) => {
   const data = error.response?.data || {};
   if (error.response?.status === 403 && data.upgradeRequired) {

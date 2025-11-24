@@ -10,38 +10,6 @@ const isCriticalError = (error) => {
   return false;
 };
 
-
-// Datos mock para simular marcas de admin
-const mockMarcasAdmin = [
-  {
-    id: 1,
-    codigoMarca: 'nike001',
-    nombre: 'Nike',
-    email: 'contact@nike.com',
-    verificado: true,
-    activa: true,
-    fechaRegistro: '2024-01-10'
-  },
-  {
-    id: 2,
-    codigoMarca: 'adidas002',
-    nombre: 'Adidas',
-    email: 'info@adidas.com',
-    verificado: true,
-    activa: true,
-    fechaRegistro: '2024-01-15'
-  },
-  {
-    id: 3,
-    codigoMarca: 'zara003',
-    nombre: 'Zara',
-    email: 'business@zara.com',
-    verificado: true,
-    activa: false,
-    fechaRegistro: '2024-02-01'
-  }
-];
-
 export const adminService = {
   // Obtener todos los usuarios para administración
   obtenerUsuarios: async () => {
@@ -70,18 +38,6 @@ export const adminService = {
   obtenerMarcasAdmin: async () => {
     try {
       return await apiClient.get('/marcas/all');
-
-      /*// Simulación temporal
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve({
-            data: {
-              content: mockMarcasAdmin,
-              totalElements: mockMarcasAdmin.length
-            }
-          });
-        }, 800);
-      });*/
     } catch (error) {
       error.isCritical = isCriticalError(error);
       throw error;
@@ -95,22 +51,6 @@ export const adminService = {
       let endpointToConvert = nuevoRol === 'ADMIN' ? 'convert-to-admin' : 'convert-to-user';
       console.log(endpointToConvert + " -- nuevo rol->" + nuevoRol)
       return await apiClient.put(`/users/${endpointToConvert}/${userId}`);
-
-      {/*} Simulación temporal
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          const usuarioIndex = mockUsuarios.findIndex(u => u.id === userId);
-          if (usuarioIndex !== -1) {
-            mockUsuarios[usuarioIndex].rol = nuevoRol;
-          }
-          resolve({
-            data: {
-              message: 'Rol de usuario actualizado exitosamente',
-              usuario: mockUsuarios[usuarioIndex]
-            }
-          });
-        }, 500);
-      });*/}
     } catch (error) {
       error.isCritical = isCriticalError(error);
       throw error;
@@ -149,22 +89,6 @@ export const adminService = {
       let endpoint = !activa ? "desactivate" : "activate";
       console.log("endpoint marca: " + endpoint)
       return await apiClient.patch(`/marcas/${endpoint}/${marcaId}`);
-
-      /*// Simulación temporal
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          const marcaIndex = mockMarcasAdmin.findIndex(m => m.id === marcaId);
-          if (marcaIndex !== -1) {
-            mockMarcasAdmin[marcaIndex].activa = activa;
-          }
-          resolve({
-            data: {
-              message: `Marca ${activa ? 'activada' : 'desactivada'} exitosamente`,
-              marca: mockMarcasAdmin[marcaIndex]
-            }
-          });
-        }, 500);
-      });*/
     } catch (error) {
       error.isCritical = isCriticalError(error);
       throw error;

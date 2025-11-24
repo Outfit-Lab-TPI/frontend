@@ -1,7 +1,4 @@
 import apiClient from './api.js';
-import { fetchMockCombinacionesFavoritas } from '../utils/mockData.js';
-
-const USE_MOCK_DATA = false;
 
 const isCriticalError = (error) => {
   if (error.response && error.response.status >= 500) return true;
@@ -180,10 +177,6 @@ export const perfilService = {
   // Funcionalidad existente para combinaciones favoritas
   obtenerCombinacionesFavoritas: async () => {
     try {
-      if (USE_MOCK_DATA) {
-        return await fetchMockCombinacionesFavoritas();
-      }
-
       // TODO: Implementar endpoint para obtener combinaciones favoritas
       // const response = await apiClient.get('/api/perfil/combinaciones');
       // return response.data;
