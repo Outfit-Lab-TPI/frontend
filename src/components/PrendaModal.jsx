@@ -3,7 +3,7 @@ import { X, Info, Plus, Trash2 } from "lucide-react";
 import { usePrendaCRUD } from "../hooks/usePrendaCRUD";
 import { useForm } from "react-hook-form";
 import Button from "./shared/Button";
-
+import { validarImagenDeRopa } from './../lib/clothingValidation'
 // function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar }) {
 //   const {
 //     register,
@@ -92,8 +92,31 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
     }
   }, [isOpen, prendaParaEditar, setValue, reset]);
 
-  const handleImageChange = (event) => {
+  const handleImageChange = async (event) => {
     imageRegister.onChange(event);
+
+    const file = event.target.files[0];
+    if (file) {
+
+      const resultado = await validarImagenDeRopa(file);
+
+      if (!resultado.ok) {
+        alert(resultado.message || "La imagen no es de ropa.");
+        return; // 🔥 frenamos todo
+      }
+    
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setSelectedImage(e.target.result);
+      };
+      reader.readAsDataURL(file);
+
+    } else {
+      if (!isEditing) {
+        setSelectedImage(null);
+      }
+    }
+    /*imageRegister.onChange(event);
 
     const file = event.target.files[0];
     if (file) {
@@ -106,7 +129,7 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
       if (!isEditing) {
         setSelectedImage(null);
       }
-    }
+    }*/
   };
 
   const removeImage = () => {
