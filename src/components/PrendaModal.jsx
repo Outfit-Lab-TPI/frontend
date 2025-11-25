@@ -365,6 +365,27 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
                 )}
               </div>
 
+              {/* Campo sugerencias con otras prendas
+              <div>
+                <label htmlFor="sugerencias" className="block text-sm text-gray mb-2">
+                  Sugerir con otras prendas
+                </label>
+
+                {/* Select de climas NO la hago required
+                <select
+                  id="sugerencias"
+                  className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
+                >
+                  {sugerencias.map((c) => (
+                    <option key={c.id} value={c.nombre}>{c.nombre}</option>
+                  ))}
+                </select>
+                
+                {errors.sugerencias && (
+                  <p className="text-error text-sm mt-1">{errors.sugerencias.message}</p>
+                )}
+              </div>*/}
+
 
               {/* Error de submit */}
               {errors.submit && (
