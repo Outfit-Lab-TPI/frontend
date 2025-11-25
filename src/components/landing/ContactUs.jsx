@@ -21,7 +21,10 @@ const ThemedToast = () => (
 export default function ContactSection() {
     const [email, setEmail] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const BACKEND_URL = "http://localhost:8080/api/suscripcion/subscribe"; 
+    const API_BASE = import.meta.env.VITE_API_BASE_URL || "";
+    const BACKEND_URL = API_BASE
+        ? `${API_BASE}/suscripcion/subscribe`
+        : "/api/suscripcion/subscribe";
 
     const handleSubmit = async (e) => {
         e.preventDefault();
