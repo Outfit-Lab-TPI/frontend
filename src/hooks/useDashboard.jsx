@@ -92,7 +92,7 @@ export function useTopCombos(topN = 5, brandCode = "") {
   return { data, loading, error };
 }
 
-export function useColorConversion() {
+export function useColorConversion(brandCode = "") {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -102,7 +102,9 @@ export function useColorConversion() {
       setLoading(true);
       setError(null);
       try {
-        const res = await apiClient.get("/dashboard/color-conversion");
+        const res = await apiClient.get("/dashboard/color-conversion", {
+          params: { brandCode },
+        });
         setData(res.data);
       } catch (err) {
         setError(
