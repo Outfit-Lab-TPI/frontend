@@ -17,7 +17,6 @@ export default function Home() {
   const { user } = useAuth();
 
   const {
-    prendas,
     loading,
     error,
     criticalError,
@@ -27,10 +26,6 @@ export default function Home() {
     actualizarFiltros,
     limpiarFiltros,
     actualizarFavoritoLocal,
-    paginacionSuperiores,
-    paginacionInferiores,
-    fetchPrendasSuperiores,
-    fetchPrendasInferiores,
   } = useProbador();
 
   const {
@@ -296,7 +291,6 @@ export default function Home() {
   return (
     <div className="flex-1 flex flex-col md:flex-row py-2 px-4 sm:px-6 gap-4 h-[calc(100vh-60px)]">
       <ProbadorContenido
-        prendas={prendas}
         filtros={filtros}
         marcasDisponibles={marcasDisponibles}
         coloresDisponibles={coloresDisponibles}
@@ -323,28 +317,22 @@ export default function Home() {
         isDrawerOpen={isDrawerOpen}
         setIsDrawerOpen={setIsDrawerOpen}
         setAutoOpenDisabled={setAutoOpenDisabled}
-        paginacionSuperiores={paginacionSuperiores}
-        paginacionInferiores={paginacionInferiores}
-        onPageChangeSuperiores={fetchPrendasSuperiores}
-        onPageChangeInferiores={fetchPrendasInferiores}
       />
 
       <div className="flex-1 flex flex-col gap-4 overflow-hidden">
         
-        {prendas && prendas.length > 0 && (
-          <div className="hidden flex-1 lg:flex items-center justify-center overflow-hidden">
-            <Panel
-              loadingCombinacion={loadingCombinacion}
-              resultado={resultado}
-              errorCombinacion={errorCombinacion}
-              errorModelo3D={errorModelo3D}
-              modeloUrl={modeloUrl}
-              loadingModelo3D={loadingModelo3D}
-              onGenerarModelo3D={handleGenerarModelo3D}
-              onToggleFavoritoCombinacion={handleToggleFavoritoCombinacion}
-            />
-          </div>
-        )}
+        <div className="hidden flex-1 lg:flex items-center justify-center overflow-hidden">
+          <Panel
+            loadingCombinacion={loadingCombinacion}
+            resultado={resultado}
+            errorCombinacion={errorCombinacion}
+            errorModelo3D={errorModelo3D}
+            modeloUrl={modeloUrl}
+            loadingModelo3D={loadingModelo3D}
+            onGenerarModelo3D={handleGenerarModelo3D}
+            onToggleFavoritoCombinacion={handleToggleFavoritoCombinacion}
+          />
+        </div>
         
         <RecommendationChat
           categories={categories}

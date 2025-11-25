@@ -10,12 +10,10 @@ import {
   DrawerContent,
   DrawerClose,
 } from "@/components/ui/drawer";
-import { searchGarments } from "@/lib/searchUtils.js";
 import SearchInput from "./shared/SearchInput.jsx";
 import UpgradeModal from "./shared/UpgradeModal.jsx";
 
 export default function ProbadorContenido({
-  prendas,
   filtros,
   marcasDisponibles,
   coloresDisponibles,
@@ -42,18 +40,8 @@ export default function ProbadorContenido({
   setAutoOpenDisabled,
   upgradeCombinacion,
   onCloseUpgrade,
-  paginacionSuperiores,
-  paginacionInferiores,
-  onPageChangeSuperiores,
-  onPageChangeInferiores,
 }) {
   const [busqueda, setBusqueda] = useState("");
-  const prendasFiltradas = searchGarments(prendas, busqueda);
-
-  const prendasCategorizadasFiltradas = {
-    superiores: prendasFiltradas.filter((p) => p.tipo === "superior"),
-    inferiores: prendasFiltradas.filter((p) => p.tipo === "inferior"),
-  };
 
   function handleOnOpenChange(open) {
     setIsDrawerOpen(open);
@@ -166,31 +154,27 @@ export default function ProbadorContenido({
         <div className="space-y-8 max-w-5xl mx-auto">
           {/* Catálogo de Prendas Superiores */}
           <Catalogo
+            tipo="superior"
             titulo="Prendas Superiores"
-            prendas={prendasCategorizadasFiltradas.superiores}
-            totalElements={paginacionSuperiores?.totalElements || prendasCategorizadasFiltradas.superiores.length}
-            paginacion={paginacionSuperiores}
-            onPageChange={onPageChangeSuperiores}
             selectedPrenda={selectedSuperior}
             onSelectPrenda={onSelectPrenda}
             onToggleFavorita={onToggleFavorita}
             onSugerencias={onSugerencias}
-            emptyMessage="No hay prendas superiores que coincidan con la búsqueda"
+            busqueda={busqueda}
+            emptyMessage="No hay prendas superiores disponibles"
             hint={!selectedSuperior && "* Selecciona una prenda superior para combinarla"}
           />
 
           {/* Catálogo de Prendas Inferiores */}
           <Catalogo
+            tipo="inferior"
             titulo="Prendas Inferiores"
-            prendas={prendasCategorizadasFiltradas.inferiores}
-            totalElements={paginacionInferiores?.totalElements || prendasCategorizadasFiltradas.inferiores.length}
-            paginacion={paginacionInferiores}
-            onPageChange={onPageChangeInferiores}
             selectedPrenda={selectedInferior}
             onSelectPrenda={onSelectPrenda}
             onToggleFavorita={onToggleFavorita}
             onSugerencias={onSugerencias}
-            emptyMessage="No hay prendas inferiores que coincidan con la búsqueda"
+            busqueda={busqueda}
+            emptyMessage="No hay prendas inferiores disponibles"
             hint={!selectedInferior && "* Selecciona una prenda inferior para combinarla"}
           />
         </div>
