@@ -85,6 +85,7 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
       setValue("color", prendaParaEditar.color || "");
       setValue("ocacion", prendaParaEditar.ocacion || "");
       setValue("clima", prendaParaEditar.clima || "");
+      setValue("genero", prendaParaEditar.genero || "");
       setSelectedImage(prendaParaEditar.imagenUrl || null);
     } else if (isOpen && !prendaParaEditar) {
       reset();
@@ -257,6 +258,29 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
                 {errors.tipo && (
                   <p className="text-error text-sm mt-1">
                     {errors.tipo.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Campo GENERO */}
+              <div>
+                <label htmlFor="genero" className="block text-sm text-gray mb-2">
+                  Género
+                </label>
+                <select
+                  id="genero"
+                  {...register("genero", {
+                    required: "Debe seleccionar un género",
+                  })}
+                  className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
+                >
+                  <option value="">Selecciona un tipo</option>
+                  <option value="hombre">Hombre</option>
+                  <option value="mujer">Mujer</option>
+                </select>
+                {errors.genero && (
+                  <p className="text-error text-sm mt-1">
+                    {errors.genero.message}
                   </p>
                 )}
               </div>
