@@ -118,20 +118,26 @@ const SubscriptionPage = () => {
                 )}
             </div>
 
-            <div className="flex flex-col md:flex-row justify-center items-stretch mt-20 space-y-8 md:space-y-0 md:space-x-10 max-w-6xl mx-auto">
-                {plans.map(plan => {
-                    const isCurrent = userSubscription?.planCode === plan.planCode && userSubscription?.status === 'ACTIVE';
-                    return (
+            <div className="flex flex-wrap justify-center items-stretch mt-20 gap-6 max-w-7m mx-auto">
+                {
+                plans
+                    .sort((a, b) => a.price - b.price)
+                    .map(plan => {
+                      const isCurrent = userSubscription?.planCode === plan.planCode &&
+                                        userSubscription?.status === 'ACTIVE';
+                    
+                      return (
                         <SubscriptionCard
-                            key={plan.id}
-                            subscription={plan}
-                            onSubscribe={handleSubscribe}
-                            customColor={plan.cardColor}
-                            isPopular={plan.isPopular}
-                            isCurrentPlan={isCurrent}
+                          key={plan.id}
+                          subscription={plan}
+                          onSubscribe={handleSubscribe}
+                          customColor={plan.cardColor}
+                          isPopular={plan.isPopular}
+                          isCurrentPlan={isCurrent}
+                          planCode={plan.planCode}
                         />
-                    );
-                })}
+                      );
+                    })}
             </div>
 
             {plans.length === 0 && !subscriptionLoading && !error && (
