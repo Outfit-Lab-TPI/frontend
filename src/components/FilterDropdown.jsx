@@ -12,10 +12,11 @@ function FilterDropdown({
   const [isExpanded, setIsExpanded] = useState(false);
 
   const hayFiltrosActivos =
-    filtros.marca || filtros.color || filtros.soloFavoritas;
+    filtros.marca || filtros.color || filtros.soloFavoritas || filtros.genero;
   const contadorFiltros = [
     filtros.marca,
     filtros.color,
+    filtros.genero,
     filtros.soloFavoritas,
   ].filter(Boolean).length;
 
@@ -88,19 +89,18 @@ function FilterDropdown({
               </div>
 
               {/* Filtro por color */}
-              {/* <div>
-                <label className="block text-xs text-gray mb-2">Color</label>
+               <div>
+                <label className="block text-xs text-gray mb-2">Género</label>
                 <select
-                  value={filtros.color}
-                  onChange={(e) => onActualizarFiltros({ color: e.target.value })}
+                  value={filtros.genero}
+                  onChange={(e) => onActualizarFiltros({ genero: e.target.value })}
                   className="w-full px-3 py-2 bg-gray/10 border border-gray/20 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 >
-                  <option value="">Todos los colores</option>
-                  {coloresDisponibles.map(color => (
-                    <option key={color} value={color}>{color}</option>
-                  ))}
+                  <option value="">Todos los géneros</option>
+                  <option key="hombre" value="hombre">Hombre</option>
+                  <option key="mujer" value="mujer">Mujer</option>
                 </select>
-              </div> */}
+              </div> 
 
               <div>
                 <label className="flex items-center gap-2 cursor-pointer">
