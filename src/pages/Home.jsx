@@ -355,6 +355,10 @@ export default function Home() {
         loading={loadingSugerencias}
         error={errorSugerencias}
         prendaOriginal={prendaParaSugerencias}
+
+        avatarType={avatarType}
+        onAvatarTypeChange={handleAvatarTypeChange}
+        loadingCombinacion={loadingCombinacion}
       />
     </div>
   );

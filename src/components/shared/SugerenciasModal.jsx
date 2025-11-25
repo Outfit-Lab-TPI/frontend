@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Sparkles, Loader2 } from "lucide-react";
 import Button from "./Button";
+import AvatarDropdown from "./../AvatarDropdown.jsx";
 import PrendaGalleryCard from "../PrendaGalleryCard";
 
 function SugerenciasModal({
@@ -11,6 +12,9 @@ function SugerenciasModal({
   loading,
   error,
   prendaOriginal,
+  avatarType,
+  onAvatarTypeChange,
+  loadingCombinacion,
 }) {
   if (!isOpen) return null;
 
@@ -55,13 +59,22 @@ function SugerenciasModal({
       {/* Modal */}
       <div className="relative bg-black/90 border border-gray/20 rounded-lg shadow-xl max-w-6xl w-fit mx-4 p-6 max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex justify-between gap-12">
+        <div className="flex flex-wrap gap-1  justify-center md:justify-between">
           <div className="flex items-center gap-3 mb-6">
             <Sparkles className="h-6 w-6 text-tertiary" />
             <h2 className="font-semibold text-white">
               Sugerencias
             </h2>
           </div>
+
+          <div>
+            <AvatarDropdown
+                avatarType={avatarType}
+                onAvatarTypeChange={onAvatarTypeChange}
+                disabled={loadingCombinacion}
+              />
+          </div>
+
           {!loading && (
             <div className="flex justify-center">
               <Button
@@ -96,7 +109,7 @@ function SugerenciasModal({
           )}
 
           {sugerencias && sugerencias.length > 0 && (
-            <div className="flex gap-12">
+            <div className="flex gap-12 flex-wrap justify-center md:justify-between">
               {/* Prenda Original */}
               {prendaOriginal && (
                 <div>
