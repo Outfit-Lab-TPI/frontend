@@ -27,6 +27,10 @@ export default function Home() {
     actualizarFiltros,
     limpiarFiltros,
     actualizarFavoritoLocal,
+    paginacionSuperiores,
+    paginacionInferiores,
+    fetchPrendasSuperiores,
+    fetchPrendasInferiores,
   } = useProbador();
 
   const {
@@ -319,6 +323,10 @@ export default function Home() {
         isDrawerOpen={isDrawerOpen}
         setIsDrawerOpen={setIsDrawerOpen}
         setAutoOpenDisabled={setAutoOpenDisabled}
+        paginacionSuperiores={paginacionSuperiores}
+        paginacionInferiores={paginacionInferiores}
+        onPageChangeSuperiores={fetchPrendasSuperiores}
+        onPageChangeInferiores={fetchPrendasInferiores}
       />
 
       <div className="flex-1 flex flex-col gap-4 overflow-hidden">

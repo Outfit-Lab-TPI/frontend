@@ -11,10 +11,14 @@ const isCriticalError = (error) => {
 };
 
 export const probadorService = {
-  obtenerPrendasSuperiores: async (filtros = {}) => {
+  obtenerPrendasSuperiores: async (filtros = {}, page = 0, size = 10) => {
     try {
-      const params = new URLSearchParams(filtros);
-      const url = `/garments/superior${Object.keys(filtros).length ? `?${params}` : ''}`;
+      const params = new URLSearchParams({
+        ...filtros,
+        page,
+        size
+      });
+      const url = `/garments/superior?${params}`;
       const response = await apiClient.get(url);
       return response;
     } catch (error) {
@@ -23,10 +27,14 @@ export const probadorService = {
     }
   },
 
-  obtenerPrendasInferiores: async (filtros = {}) => {
+  obtenerPrendasInferiores: async (filtros = {}, page = 0, size = 10) => {
     try {
-      const params = new URLSearchParams(filtros);
-      const url = `/garments/inferior${Object.keys(filtros).length ? `?${params}` : ''}`;
+      const params = new URLSearchParams({
+        ...filtros,
+        page,
+        size
+      });
+      const url = `/garments/inferior?${params}`;
       const response = await apiClient.get(url);
       return response;
     } catch (error) {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import PrendaGalleryCard from "./PrendaGalleryCard.jsx";
+import Catalogo from "./Catalogo.jsx";
 import FilterDropdown from "./FilterDropdown.jsx";
 import Button from "./shared/Button.jsx";
 import AvatarDropdown from "./AvatarDropdown.jsx";
@@ -42,6 +42,10 @@ export default function ProbadorContenido({
   setAutoOpenDisabled,
   upgradeCombinacion,
   onCloseUpgrade,
+  paginacionSuperiores,
+  paginacionInferiores,
+  onPageChangeSuperiores,
+  onPageChangeInferiores,
 }) {
   const [busqueda, setBusqueda] = useState("");
   const prendasFiltradas = searchGarments(prendas, busqueda);
@@ -159,83 +163,37 @@ export default function ProbadorContenido({
       </div>
 
       <div className="flex-1 overflow-y-auto mt-4 modern-scrollbar">
-        {prendasFiltradas && prendasFiltradas.length > 0 ? (
-          <div className="space-y-6 max-w-5xl mx-auto">
-            <div>
-              <div className="bg-gray/5 pt-1 px-2 flex flex-col sm:flex-row justify-between items-center rounded-sm mb-2">
-                <h5 className="font-semibold">
-                  Prendas Superiores (
-                  {prendasCategorizadasFiltradas.superiores.length})
-                </h5>
-                {!selectedSuperior && (
-                  <p className="text-sm text-gray">
-                    * Selecciona una prenda superior para combinarla
-                  </p>
-                )}
-              </div>
+        <div className="space-y-8 max-w-5xl mx-auto">
+          {/* Catálogo de Prendas Superiores */}
+          <Catalogo
+            titulo="Prendas Superiores"
+            prendas={prendasCategorizadasFiltradas.superiores}
+            totalElements={paginacionSuperiores?.totalElements || prendasCategorizadasFiltradas.superiores.length}
+            paginacion={paginacionSuperiores}
+            onPageChange={onPageChangeSuperiores}
+            selectedPrenda={selectedSuperior}
+            onSelectPrenda={onSelectPrenda}
+            onToggleFavorita={onToggleFavorita}
+            onSugerencias={onSugerencias}
+            emptyMessage="No hay prendas superiores que coincidan con la búsqueda"
+            hint={!selectedSuperior && "* Selecciona una prenda superior para combinarla"}
+          />
 
-              <div className="grid justify-center grid-cols-[repeat(auto-fit,160px)] mx-4 my-8 gap-6 md:gap-8">
-                {prendasCategorizadasFiltradas.superiores.map(
-                  (prenda, index) => (
-                    <PrendaGalleryCard
-                      key={`superior-${index}`}
-                      prenda={prenda}
-                      isSelected={selectedSuperior?.nombre === prenda.nombre}
-                      onSelect={onSelectPrenda}
-                      onToggleFavorita={onToggleFavorita}
-                      onSugerencias={onSugerencias}
-                    />
-                  )
-                )}
-              </div>
-
-              {prendasCategorizadasFiltradas.superiores.length === 0 && (
-                <div className="text-center py-8 text-gray">
-                  No hay prendas superiores que coincidan con la búsqueda
-                </div>
-              )}
-            </div>
-
-            <div>
-              <div className="bg-gray/5 pt-1 px-2 flex flex-col sm:flex-row justify-between items-center rounded-sm mb-2">
-                <h5 className="font-semibold">
-                  Prendas Inferiores (
-                  {prendasCategorizadasFiltradas.inferiores.length})
-                </h5>
-                {!selectedInferior && (
-                  <p className="text-sm text-gray">
-                    * Selecciona una prenda inferior para combinarla
-                  </p>
-                )}
-              </div>
-
-              <div className="grid justify-center grid-cols-[repeat(auto-fit,160px)] mx-2 md:mx-4 my-8 gap-5 md:gap-7">
-                {prendasCategorizadasFiltradas.inferiores.map(
-                  (prenda, index) => (
-                    <PrendaGalleryCard
-                      key={`inferior-${index}`}
-                      prenda={prenda}
-                      isSelected={selectedInferior?.nombre === prenda.nombre}
-                      onSelect={onSelectPrenda}
-                      onToggleFavorita={onToggleFavorita}
-                      onSugerencias={onSugerencias}
-                    />
-                  )
-                )}
-              </div>
-
-              {prendasCategorizadasFiltradas.inferiores.length === 0 && (
-                <div className="text-center py-8 text-gray">
-                  No hay prendas inferiores que coincidan con la búsqueda
-                </div>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div className="text-center py-12 text-gray">
-            No hay prendas disponibles con la búsqueda aplicada
-          </div>
-        )}
+          {/* Catálogo de Prendas Inferiores */}
+          <Catalogo
+            titulo="Prendas Inferiores"
+            prendas={prendasCategorizadasFiltradas.inferiores}
+            totalElements={paginacionInferiores?.totalElements || prendasCategorizadasFiltradas.inferiores.length}
+            paginacion={paginacionInferiores}
+            onPageChange={onPageChangeInferiores}
+            selectedPrenda={selectedInferior}
+            onSelectPrenda={onSelectPrenda}
+            onToggleFavorita={onToggleFavorita}
+            onSugerencias={onSugerencias}
+            emptyMessage="No hay prendas inferiores que coincidan con la búsqueda"
+            hint={!selectedInferior && "* Selecciona una prenda inferior para combinarla"}
+          />
+        </div>
       </div>
       <UpgradeModal
         open={!!upgradeCombinacion}

@@ -3,12 +3,30 @@ import { probadorService } from '../services/probadorService.js';
 import { favoritosService } from '../services/favoritosService.js';
 
 export const useProbador = () => {
-  // Estados simplificados
+  // Estados de prendas
   const [prendasSuperioresOriginales, setPrendasSuperioresOriginales] = useState([]);
   const [prendasInferioresOriginales, setPrendasInferioresOriginales] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [criticalError, setCriticalError] = useState(null);
+
+  // Estados de paginación para superiores
+  const [paginacionSuperiores, setPaginacionSuperiores] = useState({
+    page: 0,
+    size: 10,
+    totalPages: 0,
+    totalElements: 0,
+    last: false
+  });
+
+  // Estados de paginación para inferiores
+  const [paginacionInferiores, setPaginacionInferiores] = useState({
+    page: 0,
+    size: 10,
+    totalPages: 0,
+    totalElements: 0,
+    last: false
+  });
 
   // Estados de filtros
   const [filtros, setFiltros] = useState({
@@ -17,24 +35,100 @@ export const useProbador = () => {
     soloFavoritas: false
   });
 
-  // Función para cargar todas las prendas (sin filtros, solo una vez)
+  // Función para cargar prendas superiores paginadas
+  const fetchPrendasSuperiores = useCallback(async (page = 0) => {
+    try {
+      setLoading(true);
+      setError(null);
+      setCriticalError(null);
+
+      const [responseSuperiores, responseFavoritas] = await Promise.all([
+        probadorService.obtenerPrendasSuperiores({}, page, paginacionSuperiores.size),
+        favoritosService.obtenerPrendasFavoritas().catch(() => ({ data: { content: [] } }))
+      ]);
+
+      const prendasFavoritas = responseFavoritas.data?.content || responseFavoritas.data || [];
+      const codigosFavoritas = new Set(prendasFavoritas.map(prenda => prenda.garmentCode));
+
+      const prendasSuperioresConFavoritas = (responseSuperiores.data.content || []).map(prenda => ({
+        ...prenda,
+        esFavorita: codigosFavoritas.has(prenda.garmentCode)
+      }));
+
+      setPrendasSuperioresOriginales(prendasSuperioresConFavoritas);
+      setPaginacionSuperiores({
+        page: responseSuperiores.data.page,
+        size: responseSuperiores.data.size,
+        totalPages: responseSuperiores.data.totalPages,
+        totalElements: responseSuperiores.data.totalElements,
+        last: responseSuperiores.data.last
+      });
+    } catch (err) {
+      if (err.isCritical) {
+        setCriticalError(err);
+      } else {
+        setError(err.response?.data?.message || 'Error al cargar las prendas superiores');
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [paginacionSuperiores.size]);
+
+  // Función para cargar prendas inferiores paginadas
+  const fetchPrendasInferiores = useCallback(async (page = 0) => {
+    try {
+      setLoading(true);
+      setError(null);
+      setCriticalError(null);
+
+      const [responseInferiores, responseFavoritas] = await Promise.all([
+        probadorService.obtenerPrendasInferiores({}, page, paginacionInferiores.size),
+        favoritosService.obtenerPrendasFavoritas().catch(() => ({ data: { content: [] } }))
+      ]);
+
+      const prendasFavoritas = responseFavoritas.data?.content || responseFavoritas.data || [];
+      const codigosFavoritas = new Set(prendasFavoritas.map(prenda => prenda.garmentCode));
+
+      const prendasInferioresConFavoritas = (responseInferiores.data.content || []).map(prenda => ({
+        ...prenda,
+        esFavorita: codigosFavoritas.has(prenda.garmentCode)
+      }));
+
+      setPrendasInferioresOriginales(prendasInferioresConFavoritas);
+      setPaginacionInferiores({
+        page: responseInferiores.data.page,
+        size: responseInferiores.data.size,
+        totalPages: responseInferiores.data.totalPages,
+        totalElements: responseInferiores.data.totalElements,
+        last: responseInferiores.data.last
+      });
+    } catch (err) {
+      if (err.isCritical) {
+        setCriticalError(err);
+      } else {
+        setError(err.response?.data?.message || 'Error al cargar las prendas inferiores');
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [paginacionInferiores.size]);
+
+  // Función para cargar todas las prendas inicialmente
   const fetchPrendas = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       setCriticalError(null);
 
-      // Cargar prendas y favoritas en paralelo (sin filtros)
       const [responseSuperiores, responseInferiores, responseFavoritas] = await Promise.all([
-        probadorService.obtenerPrendasSuperiores(),
-        probadorService.obtenerPrendasInferiores(),
-        favoritosService.obtenerPrendasFavoritas().catch(() => ({ data: { content: [] } })) // Si falla, continuar sin favoritas
+        probadorService.obtenerPrendasSuperiores({}, 0, 10),
+        probadorService.obtenerPrendasInferiores({}, 0, 10),
+        favoritosService.obtenerPrendasFavoritas().catch(() => ({ data: { content: [] } }))
       ]);
 
       const prendasFavoritas = responseFavoritas.data?.content || responseFavoritas.data || [];
       const codigosFavoritas = new Set(prendasFavoritas.map(prenda => prenda.garmentCode));
 
-      // Marcar prendas como favoritas
       const prendasSuperioresConFavoritas = (responseSuperiores.data.content || []).map(prenda => ({
         ...prenda,
         esFavorita: codigosFavoritas.has(prenda.garmentCode)
@@ -47,6 +141,22 @@ export const useProbador = () => {
 
       setPrendasSuperioresOriginales(prendasSuperioresConFavoritas);
       setPrendasInferioresOriginales(prendasInferioresConFavoritas);
+
+      setPaginacionSuperiores({
+        page: responseSuperiores.data.page,
+        size: responseSuperiores.data.size,
+        totalPages: responseSuperiores.data.totalPages,
+        totalElements: responseSuperiores.data.totalElements,
+        last: responseSuperiores.data.last
+      });
+
+      setPaginacionInferiores({
+        page: responseInferiores.data.page,
+        size: responseInferiores.data.size,
+        totalPages: responseInferiores.data.totalPages,
+        totalElements: responseInferiores.data.totalElements,
+        last: responseInferiores.data.last
+      });
     } catch (err) {
       if (err.isCritical) {
         setCriticalError(err);
@@ -58,7 +168,7 @@ export const useProbador = () => {
     }
   }, []);
 
-  // Efecto para cargar datos iniciales (solo una vez)
+  // Efecto para cargar datos iniciales
   useEffect(() => {
     fetchPrendas();
   }, [fetchPrendas]);
@@ -176,6 +286,12 @@ export const useProbador = () => {
     coloresDisponibles,
     actualizarFiltros,
     limpiarFiltros,
+
+    // Paginación
+    paginacionSuperiores,
+    paginacionInferiores,
+    fetchPrendasSuperiores,
+    fetchPrendasInferiores,
 
     // Utilidades
     actualizarFavoritoLocal,
