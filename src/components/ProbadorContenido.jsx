@@ -29,6 +29,7 @@ export default function ProbadorContenido({
   canCombine,
   onCombinarPrendas,
   loadingCombinacion,
+  loadingPagination,
   resultado,
   errorCombinacion,
   errorModelo3D,
@@ -177,6 +178,7 @@ export default function ProbadorContenido({
             onSugerencias={onSugerencias}
             emptyMessage="No hay prendas superiores que coincidan con la búsqueda"
             hint={!selectedSuperior && "* Selecciona una prenda superior para combinarla"}
+            loadingPagination={loadingPagination}
           />
 
           {/* Catálogo de Prendas Inferiores */}
@@ -192,6 +194,7 @@ export default function ProbadorContenido({
             onSugerencias={onSugerencias}
             emptyMessage="No hay prendas inferiores que coincidan con la búsqueda"
             hint={!selectedInferior && "* Selecciona una prenda inferior para combinarla"}
+            loadingPagination={loadingPagination}
           />
         </div>
       </div>

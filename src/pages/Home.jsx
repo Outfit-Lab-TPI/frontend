@@ -17,6 +17,7 @@ export default function Home() {
   const {
     prendas,
     loading,
+    loadingPagination,
     error,
     criticalError,
     filtros,
@@ -308,6 +309,7 @@ export default function Home() {
         canCombine={canCombine}
         onCombinarPrendas={handleCombinarPrendas}
         loadingCombinacion={loadingCombinacion}
+        loadingPagination={loadingPagination}
         resultado={resultado}
         errorCombinacion={errorCombinacion}
         errorModelo3D={errorModelo3D}
