@@ -69,7 +69,8 @@ export default function BrandDashboard() {
     10,
     brandCode
   );
-  const { data: colorConvData, loading: loadingColor } = useColorConversion();
+  const { data: colorConvData, loading: loadingColor } =
+    useColorConversion(brandCode);
 
   const topPruebas = useMemo(() => {
     if (!topPrendasData) return [];
