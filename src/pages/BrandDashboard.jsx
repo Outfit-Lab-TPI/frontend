@@ -51,7 +51,7 @@ const COLORS = ["#8b5cf6", "#ec4899", "#22d3ee", "#fbbf24", "#4ade80"];
 
 export default function BrandDashboard() {
   const { user } = useAuth();
-  const brandCode = user?.brand.codigoMarca || "puma";
+  const brandCode = user?.brand?.codigoMarca || "puma";
   const brand = brandCode.charAt(0).toUpperCase() + brandCode.slice(1);
   const [tab, setTab] = useState("free");
   const [membership] = useState("premium");
@@ -122,7 +122,7 @@ export default function BrandDashboard() {
 
   function ItemList({ items }) {
     return (
-      <div className="mt-3 space-y-2 max-h-72 overflow-auto">
+      <div className="mt-3 space-y-2 max-h-84 overflow-auto">
         {items.map((it) => (
           <div
             key={it.nombre}
@@ -194,8 +194,8 @@ export default function BrandDashboard() {
           <TabsContent value="free" active={tab === "free"}>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
               {/* Top pruebas (Bar) with list */}
-              <div className="col-span-2 bg-gray-900 p-4 rounded-lg border border-gray-800">
-                <div className="mb-2 flex items-center justify-between">
+              <div className="col-span-2 bg-gray-900 p-4 rounded-lg border border-gray-800 h-[550px]">
+                <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-medium">
                     Top 10 — Prendas más probadas
                   </h2>
@@ -204,7 +204,7 @@ export default function BrandDashboard() {
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <div className="flex-1 h-72">
+                  <div className="flex-1 h-100">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={topPruebas} layout="vertical">
                         <CartesianGrid stroke="#111" />
@@ -227,24 +227,25 @@ export default function BrandDashboard() {
               </div>
 
               {/* Estilos (Pie) */}
-              <div className="bg-gray-900 p-4 rounded-lg border border-gray-800">
+              <div className="bg-gray-900 p-4 rounded-lg border border-gray-800 h-full">
                 <div className="mb-2">
                   <h2 className="text-lg font-medium">Colores más usados</h2>
                   <div className="text-xs text-gray-400">
                     Distribución por color (últimos 30 días)
                   </div>
                 </div>
-                <div className="h-72">
+                <div className="h-110 overflow-y-auto">
                   <ResponsiveContainer width="100%" height="65%">
                     <PieChart>
                       <Pie
                         data={coloresMap}
-                        fontSize={12}
-                        fontWeight={600}
                         dataKey="val"
                         nameKey="color"
-                        outerRadius={80}
-                        label={(entry) => `${entry.color} (${entry.pct}%)`}
+                        outerRadius={92}
+                        fontSize={12}
+                        fontFamily="Inter, sans-serif"
+                        fontWeight={600}
+                        label={(entry) => entry.color}
                       >
                         {coloresMap.map((e) => (
                           <Cell
@@ -261,7 +262,7 @@ export default function BrandDashboard() {
                     {coloresMap.map((e) => (
                       <div
                         key={e.color}
-                        className="flex ml-20 items-center gap-3 text-gray-200"
+                        className="flex ml-12 mb-1 items-center gap-3 text-gray-200"
                       >
                         <span
                           style={{
@@ -317,8 +318,8 @@ export default function BrandDashboard() {
             {isPremium ? (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
                 {/* Combos populares (bar horizontal + list with images) */}
-                <div className="col-span-2 bg-gray-900 p-4 rounded-lg border border-gray-800">
-                  <div className="mb-2 flex items-center justify-between">
+                <div className="col-span-2 bg-gray-900 p-4 rounded-lg border border-gray-800 h-[550px]">
+                  <div className="mb-8 flex items-center justify-between">
                     <h2 className="text-lg font-medium">
                       Combinaciones más populares
                     </h2>
@@ -328,7 +329,7 @@ export default function BrandDashboard() {
                   </div>
 
                   <div className="flex gap-4">
-                    <div className="flex-1 h-72">
+                    <div className="flex-1 h-100">
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={combos} layout="vertical">
                           <CartesianGrid stroke="#111" />
@@ -336,7 +337,7 @@ export default function BrandDashboard() {
                           <YAxis
                             dataKey={(d) => `${d.superior} → ${d.inferior}`}
                             type="category"
-                            width={240}
+                            width={230}
                             tick={{ fill: "#ddd" }}
                           />
                           <Tooltip />
@@ -346,7 +347,7 @@ export default function BrandDashboard() {
                     </div>
 
                     <div style={{ width: 320 }}>
-                      <div className="space-y-2 max-h-72 overflow-auto">
+                      <div className="space-y-2 max-h-100 overflow-auto">
                         {combos.map((c) => (
                           <div
                             key={`${c.superior}_${c.inferior}`}
@@ -379,7 +380,7 @@ export default function BrandDashboard() {
 
                 {/* Tendencia por prenda: multiple lines */}
                 <div className="bg-gray-900 p-4 rounded-lg border border-gray-800">
-                  <div className="mb-2">
+                  <div className="mb-5">
                     <h2 className="text-lg font-medium">
                       Tendencia por prenda
                     </h2>
@@ -388,7 +389,7 @@ export default function BrandDashboard() {
                     </div>
                   </div>
                   <select
-                    className="bg-gray-800 text-white p-1 rounded mb-2"
+                    className="bg-gray-800 text-white p-1 rounded mt-2 mb-8"
                     value={selectedGarment?.id}
                     onChange={(e) => {
                       setSelectedGarment(
@@ -402,7 +403,7 @@ export default function BrandDashboard() {
                       </option>
                     ))}
                   </select>
-                  <div style={{ height: 300 }}>
+                  <div style={{ height: 360 }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={tendenciaSingle || []}>
                         <CartesianGrid stroke="#111" />
