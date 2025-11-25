@@ -50,7 +50,7 @@ function Login() {
           <div className="flex flex-col gap-4 mt-8">
             {/* Error general de submit */}
             {errors.submit && (
-              <p className="text-error text-sm">{errors.submit.message}</p>
+              <p className="text-error text-sm whitespace-pre-line">{errors.submit.message}</p>
             )}
             
             {/* Botón Iniciar sesión */}
