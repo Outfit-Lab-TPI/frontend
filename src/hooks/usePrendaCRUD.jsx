@@ -59,6 +59,8 @@ export function usePrendaCRUD() {
       formData.append('climaNombre', data.clima)
       formData.append('imagen', data.imagen[0])
       formData.append('genero', data.genero)
+      formData.append('sugerencias', data.sugerencias)
+
 
       await prendaService.crearPrenda(formData)
       toast.success('Prenda creada exitosamente')
@@ -97,6 +99,7 @@ export function usePrendaCRUD() {
       formData.append('ocasionesNombres', data.ocacion)
       formData.append('climaNombre', data.clima)
       formData.append('genero', data.genero)
+      formData.append('sugerencias', data.sugerencias)
 
       if (data.imagen && data.imagen[0]) {
         formData.append('imagen', data.imagen[0])
