@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import { useProbador } from "../hooks/useProbador.jsx";
 import { useCombinacion } from "../hooks/useCombinacion.jsx";
 import { useModelo3D } from "../hooks/useModelo3D.jsx";
@@ -13,7 +12,6 @@ import SugerenciasModal from "../components/shared/SugerenciasModal";
 import RecommendationChat from "../components/RecommendationChat.jsx";
 
 export default function Home() {
-  const navigate = useNavigate();
   const { user } = useAuth();
 
   const {

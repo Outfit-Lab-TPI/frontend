@@ -26,10 +26,6 @@ function Panel({
     if (!resultado?.imageUrl) return;
 
     try {
-      console.log('[Favorito][UI] Toggle combinación', {
-        imageUrl: resultado.imageUrl,
-        estadoActual: esFavorita
-      });
       const nuevoEstado = !esFavorita;
       setEsFavorita(nuevoEstado);
 

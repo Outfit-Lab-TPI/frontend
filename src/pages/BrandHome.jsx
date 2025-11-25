@@ -34,8 +34,6 @@ export default function BrandHome() {
   const handleEliminarPrenda = async (prenda) => {
     if (window.confirm(`¿Estás seguro de que quieres eliminar "${prenda.nombre}"?`)) {
       try {
-        // TODO: Implementar hook para eliminar prenda
-        console.log("Eliminando prenda:", prenda);
         await refetch(); 
         // await eliminarPrenda(prenda.garmentCode || prenda.codigo);
       } catch (error) {

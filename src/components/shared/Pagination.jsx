@@ -88,7 +88,7 @@ function Pagination({
             onClick={() => onPageChange(page)}
             className={`flex items-center justify-center min-w-9 h-9 px-2 rounded-lg transition-all duration-200 text-sm font-medium ${
               page === currentPage
-                ? 'bg-primary text-black font-bold shadow-lg shadow-primary/20 scale-105'
+                ? 'bg-tertiary/80 text-black font-bold shadow-lg shadow-primary/20 scale-105'
                 : 'bg-gray/10 hover:bg-gray/20 hover:scale-105 active:scale-95'
             }`}
           >

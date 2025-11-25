@@ -46,7 +46,6 @@ export const useFavoritos = () => {
       setError(null);
       // Debug: revisar qué usuario/token tenemos antes de llamar al backend
       const rawUser = localStorage.getItem('outfitlab-user');
-      console.log('[Favorito][Hook] Usuario almacenado localmente:', rawUser);
       const resultado = await favoritosService.toggleCombinacionFavorita(codigoCombinacion);
 
       if (onSuccess) {

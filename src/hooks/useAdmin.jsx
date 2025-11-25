@@ -40,8 +40,6 @@ export const useAdmin = () => {
     setCriticalError(null);
     try {
       const response = await adminService.obtenerMarcasAdmin();
-      console.log("MARCAS CONSEGUIDAS CON USERS::")
-      console.log(response);
       setMarcas(response.data.content || []);
     } catch (err) {
       if (err.isCritical) {
