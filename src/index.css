@@ -301,3 +301,23 @@ select {
   scrollbar-width: thin;
   scrollbar-color: var(--gray) var(--black);
 }
+
+/* Estilos para el scrollbar (colores basados en el tema morado/gris) */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px; /* Ancho de la barra vertical */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #374151; /* Color de fondo (gris oscuro del chat) */
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #7c3aed; /* Color del "pulgar" (morado vibrante) */
+    border-radius: 4px;
+    border: 1px solid #374151; /* Borde para separación */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #9333ea; /* Morado más claro al pasar el ratón */
+}

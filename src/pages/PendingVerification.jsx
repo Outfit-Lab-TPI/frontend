@@ -26,8 +26,8 @@ const getMailProviderUrl = (email) => {
 const PendingVerification = () => {
     const location = useLocation();
     const [userEmail, setUserEmail] = useState('');
-    const [title, setTitle] = useState("Correo Enviado 📧");
-    const [message, setMessage] = useState("Te hemos enviado un enlace de verificación a tu correo electrónico.");
+    const [title, setTitle] = useState("¡Correo Enviado!");
+    const [message, setMessage] = useState("Hemos enviado un enlace de verificación a tu correo electrónico. Por favor, verifica tu casilla para confirmar el el registro exitoso. (No olvides revisar spam)");
     const [status, setStatus] = useState('pending');
     
     useEffect(() => {
@@ -53,7 +53,7 @@ const PendingVerification = () => {
             setMessage(errorMessage || "El enlace de verificación es inválido o ha expirado.");
         } else {
             setStatus('pending');
-            setTitle("Correo Enviado 📧");
+            setTitle("¡Correo Enviado!");
             setMessage(`Te hemos enviado un enlace de verificación a tu correo electrónico: ${email || 'la dirección registrada'}.`);
         }
 
@@ -68,35 +68,29 @@ const PendingVerification = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900">
-            <div className={`rounded-lg p-10 shadow-2xl max-w-md text-center border ${getCardStyle()}`}>
-                <h2 className={`text-3xl font-bold mb-4 ${status === 'success' ? 'text-green-400' : 'text-white'}`}>
-                    {title}
-                </h2>
-                <p className="text-gray-300 mb-6">
-                    {message}
-                </p>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-[#0A050E] px-4 text-white">
+    <div
+        className={`rounded-xl p-12 shadow-xl max-w-lg w-full text-center bg-[#1D1325] #1D1325`}
+    >
+        <h2 className="text-4xl font-extrabold mb-6 tracking-wide">
+            {title}
+        </h2>
 
-                {status === 'pending' && (
-                    <>
-                        <a href={mailUrl} target="_blank" rel="noopener noreferrer" className="mt-6 inline-block px-6 py-3 bg-secondary text-white font-semibold rounded-md hover:bg-tertiary transition duration-200">
-                            Ir a mi correo
-                        </a>
-                        <p className="text-gray-400 text-sm italic mt-4">
-                            (Revisa tu carpeta de spam si no lo encuentras).
-                        </p>
-                    </>
-                )}
-                
-                <p className={`mt-6 text-gray-400 ${status === 'pending' ? 'mt-4' : 'mt-0'}`}>
-                    {status === 'pending' ? '¿Ya verificaste tu correo?' : ' '}
-                </p>
-                
-                <Link to="/login" className="inline-block px-6 py-3 bg-tertiary text-white font-semibold rounded-md hover:bg-secondary transition duration-200">
-                    Ir al Login
-                </Link>
-            </div>
-        </div>
+        <p className=" text-lg mb-10">
+            {message}
+        </p>
+
+        <Link
+            to="/login"
+            className="w-full inline-block py-4 bg-[#8F5D8D] text-white font-semibold 
+                       rounded-lg transition-all duration-200 
+                       shadow-md hover:shadow-xl hover:bg-[#533754]"
+        >
+            Volver al inicio de sesión
+        </Link>
+    </div>
+</div>
+
     );
 };
 

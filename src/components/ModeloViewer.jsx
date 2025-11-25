@@ -14,11 +14,12 @@ function ModeloViewer({ modeloUrl, className = "" }) {
           far: 1000
         }}
       >
-        <Environment preset="sunset" />
+        {/*<Environment files="./../../public/sunset.hdr" background/>*/}
+        {/*<Environment preset='sunset'/>*/}
+
         <ambientLight intensity={0.15} />
         <directionalLight position={[2, 30, 3]} intensity={0} />
         <directionalLight position={[0, 30, -5]} intensity={1}/>
-        
         <OrbitControls
           enablePan={true}
           enableZoom={true}
@@ -29,6 +30,11 @@ function ModeloViewer({ modeloUrl, className = "" }) {
           minPolarAngle={0.1}           
           target={[0, 0, 0]}            
         />
+
+        <ambientLight intensity={0.4} />
+        <directionalLight position={[5, 10, 5]} intensity={1}/>
+        <directionalLight position={[-5, 10, -5]} intensity={0.5}/>
+        <hemisphereLight intensity={0.4} groundColor="#bbbbbb" />
 
         <Model
           url={modeloUrl}

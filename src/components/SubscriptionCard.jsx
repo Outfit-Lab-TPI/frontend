@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SubscriptionCard = ({ subscription = {}, onSubscribe, customColor, isPopular = false, isCurrentPlan = false }) => {
+const SubscriptionCard = ({ subscription = {}, onSubscribe, customColor, isPopular, isCurrentPlan = false, planCode}) => {
 
     const handleSubscribeClick = () => {
         if (isCurrentPlan) return; // No hacer nada si ya es el plan actual
@@ -10,10 +10,7 @@ const SubscriptionCard = ({ subscription = {}, onSubscribe, customColor, isPopul
     };
 
     const getCurrencySymbol = (currencyCode) => {
-        switch (currencyCode) {
-            case 'ARS': return 'AR$';
-            default: return 'AR$';
-        }
+        return currencyCode;
     };
 
     const formattedPrice = (subscription.price || 0).toLocaleString('es-AR', {
@@ -36,25 +33,16 @@ const SubscriptionCard = ({ subscription = {}, onSubscribe, customColor, isPopul
         <div className={`
             relative bg-gradient-to-br from-[#230636] to-[#1a0426] rounded-2xl p-0 flex flex-col justify-between items-center text-center 
             max-w-xs mx-auto transition-all duration-300 min-h-[500px]
-            hover:shadow-2xl shadow-xl border border-[#926490]/30
-            ${isPopular ? 'ring-2 ring-[#E3C18A] ring-opacity-50 shadow-2xl md:scale-105 hover:scale-110' : 'hover:scale-102'}
-            ${isCurrentPlan ? 'ring-2 ring-green-500/50' : ''}
+            hover:shadow-2xl shadow-xl border border-[#926490]/30  
+            ${planCode == "user-standard-monthly" ? 'ring-2 ring-[#E3C18A] ring-opacity-50 shadow-2xl md:scale-105 hover:scale-110' : 'hover:scale-102'}
         `}>
 
             <div className="absolute top-6 right-6 w-12 h-12 rounded-full bg-gradient-to-br from-[#926490] to-[#E3C18A] opacity-70"></div>
 
-            {isPopular && (
+            {planCode == "user-standard-monthly" && (
                 <div className="absolute -top-3.5 left-1/2 transform -translate-x-0 z-20 animate-[shake_0.4s_ease-in-out_infinite]">
                     <div className="px-4 py-1.5 rounded-full bg-[#E3C18A] text-[#230636] text-xs font-bold tracking-wide">
                         EL MÁS POPULAR
-                    </div>
-                </div>
-            )}
-
-            {isCurrentPlan && (
-                <div className="absolute -top-3.5 left-1/2 transform -translate-x-1/2 z-20">
-                    <div className="px-4 py-1.5 rounded-full bg-green-500 text-white text-xs font-bold tracking-wide">
-                        TU PLAN ACTUAL
                     </div>
                 </div>
             )}
@@ -69,6 +57,12 @@ const SubscriptionCard = ({ subscription = {}, onSubscribe, customColor, isPopul
                     </span>
                     {formattedPrice}
                 </p>
+                 
+                 {subscription.frequency && (
+                    <p className="text-center text-sm text-[#FFFCF5]/60 font-medium">
+                        / {subscription.frequency}
+                    </p>
+                )}
 
                 <p className="text-sm font-medium opacity-75 text-[#FFFCF5]/70 max-w-[85%] mx-auto leading-relaxed">
                     {subscription.description}
@@ -76,12 +70,6 @@ const SubscriptionCard = ({ subscription = {}, onSubscribe, customColor, isPopul
             </div>
 
             <div className="text-left w-full px-6 pb-6 space-y-3 flex-grow flex flex-col">
-
-                {subscription.frequency && (
-                    <p className="text-center text-sm text-[#FFFCF5]/60 font-medium">
-                        / {subscription.frequency}
-                    </p>
-                )}
 
                 <div className="text-left mb-6 w-full flex-grow">
                     {subscription.features && Array.isArray(subscription.features) ? (

@@ -51,7 +51,7 @@ const COLORS = ["#8b5cf6", "#ec4899", "#22d3ee", "#fbbf24", "#4ade80"];
 
 export default function BrandDashboard() {
   const { user } = useAuth();
-  const brandCode = user?.brand.codigoMarca || "puma";
+  const brandCode = user?.brand?.codigoMarca || "puma";
   const brand = brandCode.charAt(0).toUpperCase() + brandCode.slice(1);
   const [tab, setTab] = useState("free");
   const [membership] = useState("premium");
@@ -69,7 +69,8 @@ export default function BrandDashboard() {
     10,
     brandCode
   );
-  const { data: colorConvData, loading: loadingColor } = useColorConversion();
+  const { data: colorConvData, loading: loadingColor } =
+    useColorConversion(brandCode);
 
   const topPruebas = useMemo(() => {
     if (!topPrendasData) return [];
@@ -122,7 +123,7 @@ export default function BrandDashboard() {
 
   function ItemList({ items }) {
     return (
-      <div className="mt-3 space-y-2 max-h-72 overflow-auto">
+      <div className="mt-3 space-y-2 max-h-84 overflow-auto">
         {items.map((it) => (
           <div
             key={it.nombre}
@@ -165,10 +166,12 @@ export default function BrandDashboard() {
   }
 
   return (
-    <div className="min-h-screen p-6 text-white">
+    <div className="min-h-screen p-3 sm:p-6 text-white">
       <div className="max-w-7xl mx-auto">
-        <header className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">Dashboard — {brand}</h1>
+        <header className="mb-6 flex flex-col sm:flex-row items-center justify-between">
+          <h1 className="text-4xl! md:text-5xl! font-semibold">
+            Dashboard — {brand}
+          </h1>
           <div className="text-sm text-gray-300">
             Membresía:{" "}
             <span className="font-medium text-white">{membership}</span>
@@ -192,19 +195,19 @@ export default function BrandDashboard() {
 
           {/* ---------- FREE CONTENT ---------- */}
           <TabsContent value="free" active={tab === "free"}>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+            <div className="grid grid-cols-3 gap-y-6 gap-x-4 mt-6">
               {/* Top pruebas (Bar) with list */}
-              <div className="col-span-2 bg-gray-900 p-4 rounded-lg border border-gray-800">
-                <div className="mb-2 flex items-center justify-between">
-                  <h2 className="text-lg font-medium">
+              <div className="col-span-3 xl:col-span-2 bg-gray-900 p-2 py-4 sm:px-4 rounded-lg border border-gray-800">
+                <div className="mb-4 flex-col md:flex-row text-center md:text-left items-center justify-between">
+                  <h2 className="text-3xl! md:text-4xl! font-medium">
                     Top 10 — Prendas más probadas
                   </h2>
                   <div className="text-xs text-gray-400">
                     Top por cantidad de pruebas (últimos 30 días)
                   </div>
                 </div>
-                <div className="flex gap-4">
-                  <div className="flex-1 h-72">
+                <div className="flex gap-4 flex-col sm:flex-row">
+                  <div className="h-[400px] sm:flex-1">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={topPruebas} layout="vertical">
                         <CartesianGrid stroke="#111" />
@@ -220,31 +223,34 @@ export default function BrandDashboard() {
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
-                  <div style={{ width: 320 }}>
+                  <div className="w-[280px] sm:w-60 md:w-[300px] mx-auto">
                     <ItemList items={topPruebas} />
                   </div>
                 </div>
               </div>
 
               {/* Estilos (Pie) */}
-              <div className="bg-gray-900 p-4 rounded-lg border border-gray-800">
-                <div className="mb-2">
-                  <h2 className="text-lg font-medium">Colores más usados</h2>
+              <div className="bg-gray-900 p-4 rounded-lg border border-gray-800 h-full col-span-3 md:col-span-1">
+                <div className="mb-2 text-center md:text-left">
+                  <h2 className="text-3xl! md:text-4xl! font-medium">
+                    Colores más usados
+                  </h2>
                   <div className="text-xs text-gray-400">
                     Distribución por color (últimos 30 días)
                   </div>
                 </div>
-                <div className="h-72">
+                <div className="h-110 overflow-y-auto">
                   <ResponsiveContainer width="100%" height="65%">
                     <PieChart>
                       <Pie
                         data={coloresMap}
-                        fontSize={12}
-                        fontWeight={600}
                         dataKey="val"
                         nameKey="color"
-                        outerRadius={80}
-                        label={(entry) => `${entry.color} (${entry.pct}%)`}
+                        outerRadius={90}
+                        fontSize={12}
+                        fontFamily="Inter, sans-serif"
+                        fontWeight={600}
+                        label={(entry) => entry.color}
                       >
                         {coloresMap.map((e) => (
                           <Cell
@@ -257,11 +263,11 @@ export default function BrandDashboard() {
                     </PieChart>
                   </ResponsiveContainer>
 
-                  <div className="mt-3 text-sm">
+                  <div className="mt-3 text-sm w-fit mx-auto">
                     {coloresMap.map((e) => (
                       <div
                         key={e.color}
-                        className="flex ml-20 items-center gap-3 text-gray-200"
+                        className="flex lg:ml-4 mb-1 items-center gap-3 text-gray-200"
                       >
                         <span
                           style={{
@@ -282,12 +288,12 @@ export default function BrandDashboard() {
               </div>
 
               {/* Evolución (Area) full width */}
-              <div className="col-span-3 bg-gray-900 p-4 rounded-lg border border-gray-800">
-                <div className="mb-2">
-                  <h2 className="text-lg font-medium">
+              <div className="col-span-3 md:col-span-2 xl:col-span-3 bg-gray-900 p-4 rounded-lg border border-gray-800 h-[450px]">
+                <div className="mb-2 text-center md:text-left">
+                  <h2 className="text-3xl! md:text-4xl! font-medium">
                     Actividad diaria del probador
                   </h2>
-                  <div className="text-xs text-gray-400">
+                  <div className="text-xs text-gray-400 mb-6">
                     Suma de pruebas diarias (últimos 30 días)
                   </div>
                 </div>
@@ -315,11 +321,11 @@ export default function BrandDashboard() {
           {/* ---------- PREMIUM CONTENT ---------- */}
           <TabsContent value="premium" active={tab === "premium"}>
             {isPremium ? (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+              <div className="grid grid-cols-3 gap-6 mt-6">
                 {/* Combos populares (bar horizontal + list with images) */}
-                <div className="col-span-2 bg-gray-900 p-4 rounded-lg border border-gray-800">
-                  <div className="mb-2 flex items-center justify-between">
-                    <h2 className="text-lg font-medium">
+                <div className="col-span-3 xl:col-span-2 bg-gray-900 p-2 py-4 sm:px-4 rounded-lg border border-gray-800">
+                  <div className="mb-8 flex flex-col md:flex-row items-center justify-between">
+                    <h2 className="text-3xl! md:text-4xl! font-medium text-center">
                       Combinaciones más populares
                     </h2>
                     <div className="text-xs text-gray-400">
@@ -327,8 +333,8 @@ export default function BrandDashboard() {
                     </div>
                   </div>
 
-                  <div className="flex gap-4">
-                    <div className="flex-1 h-72">
+                  <div className="flex gap-4 flex-col md:flex-row">
+                    <div className="md:flex-1 h-[400px]">
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={combos} layout="vertical">
                           <CartesianGrid stroke="#111" />
@@ -336,7 +342,7 @@ export default function BrandDashboard() {
                           <YAxis
                             dataKey={(d) => `${d.superior} → ${d.inferior}`}
                             type="category"
-                            width={240}
+                            width={165}
                             tick={{ fill: "#ddd" }}
                           />
                           <Tooltip />
@@ -345,8 +351,8 @@ export default function BrandDashboard() {
                       </ResponsiveContainer>
                     </div>
 
-                    <div style={{ width: 320 }}>
-                      <div className="space-y-2 max-h-72 overflow-auto">
+                    <div className="w-[280px] sm:w-[400px] md:w-[330px] xl:w-[300px] mx-auto my-2">
+                      <div className="space-y-2 max-h-100 overflow-auto">
                         {combos.map((c) => (
                           <div
                             key={`${c.superior}_${c.inferior}`}
@@ -378,9 +384,9 @@ export default function BrandDashboard() {
                 </div>
 
                 {/* Tendencia por prenda: multiple lines */}
-                <div className="bg-gray-900 p-4 rounded-lg border border-gray-800">
-                  <div className="mb-2">
-                    <h2 className="text-lg font-medium">
+                <div className="bg-gray-900 p-4 rounded-lg border border-gray-800 col-span-3 xl:col-span-1 w-full">
+                  <div className="mb-5 text-center md:text-left">
+                    <h2 className="text-3xl! md:text-4xl! font-medium">
                       Tendencia por prenda
                     </h2>
                     <div className="text-xs text-gray-400">
@@ -388,7 +394,7 @@ export default function BrandDashboard() {
                     </div>
                   </div>
                   <select
-                    className="bg-gray-800 text-white p-1 rounded mb-2"
+                    className="bg-gray-800 text-white p-1 rounded ml-8 mt-2 mb-8"
                     value={selectedGarment?.id}
                     onChange={(e) => {
                       setSelectedGarment(
@@ -402,7 +408,7 @@ export default function BrandDashboard() {
                       </option>
                     ))}
                   </select>
-                  <div style={{ height: 300 }}>
+                  <div style={{ height: 360 }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={tendenciaSingle || []}>
                         <CartesianGrid stroke="#111" />

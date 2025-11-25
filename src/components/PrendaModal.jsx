@@ -18,7 +18,7 @@ import { validarImagenDeRopa } from './../lib/clothingValidation'
 //     eliminarPrenda,
 //   } = usePrendaCRUD();
 
-function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar }) {
+function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar, marcaDetail }) {
 
   const form = useForm();
 
@@ -42,6 +42,8 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
 
   const isFormValid = nombre && tipo && selectedImage;
   const isEditing = !!prendaParaEditar;
+
+  const tipoSeleccionado = watch("tipo");
 
   // Obtener el registro de la imagen
   const imageRegister = register("imagen", {
@@ -239,73 +241,104 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
                 )}
               </div>
 
-              {/* Campo Tipo */}
-              <div>
-                <label htmlFor="tipo" className="block text-sm text-gray mb-2">
-                  Tipo de prenda
-                </label>
-                <select
-                  id="tipo"
-                  {...register("tipo", {
-                    required: "Debe seleccionar un tipo de prenda",
-                  })}
-                  className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
-                >
-                  <option value="">Selecciona un tipo</option>
-                  <option value="superior">Parte superior</option>
-                  <option value="inferior">Parte inferior</option>
-                </select>
-                {errors.tipo && (
-                  <p className="text-error text-sm mt-1">
-                    {errors.tipo.message}
-                  </p>
-                )}
-              </div>
 
-              {/* Campo GENERO */}
-              <div>
-                <label htmlFor="genero" className="block text-sm text-gray mb-2">
-                  Género
-                </label>
-                <select
-                  id="genero"
-                  {...register("genero", {
-                    required: "Debe seleccionar un género",
-                  })}
-                  className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
-                >
-                  <option value="">Selecciona un tipo</option>
-                  <option value="hombre">Hombre</option>
-                  <option value="mujer">Mujer</option>
-                </select>
-                {errors.genero && (
-                  <p className="text-error text-sm mt-1">
-                    {errors.genero.message}
-                  </p>
-                )}
+
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      {/* Campo Tipo */}
+                      <div>
+                        <label htmlFor="tipo" className="block text-sm text-gray mb-2">
+                          Tipo de prenda
+                        </label>
+                        <select
+                          id="tipo"
+                          {...register("tipo", {
+                            required: "Debe seleccionar un tipo de prenda",
+                          })}
+                          className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
+                        >
+                          <option value="">Seleccione uno</option>
+                          <option value="superior">Superior</option>
+                          <option value="inferior">Inferior</option>
+                        </select>
+                        {errors.tipo && (
+                          <p className="text-error text-sm mt-1">
+                            {errors.tipo.message}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Campo GENERO */}
+                      <div>
+                        <label htmlFor="genero" className="block text-sm text-gray mb-2">
+                          Género
+                        </label>
+                        <select
+                          id="genero"
+                          {...register("genero", {
+                            required: "Debe seleccionar un género",
+                          })}
+                          className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
+                        >
+                          <option value="">Seleccione uno</option>
+                          <option value="hombre">Hombre</option>
+                          <option value="mujer">Mujer</option>
+                        </select>
+                        {errors.genero && (
+                          <p className="text-error text-sm mt-1">
+                            {errors.genero.message}
+                          </p>
+                        )}
+                      </div>
               </div>
 
               {/* Campo Color */}
-              <div>
-                <label htmlFor="color" className="block text-sm text-gray mb-2">
-                  Color predominante
-                </label>
-                {/* Select de colores */}
-                <select
-                  id="color"
-                  {...register("color", { required: "Debe seleccionar un color" })}
-                  className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
-                >
-                  <option value="">Selecciona un color</option>
-                  {colores.map((c) => (
-                    <option key={c.id} value={c.nombre}>{c.nombre}</option>
-                  ))}
-                </select>
-                {errors.color && (
-                  <p className="text-error text-sm mt-1">
-                    {errors.color.message}
-                  </p>
-                )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      <div>
+                        <label htmlFor="color" className="block text-sm text-gray mb-2">
+                          Color predominante
+                        </label>
+                        {/* Select de colores */}
+                        <select
+                          id="color"
+                          {...register("color", { required: "Debe seleccionar un color" })}
+                          className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
+                        >
+                          <option value="">Selecciona un color</option>
+                          {colores.map((c) => (
+                            <option key={c.id} value={c.nombre}>{c.nombre}</option>
+                          ))}
+                        </select>
+                        {errors.color && (
+                          <p className="text-error text-sm mt-1">
+                            {errors.color.message}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Campo Clima */}
+                      <div>
+                        <label htmlFor="clima" className="block text-sm text-gray mb-2">
+                          Clima predominante
+                        </label>
+
+                        {/* Select de climas */}
+                        <select
+                          id="clima"
+                          {...register("clima", { required: "Debe seleccionar un clima" })}
+                          className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
+                        >
+                          <option value="">Selecciona un clima</option>
+                          {climas.map((c) => (
+                            <option key={c.id} value={c.nombre}>{c.nombre}</option>
+                          ))}
+                        </select>
+                        
+                        {errors.clima && (
+                          <p className="text-error text-sm mt-1">{errors.clima.message}</p>
+                        )}
+                      </div>
               </div>
 
               {/* Campo Tipo de evento */}
@@ -342,28 +375,45 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar 
               </div>
               
 
-              {/* Campo Clima */}
+              {/* Campo Sugerencias con picklist múltiple ----------------*/}
               <div>
-                <label htmlFor="clima" className="block text-sm text-gray mb-2">
-                  Clima predominante
+                <label htmlFor="sugerencias" className="block text-sm text-gray mb-2">
+                  Sugerir con otras prendas (Ctrl + click para seleccionar varias)
                 </label>
 
-                {/* Select de climas */}
                 <select
-                  id="clima"
-                  {...register("clima", { required: "Debe seleccionar un clima" })}
+                  id="sugerencias"
+                  multiple
+                  size={4}
+                  onChange={(e) => {
+                    const values = Array.from(e.target.selectedOptions, opt => opt.value);
+                    setValue("sugerencias", values);
+                  }}
                   className="w-full px-4 py-2 rounded-sm focus:outline-none focus:ring-2 focus:ring-tertiary focus:border-transparent placeholder-gray"
                 >
-                  <option value="">Selecciona un clima</option>
-                  {climas.map((c) => (
-                    <option key={c.id} value={c.nombre}>{c.nombre}</option>
-                  ))}
-                </select>
                 
-                {errors.clima && (
-                  <p className="text-error text-sm mt-1">{errors.clima.message}</p>
+                  {tipoSeleccionado === "superior" &&
+                    marcaDetail?.garmentBottom?.content?.map((c) => (
+                      <option key={c.id} value={c.garmentCode}>
+                        {c.nombre}
+                      </option>
+                    ))}
+
+                  {tipoSeleccionado === "inferior" &&
+                    marcaDetail?.garmentTop?.content?.map((c) => (
+                      <option key={c.id} value={c.garmentCode}>
+                        {c.nombre}
+                      </option>
+                    ))}
+                </select>
+                  
+                {errors.sugerencias && (
+                  <p className="text-error text-sm mt-1">
+                    {errors.sugerencias.message}
+                  </p>
                 )}
               </div>
+
 
 
               {/* Error de submit */}

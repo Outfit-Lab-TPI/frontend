@@ -37,6 +37,7 @@ export default function Home() {
     errorAI,
     solicitarRecomendacionAI,
     limpiarRecomendaciones,
+    conversationHistory,
   } = useRecomendacionAI(user?.id);
 
   const {
@@ -344,6 +345,7 @@ export default function Home() {
           error={errorAI}
           onSolicitar={solicitarRecomendacionAI}
           onSelectOutfit={handleSeleccionarOutfitAI}
+          conversationHistory={conversationHistory}
         />
       </div>
 
@@ -355,6 +357,10 @@ export default function Home() {
         loading={loadingSugerencias}
         error={errorSugerencias}
         prendaOriginal={prendaParaSugerencias}
+
+        avatarType={avatarType}
+        onAvatarTypeChange={handleAvatarTypeChange}
+        loadingCombinacion={loadingCombinacion}
       />
     </div>
   );

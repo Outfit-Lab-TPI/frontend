@@ -112,6 +112,7 @@ export default function BrandHome() {
         onGuardar={handleGuardarPrenda}
         onEliminar={handleEliminarPrenda}
         prendaParaEditar={prendaParaEditar}
+        marcaDetail={marcaDetail}
       />
     </div>
   );
