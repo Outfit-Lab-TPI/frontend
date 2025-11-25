@@ -64,8 +64,8 @@ describe('useProbador', () => {
 
       await waitFor(() => expect(result.current.loading).toBe(false))
 
-      expect(probadorService.obtenerPrendasSuperiores).toHaveBeenCalledWith()
-      expect(probadorService.obtenerPrendasInferiores).toHaveBeenCalledWith()
+      expect(probadorService.obtenerPrendasSuperiores).toHaveBeenCalledWith({}, 0, 10)
+      expect(probadorService.obtenerPrendasInferiores).toHaveBeenCalledWith({}, 0, 10)
       expect(favoritosService.obtenerPrendasFavoritas).toHaveBeenCalledWith()
 
       expect(result.current.prendasCategorizadas.superiores).toHaveLength(2)
@@ -211,6 +211,7 @@ describe('useProbador', () => {
       expect(result.current.filtros).toEqual({
         marca: '',
         color: '',
+        genero: '',
         soloFavoritas: false
       })
       expect(result.current.prendasCategorizadas.superiores).toHaveLength(2)
