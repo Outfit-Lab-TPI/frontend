@@ -76,6 +76,11 @@ export const useProbador = () => {
         return false;
       }
 
+      // Filtro por genero
+      if (filtros.genero && prenda.genero !== filtros.genero) {
+        return false;
+      }
+
       // Filtro solo favoritas
       if (filtros.soloFavoritas && !prenda.esFavorita) {
         return false;
@@ -132,6 +137,7 @@ export const useProbador = () => {
     setFiltros({
       marca: '',
       color: '',
+      genero: '',
       soloFavoritas: false
     });
   };
