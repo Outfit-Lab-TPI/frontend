@@ -48,12 +48,22 @@ export function useLogin() {
       }
     } catch (error) {
       console.error('Error al iniciar sesión:', error)
+
+      let errorMessage = 'Error al iniciar sesión. Intenta nuevamente.'
+
+      if (error.response?.status === 401) {
+        // Intentar obtener el mensaje específico del backend
+        errorMessage = error.response?.data?.email ||
+                      error.response?.data?.message ||
+                      'Email o contraseña incorrectos'
+
+        // Reemplazar ". " por ".\n" para mostrar en múltiples líneas
+        errorMessage = errorMessage.replace(/\.\s+/g, '.\n')
+      }
+
       setError('submit', {
         type: 'manual',
-        message:
-          error.response?.status === 401
-            ? 'Email o contraseña incorrectos'
-            : 'Error al iniciar sesión. Intenta nuevamente.'
+        message: errorMessage
       })
     } finally {
       setIsSubmitting(false)

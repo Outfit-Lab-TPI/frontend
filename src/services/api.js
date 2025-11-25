@@ -69,6 +69,16 @@ apiClient.interceptors.response.use(
 
     // Manejo de error 401 (token expirado/inválido)
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // No intentar refresh para rutas de autenticación (login, signup, etc.)
+      const isAuthEndpoint = originalRequest.url?.includes('/login') ||
+                             originalRequest.url?.includes('/signup') ||
+                             originalRequest.url?.includes('/register');
+
+      if (isAuthEndpoint) {
+        // Para endpoints de autenticación, solo rechazar el error sin hacer logout
+        return Promise.reject(error);
+      }
+
       if (isRefreshingToken) {
         // Si ya se está refrescando, agregar a la cola
         return new Promise((resolve, reject) => {
