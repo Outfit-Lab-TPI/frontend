@@ -31,7 +31,7 @@ describe('probadorService', () => {
       const result = await probadorService.obtenerPrendasSuperiores()
 
       // then
-      expect(apiClient.get).toHaveBeenCalledWith('/garments/superior')
+      expect(apiClient.get).toHaveBeenCalledWith('/garments/superior?page=0&size=10')
       expect(result).toEqual(mockResponse)
     })
 
@@ -51,7 +51,7 @@ describe('probadorService', () => {
       const result = await probadorService.obtenerPrendasSuperiores(filtros)
 
       // then
-      expect(apiClient.get).toHaveBeenCalledWith('/garments/superior?brand=Nike&color=azul')
+      expect(apiClient.get).toHaveBeenCalledWith('/garments/superior?brand=Nike&color=azul&page=0&size=10')
       expect(result).toEqual(mockResponse)
     })
 
@@ -106,7 +106,7 @@ describe('probadorService', () => {
       const result = await probadorService.obtenerPrendasInferiores()
 
       // then
-      expect(apiClient.get).toHaveBeenCalledWith('/garments/inferior')
+      expect(apiClient.get).toHaveBeenCalledWith('/garments/inferior?page=0&size=10')
       expect(result).toEqual(mockResponse)
     })
 
@@ -126,7 +126,7 @@ describe('probadorService', () => {
       const result = await probadorService.obtenerPrendasInferiores(filtros)
 
       // then
-      expect(apiClient.get).toHaveBeenCalledWith('/garments/inferior?brand=Adidas&talla=M')
+      expect(apiClient.get).toHaveBeenCalledWith('/garments/inferior?brand=Adidas&talla=M&page=0&size=10')
       expect(result).toEqual(mockResponse)
     })
 
@@ -173,7 +173,7 @@ describe('probadorService', () => {
       const result = await probadorService.obtenerPrendasInferiores(filtros)
 
       // then
-      expect(apiClient.get).toHaveBeenCalledWith('/garments/inferior')
+      expect(apiClient.get).toHaveBeenCalledWith('/garments/inferior?page=0&size=10')
       expect(result).toEqual(mockResponse)
     })
   })

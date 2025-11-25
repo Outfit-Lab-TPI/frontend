@@ -80,8 +80,6 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar,
   // Efecto para cargar datos cuando se abre en modo edición
   useEffect(() => {
     if (isOpen && prendaParaEditar) {
-      console.log("VALORE DEL USSE EFFECT DE PRENDA CUANDO ABRIMOS EL MODAL")
-      console.log(prendaParaEditar)
       setValue("nombre", prendaParaEditar.nombre || "");
       setValue("tipo", prendaParaEditar.tipo || "");
       setValue("color", prendaParaEditar.color || "");
@@ -165,8 +163,6 @@ function PrendaModal({ isOpen, onClose, onGuardar, prendaParaEditar, onEliminar,
   };
 
   const handleEliminar = async () => {
-    console.log(prendaParaEditar);
-
       try {
         const resultado = await eliminarPrenda(prendaParaEditar?.garmentCode || prendaParaEditar?.codigo);
         if (resultado && onEliminar) {

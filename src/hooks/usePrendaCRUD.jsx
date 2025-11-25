@@ -47,11 +47,9 @@ export function usePrendaCRUD() {
 
     try {
       const formData = new FormData()
-
-      console.log("MARCA DEL USER LOGUEADO:" + user.brand?.codigoMarca);
       let codigoMarcaDeUserDeSession = user.brand.codigoMarca; 
 
-      formData.append('codigoMarca', codigoMarcaDeUserDeSession) //'puma'  TODO: obtener del auth context
+      formData.append('codigoMarca', codigoMarcaDeUserDeSession)
       formData.append('nombre', data.nombre)
       formData.append('tipo', data.tipo)
       formData.append('colorNombre', data.color)
@@ -105,7 +103,6 @@ export function usePrendaCRUD() {
         formData.append('imagen', data.imagen[0])
       }
 
-      console.log('Editando prenda:', { id, nombre: data.nombre, tipo: data.tipo })
       await prendaService.editarPrenda(id, formData)
       return true
     } catch (error) {

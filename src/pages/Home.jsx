@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import { useProbador } from "../hooks/useProbador.jsx";
 import { useCombinacion } from "../hooks/useCombinacion.jsx";
 import { useModelo3D } from "../hooks/useModelo3D.jsx";
@@ -13,12 +12,12 @@ import SugerenciasModal from "../components/shared/SugerenciasModal";
 import RecommendationChat from "../components/RecommendationChat.jsx";
 
 export default function Home() {
-  const navigate = useNavigate();
   const { user } = useAuth();
 
   const {
     prendas,
     loading,
+    loadingPagination,
     error,
     criticalError,
     filtros,
@@ -27,6 +26,10 @@ export default function Home() {
     actualizarFiltros,
     limpiarFiltros,
     actualizarFavoritoLocal,
+    paginacionSuperiores,
+    paginacionInferiores,
+    fetchPrendasSuperiores,
+    fetchPrendasInferiores,
   } = useProbador();
 
   const {
@@ -306,6 +309,7 @@ export default function Home() {
         canCombine={canCombine}
         onCombinarPrendas={handleCombinarPrendas}
         loadingCombinacion={loadingCombinacion}
+        loadingPagination={loadingPagination}
         resultado={resultado}
         errorCombinacion={errorCombinacion}
         errorModelo3D={errorModelo3D}
@@ -319,6 +323,10 @@ export default function Home() {
         isDrawerOpen={isDrawerOpen}
         setIsDrawerOpen={setIsDrawerOpen}
         setAutoOpenDisabled={setAutoOpenDisabled}
+        paginacionSuperiores={paginacionSuperiores}
+        paginacionInferiores={paginacionInferiores}
+        onPageChangeSuperiores={fetchPrendasSuperiores}
+        onPageChangeInferiores={fetchPrendasInferiores}
       />
 
       <div className="flex-1 flex flex-col gap-4 overflow-hidden">

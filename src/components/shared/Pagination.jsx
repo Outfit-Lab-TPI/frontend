@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 
 function Pagination({
   currentPage,
@@ -6,13 +6,14 @@ function Pagination({
   onPageChange,
   totalElements,
   size,
-  className = ""
+  className = "",
+  itemLabel = "elementos"
 }) {
   if (totalPages <= 1) return null;
 
   const generatePageNumbers = () => {
     const pages = [];
-    const delta = 2; // Número de páginas a mostrar a cada lado de la página actual
+    const delta = 1; // Número de páginas a mostrar a cada lado de la página actual
 
     let start = Math.max(0, currentPage - delta);
     let end = Math.min(totalPages - 1, currentPage + delta);
@@ -33,24 +34,36 @@ function Pagination({
   };
 
   const pageNumbers = generatePageNumbers();
+  const startItem = Math.min((currentPage * size) + 1, totalElements);
+  const endItem = Math.min((currentPage + 1) * size, totalElements);
 
   return (
-    <div className={`flex flex-col items-center gap-4 ${className}`}>
+    <div className={`flex flex-col items-center gap-3 py-4 ${className}`}>
       {/* Información de elementos */}
-      <div className="text-sm text-gray">
-        Mostrando {Math.min((currentPage * size) + 1, totalElements)} - {Math.min((currentPage + 1) * size, totalElements)} de {totalElements} marcas
+      <div className="text-xs sm:text-sm text-gray/80 font-medium">
+        Mostrando <span className="text-white">{startItem} - {endItem}</span> de <span className="text-white">{totalElements}</span> {itemLabel}
       </div>
 
       {/* Controles de paginación */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2">
+        {/* Botón primera página */}
+        <button
+          onClick={() => onPageChange(0)}
+          disabled={currentPage === 0}
+          className="hidden sm:flex items-center justify-center w-9 h-9 rounded-lg bg-gray/10 hover:bg-gray/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105 active:scale-95"
+          title="Primera página"
+        >
+          <ChevronsLeft className="w-4 h-4" />
+        </button>
+
         {/* Botón anterior */}
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 0}
-          className="flex items-center justify-center w-10 h-10 rounded-lg bg-gray/20 hover:bg-gray/40 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center justify-center w-9 h-9 rounded-lg bg-gray/10 hover:bg-gray/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105 active:scale-95"
           title="Página anterior"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="w-4 h-4" />
         </button>
 
         {/* Primera página si no está visible */}
@@ -58,12 +71,12 @@ function Pagination({
           <>
             <button
               onClick={() => onPageChange(0)}
-              className="flex items-center justify-center w-10 h-10 rounded-lg bg-gray/20 hover:bg-gray/40 transition-colors"
+              className="hidden sm:flex items-center justify-center min-w-9 h-9 px-2 rounded-lg bg-gray/10 hover:bg-gray/20 transition-all duration-200 hover:scale-105 active:scale-95 text-sm font-medium"
             >
               1
             </button>
             {pageNumbers[0] > 1 && (
-              <span className="text-gray">...</span>
+              <span className="text-gray/60 px-1 select-none">...</span>
             )}
           </>
         )}
@@ -73,10 +86,10 @@ function Pagination({
           <button
             key={page}
             onClick={() => onPageChange(page)}
-            className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${
+            className={`flex items-center justify-center min-w-9 h-9 px-2 rounded-lg transition-all duration-200 text-sm font-medium ${
               page === currentPage
-                ? 'bg-primary text-black font-semibold'
-                : 'bg-gray/20 hover:bg-gray/40'
+                ? 'bg-tertiary/80 text-black font-bold shadow-lg shadow-primary/20 scale-105'
+                : 'bg-gray/10 hover:bg-gray/20 hover:scale-105 active:scale-95'
             }`}
           >
             {page + 1}
@@ -87,11 +100,11 @@ function Pagination({
         {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
           <>
             {pageNumbers[pageNumbers.length - 1] < totalPages - 2 && (
-              <span className="text-gray">...</span>
+              <span className="text-gray/60 px-1 select-none">...</span>
             )}
             <button
               onClick={() => onPageChange(totalPages - 1)}
-              className="flex items-center justify-center w-10 h-10 rounded-lg bg-gray/20 hover:bg-gray/40 transition-colors"
+              className="hidden sm:flex items-center justify-center min-w-9 h-9 px-2 rounded-lg bg-gray/10 hover:bg-gray/20 transition-all duration-200 hover:scale-105 active:scale-95 text-sm font-medium"
             >
               {totalPages}
             </button>
@@ -102,10 +115,20 @@ function Pagination({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages - 1}
-          className="flex items-center justify-center w-10 h-10 rounded-lg bg-gray/20 hover:bg-gray/40 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex items-center justify-center w-9 h-9 rounded-lg bg-gray/10 hover:bg-gray/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105 active:scale-95"
           title="Página siguiente"
         >
-          <ChevronRight className="w-5 h-5" />
+          <ChevronRight className="w-4 h-4" />
+        </button>
+
+        {/* Botón última página */}
+        <button
+          onClick={() => onPageChange(totalPages - 1)}
+          disabled={currentPage === totalPages - 1}
+          className="hidden sm:flex items-center justify-center w-9 h-9 rounded-lg bg-gray/10 hover:bg-gray/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105 active:scale-95"
+          title="Última página"
+        >
+          <ChevronsRight className="w-4 h-4" />
         </button>
       </div>
     </div>

@@ -155,7 +155,9 @@ describe('useDashboard', () => {
       await waitFor(() => {
         expect(result.current.data).toEqual(mockData)
       })
-      expect(apiClient.get).toHaveBeenCalledWith('/dashboard/color-conversion')
+      expect(apiClient.get).toHaveBeenCalledWith('/dashboard/color-conversion', {
+        params: { brandCode: '' }
+      })
       expect(result.current.loading).toBe(false)
       expect(result.current.error).toBe(null)
     })
