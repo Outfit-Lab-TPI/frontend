@@ -1,11 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
-import { useProbador } from "../hooks/useProbador.jsx";
+import { useProbador } from "../hooks/probador/useProbador.jsx";
 import { useCombinacion } from "../hooks/useCombinacion.jsx";
 import { useModelo3D } from "../hooks/useModelo3D.jsx";
-import { useFavoritos } from "../hooks/useFavoritos.jsx";
+import { useFavoritos } from "../hooks/probador/useFavoritos.jsx";
 import { useSugerencias } from "../hooks/useSugerencias.jsx";
 import { useAuth } from "../hooks/auth/useAuth.jsx";
-import { useRecomendacionAI } from "../hooks/useRecomendacionAI.jsx";
+import { useRecomendacionAI } from "../hooks/probador/useRecomendacionAI.jsx";
 import ProbadorContenido from "../components/ProbadorContenido.jsx";
 import Panel from "../components/Panel.jsx";
 import SugerenciasModal from "../components/shared/SugerenciasModal";
