@@ -4,7 +4,7 @@ import { useMarcaDetail } from "../hooks/useMarcaDetail.jsx";
 import { useCombinacion } from "../hooks/useCombinacion.jsx";
 import { useModelo3D } from "../hooks/useModelo3D.jsx";
 import { useSugerencias } from "../hooks/useSugerencias.jsx";
-import { useFavoritos } from "../hooks/probador/useFavoritos.jsx";
+import { useFavoritos } from "../hooks/useFavoritos.jsx";
 import { useAuth } from "../hooks/auth/useAuth.jsx";
 import MarcaContenido from "../components/MarcaContenido.jsx";
 import Panel from "../components/Panel.jsx";

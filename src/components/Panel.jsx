@@ -2,7 +2,7 @@ import { Blend, Box, LoaderCircle, Heart } from "lucide-react";
 import { VscPerson } from "react-icons/vsc";
 import { useState, useEffect } from "react";
 import ModeloViewer from "./ModeloViewer.jsx";
-import { useFavoritos } from "../hooks/probador/useFavoritos.jsx";
+import { useFavoritos } from "../hooks/useFavoritos.jsx";
 import DownloadButton from "./shared/DownloadButton.jsx";
 
 function Panel({

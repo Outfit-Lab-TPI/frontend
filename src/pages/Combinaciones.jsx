@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { BookHeart, CircleArrowLeft } from "lucide-react";
-import { useCombinacionesFavoritas } from "../hooks/usuario/useCombinacionesFavoritas.jsx";
-import { useFavoritos } from "../hooks/probador/useFavoritos.jsx";
+import { useCombinacionesFavoritas } from "../hooks/useCombinacionesFavoritas.jsx";
+import { useFavoritos } from "../hooks/useFavoritos.jsx";
 import { useCombinacion } from "../hooks/useCombinacion.jsx";
 import { useModelo3D } from "../hooks/useModelo3D.jsx";
 import { useNavigate } from "react-router-dom";

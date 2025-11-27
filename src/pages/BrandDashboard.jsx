@@ -3,7 +3,7 @@ import {
   useColorConversion,
   useTopCombos,
   useTopPrendas,
-} from "@/hooks/marca/useDashboard";
+} from "@/hooks/useDashboard";
 import React, { useState, useMemo, useEffect } from "react";
 import { COLOR_MAP } from "@/lib/constants";
 import { useAuth } from "@/hooks/auth/useAuth";
