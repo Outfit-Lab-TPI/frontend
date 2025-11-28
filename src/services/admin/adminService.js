@@ -47,9 +47,7 @@ export const adminService = {
   // Cambiar rol de un usuario (admin/usuario)
   cambiarRolUsuario: async (userId, nuevoRol) => {
     try {
-      // TODO: Implementar endpoint cuando esté disponible
       let endpointToConvert = nuevoRol === 'ADMIN' ? 'convert-to-admin' : 'convert-to-user';
-      console.log(endpointToConvert + " -- nuevo rol->" + nuevoRol)
       return await apiClient.put(`/users/${endpointToConvert}/${userId}`);
     } catch (error) {
       error.isCritical = isCriticalError(error);
@@ -84,10 +82,7 @@ export const adminService = {
   // Activar/desactivar marca
   toggleMarcaActiva: async (marcaId, activa) => {
     try {
-      // TODO: Implementar endpoint cuando esté disponible
-      console.log("estado de marca actual: " + activa)
       let endpoint = !activa ? "desactivate" : "activate";
-      console.log("endpoint marca: " + endpoint)
       return await apiClient.patch(`/marcas/${endpoint}/${marcaId}`);
     } catch (error) {
       error.isCritical = isCriticalError(error);

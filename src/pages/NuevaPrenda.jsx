@@ -1,11 +1,13 @@
-import { useNuevaPrenda } from "../hooks/useNuevaPrenda";
+import { usePrendaCRUD } from "../hooks/marca/usePrendaCRUD";
 import Button from "../components/shared/Button";
 import { useState } from "react";
 import { Info, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function NuevaPrenda() {
-  const { register, handleSubmit, errors, isSubmitting, watch } =
-    useNuevaPrenda();
+  const { register, handleSubmit, errors, isSubmitting, watch, crearPrenda } =
+    usePrendaCRUD();
+  const navigate = useNavigate();
 
   const [showTooltip, setShowTooltip] = useState(false)
   const [selectedImage, setSelectedImage] = useState(null)
@@ -16,6 +18,14 @@ function NuevaPrenda() {
 
   // Validación personalizada
   const isFormValid = nombre && tipo && selectedImage
+
+  // Handler para crear prenda
+  const onSubmit = async (data) => {
+    const success = await crearPrenda(data)
+    if (success) {
+      navigate('/marca')
+    }
+  }
 
   // Obtener el registro de la imagen para combinar handlers
   const imageRegister = register("imagen", {
@@ -84,7 +94,7 @@ function NuevaPrenda() {
             </h2>
             <form
               id="nueva-prenda-form"
-              onSubmit={handleSubmit}
+              onSubmit={handleSubmit(onSubmit)}
               className="space-y-6"
               aria-label="nueva prenda"
             >

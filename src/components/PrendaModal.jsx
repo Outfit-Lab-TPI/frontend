@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { X, Info, Plus, Trash2 } from "lucide-react";
-import { usePrendaCRUD } from "../hooks/usePrendaCRUD";
+import { usePrendaCRUD } from "../hooks/marca/usePrendaCRUD";
 import { useForm } from "react-hook-form";
 import Button from "./shared/Button";
 import { validarImagenDeRopa } from './../lib/clothingValidation'

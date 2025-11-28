@@ -8,7 +8,6 @@ const MercadoPagoWrapper = ({ children }) => {
   useEffect(() => {
     if (MP_PUBLIC_KEY) {
       initMercadoPago(MP_PUBLIC_KEY, { locale: 'es-AR' }); 
-      console.log("Mercado Pago SDK inicializado.");
     } else {
       console.error("ERROR: La Public Key de Mercado Pago no está configurada.");
     }

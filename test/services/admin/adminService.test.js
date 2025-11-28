@@ -19,12 +19,11 @@ describe('adminService', () => {
   describe('obtenerUsuarios', () => {
     it('debe obtener usuarios exitosamente', async () => {
       // given
-      const mockUsuarios = [
+      const expectedUsuarios = [
         { email: 'user1@test.com', name: 'User 1', role: 'USER' },
         { email: 'user2@test.com', name: 'User 2', role: 'ADMIN' }
       ]
-      apiClient.get.mockResolvedValueOnce({ data: mockUsuarios })
-
+      apiClient.get.mockResolvedValueOnce({ data: expectedUsuarios })
       // when
       const result = await adminService.obtenerUsuarios()
 
@@ -52,7 +51,7 @@ describe('adminService', () => {
   describe('obtenerMarcasAdmin', () => {
     it('debe obtener marcas exitosamente', async () => {
       // given
-      const mockMarcas = {
+      const expectedMarcas = {
         data: {
           content: [
             { codigoMarca: 'NIKE', nombre: 'Nike' },
@@ -60,14 +59,14 @@ describe('adminService', () => {
           ]
         }
       }
-      apiClient.get.mockResolvedValueOnce(mockMarcas)
+      apiClient.get.mockResolvedValueOnce(expectedMarcas)
 
       // when
       const result = await adminService.obtenerMarcasAdmin()
 
       // then
       expect(apiClient.get).toHaveBeenCalledWith('/marcas/all')
-      expect(result).toEqual(mockMarcas)
+      expect(result).toEqual(expectedMarcas)
     })
   })
 

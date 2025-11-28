@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Search, Users, Store } from 'lucide-react';
-import { useAdmin } from '../hooks/useAdmin.jsx';
+import { useAdmin } from '../hooks/admin/useAdmin';
 import TablaUsuarios from '../components/admin/TablaUsuarios.jsx';
 import TablaMarcas from '../components/admin/TablaMarcas.jsx';
 

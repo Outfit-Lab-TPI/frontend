@@ -18,23 +18,17 @@ export async function cargarModelosSiNoEstan() {
       await tf.ready();
     }
 
-    console.log("Backend inicializado:", tf.getBackend());
-
     if (!modeloPersonas) {
-      console.log("Cargando modelo COCO...");
       modeloPersonas = await cocoSsd.load();
-      console.log("Modelo COCO cargado");
     }
 
     if (!modeloPose) {
-      console.log("Cargando modelo MoveNet...");
       modeloPose = await poseDetection.createDetector(
         poseDetection.SupportedModels.MoveNet,
         {
           modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING
         }
       );
-      console.log("Modelo MoveNet cargado");
     }
   })();
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SubscriptionCard from '../components/SubscriptionCard.jsx';
 import PaymentStatusDialog from "../components/shared/PaymentStatusDialog.jsx";
-import { useSubscription } from '../hooks/useSubscription.jsx';
+import { useSubscription } from '../hooks/shared/useSubscription.jsx';
 import { useAuth } from '../hooks/auth/useAuth.jsx';
 
 const SubscriptionPage = () => {

@@ -1,9 +1,9 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
-import { useMarcaDetail } from "../hooks/useMarcaDetail.jsx";
-import { useCombinacion } from "../hooks/useCombinacion.jsx";
-import { useModelo3D } from "../hooks/useModelo3D.jsx";
-import { useSugerencias } from "../hooks/useSugerencias.jsx";
+import { useMarcaDetail } from "../hooks/marca/useMarcaDetail.jsx";
+import { useCombinacion } from "../hooks/probador/useCombinacion.jsx";
+import { useModelo3D } from "../hooks/probador/useModelo3D.jsx";
+import { useSugerencias } from "../hooks/shared/useSugerencias.jsx";
 import { useFavoritos } from "../hooks/probador/useFavoritos.jsx";
 import { useAuth } from "../hooks/auth/useAuth.jsx";
 import MarcaContenido from "../components/MarcaContenido.jsx";

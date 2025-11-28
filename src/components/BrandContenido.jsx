@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { SquareArrowOutUpRight, Plus } from "lucide-react";
 import BrandPrendaCard from "./BrandPrendaCard.jsx";
 import Button from "./shared/Button.jsx";
-import GoBackButton from "./shared/GoBackButton.jsx";
 
 function BrandContenido({
   marcaDetail,

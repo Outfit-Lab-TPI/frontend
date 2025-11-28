@@ -23,23 +23,23 @@ describe('useAdmin', () => {
 
   it('debe cargar usuarios y marcas al inicializar', async () => {
     // given
-    const mockUsuarios = [
+    const expectedUsuarios = [
       { email: 'user1@test.com', name: 'User', lastName: 'One', role: 'USER', status: true }
     ]
-    const mockMarcas = [
+    const expectedMarcas = [
       { name: 'Brand', lastname: 'One', email: 'brand@test.com', brand: { codigoMarca: 'B1', nombre: 'Brand1' }, status: true, brandApproved: true }
     ]
 
-    adminService.obtenerUsuarios.mockResolvedValueOnce({ data: { content: mockUsuarios } })
-    adminService.obtenerMarcasAdmin.mockResolvedValueOnce({ data: { content: mockMarcas } })
+    adminService.obtenerUsuarios.mockResolvedValueOnce({ data: { content: expectedUsuarios } })
+    adminService.obtenerMarcasAdmin.mockResolvedValueOnce({ data: { content: expectedMarcas } })
 
     // when
     const { result } = renderHook(() => useAdmin())
 
     // then
     await waitFor(() => {
-      expect(result.current.usuarios).toEqual(mockUsuarios)
-      expect(result.current.marcas).toEqual(mockMarcas)
+      expect(result.current.usuarios).toEqual(expectedUsuarios)
+      expect(result.current.marcas).toEqual(expectedMarcas)
     })
     expect(result.current.loadingUsuarios).toBe(false)
     expect(result.current.loadingMarcas).toBe(false)
@@ -47,12 +47,12 @@ describe('useAdmin', () => {
 
   it('debe filtrar usuarios por búsqueda', async () => {
     // given
-    const mockUsuarios = [
+    const expectedUsuarios = [
       { email: 'john@test.com', name: 'John', lastName: 'Doe', role: 'USER', status: true },
       { email: 'jane@test.com', name: 'Jane', lastName: 'Smith', role: 'USER', status: true }
     ]
 
-    adminService.obtenerUsuarios.mockResolvedValueOnce({ data: { content: mockUsuarios } })
+    adminService.obtenerUsuarios.mockResolvedValueOnce({ data: { content: expectedUsuarios } })
     adminService.obtenerMarcasAdmin.mockResolvedValueOnce({ data: { content: [] } })
 
     const { result } = renderHook(() => useAdmin())
@@ -73,11 +73,11 @@ describe('useAdmin', () => {
 
   it('debe cambiar rol de usuario exitosamente', async () => {
     // given
-    const mockUsuarios = [
+    const expectedUsuarios = [
       { email: 'user@test.com', name: 'User', lastName: 'Test', role: 'USER', status: true }
     ]
 
-    adminService.obtenerUsuarios.mockResolvedValueOnce({ data: { content: mockUsuarios } })
+    adminService.obtenerUsuarios.mockResolvedValueOnce({ data: { content: expectedUsuarios } })
     adminService.obtenerMarcasAdmin.mockResolvedValueOnce({ data: { content: [] } })
     adminService.cambiarRolUsuario.mockResolvedValueOnce({ success: true })
 
@@ -100,11 +100,11 @@ describe('useAdmin', () => {
 
   it('debe cambiar estado activo de usuario', async () => {
     // given
-    const mockUsuarios = [
+    const expectedUsuarios = [
       { email: 'user@test.com', name: 'User', lastName: 'Test', role: 'USER', status: true }
     ]
 
-    adminService.obtenerUsuarios.mockResolvedValueOnce({ data: { content: mockUsuarios } })
+    adminService.obtenerUsuarios.mockResolvedValueOnce({ data: { content: expectedUsuarios } })
     adminService.obtenerMarcasAdmin.mockResolvedValueOnce({ data: { content: [] } })
     adminService.toggleUsuarioActivo.mockResolvedValueOnce({ success: true })
 
@@ -127,12 +127,12 @@ describe('useAdmin', () => {
 
   it('debe cambiar estado activo de marca', async () => {
     // given
-    const mockMarcas = [
+    const expectedMarcas = [
       { name: 'Brand', lastname: 'One', email: 'brand@test.com', brand: { codigoMarca: 'B1', nombre: 'Brand1' }, status: true, brandApproved: true }
     ]
 
     adminService.obtenerUsuarios.mockResolvedValueOnce({ data: { content: [] } })
-    adminService.obtenerMarcasAdmin.mockResolvedValueOnce({ data: { content: mockMarcas } })
+    adminService.obtenerMarcasAdmin.mockResolvedValueOnce({ data: { content: expectedMarcas } })
     adminService.toggleMarcaActiva.mockResolvedValueOnce({ success: true })
 
     const { result } = renderHook(() => useAdmin())

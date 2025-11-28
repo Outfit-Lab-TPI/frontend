@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
 import { useProbador } from "../hooks/probador/useProbador.jsx";
-import { useCombinacion } from "../hooks/useCombinacion.jsx";
-import { useModelo3D } from "../hooks/useModelo3D.jsx";
+import { useCombinacion } from "../hooks/probador/useCombinacion.jsx";
+import { useModelo3D } from "../hooks/probador/useModelo3D.jsx";
 import { useFavoritos } from "../hooks/probador/useFavoritos.jsx";
-import { useSugerencias } from "../hooks/useSugerencias.jsx";
+import { useSugerencias } from "../hooks/shared/useSugerencias.jsx";
 import { useAuth } from "../hooks/auth/useAuth.jsx";
 import { useRecomendacionAI } from "../hooks/probador/useRecomendacionAI.jsx";
 import ProbadorContenido from "../components/ProbadorContenido.jsx";

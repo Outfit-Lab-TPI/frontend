@@ -1,4 +1,4 @@
-import { useMarcas } from '../hooks/useMarcas.jsx';
+import { useMarcas } from '../hooks/marca/useMarcas.jsx';
 import MarcaCard from '../components/MarcaCard.jsx';
 import { useEffect } from 'react';
 

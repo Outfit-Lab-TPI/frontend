@@ -29,7 +29,6 @@ export function useRecomendacionAI(userId) {
     setRecommendations(null);
 
      try {
-        console.log("-> DISPARANDO LLAMADA A API CON USER ID:", userId);
         const results = await sugerenciasIAService.obtenerRecomendacionesPorTexto(
             userId,
             peticionUsuario

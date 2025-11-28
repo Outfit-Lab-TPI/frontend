@@ -1,4 +1,4 @@
-import { modelo3DService } from "@/services/modelo3DService";
+import { modelo3DService } from "@/services/probador/modelo3DService";
 import { ArrowDownToLine } from "lucide-react";
 export default function DownloadButton ({fileUrl}){
     const handleDownload = async (e) => {

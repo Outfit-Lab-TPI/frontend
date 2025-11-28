@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../hooks/auth/useAuth";
 import { useNavigate } from "react-router-dom";
-import { usePerfil } from "../../hooks/usePerfil";
+import { usePerfil } from "../../hooks/usuario/usePerfil";
 import ProfileForm from "./ProfileForm";
 import ProfileAvatar from "./ProfileAvatar";
 

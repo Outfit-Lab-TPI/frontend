@@ -24,12 +24,8 @@ export async function cargarModeloRopaSiNoEsta() {
       await tf.ready();
     }
 
-    console.log("Backend inicializado:", tf.getBackend());
-
     if (!modeloRopa) {
-      console.log("Cargando modelo MobileNet para prendas...");
       modeloRopa = await mobilenet.load();
-      console.log("Modelo MobileNet cargadooo");
     }
   })();
 
@@ -52,8 +48,6 @@ export async function validarImagenDeRopa(file) {
     const img = await fileToImage(file);
 
     const predictions = await modeloRopa.classify(img);
-
-    console.log("Predicciones:", predictions);
 
     const labels = predictions.map(p => p.className.toLowerCase());
 

@@ -1,4 +1,4 @@
-import apiClient from '../api'
+import apiClient from '../api.js'
 
 export const prendaService = {
   crearPrenda: async (formData) => {
@@ -19,12 +19,8 @@ export const prendaService = {
 
   editarPrenda: async (id, formData) => {
     try {
-      console.log('Editando prenda en servicio:', { id, formData })
-      console.log(formData)
-      formData.forEach((value, key) => {
-        console.log(key, value);
+      formData.forEach(() => {
       });
-      // TODO: Implementar endpoint para editar prenda
       const response = await apiClient.patch(`/garments/update/${id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -39,8 +35,6 @@ export const prendaService = {
 
   eliminarPrenda: async (id) => {
     try {
-      console.log('Eliminando prenda en servicio:', { id })
-
       const response = await apiClient.delete(`/garments/delete/${id}`)
       return response
     } catch (error) {

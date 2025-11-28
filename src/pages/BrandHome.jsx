@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
-import { useMarcaDetail } from "../hooks/useMarcaDetail.jsx";
+import { useMarcaDetail } from "../hooks/marca/useMarcaDetail.jsx";
 import BrandContenido from "../components/BrandContenido.jsx";
 import PrendaModal from "../components/PrendaModal.jsx";
 import { useAuth } from '../hooks/auth/useAuth.jsx'
 
 export default function BrandHome() {
-  // TODO: Obtener codigoMarca del user context cuando esté implementado el auth
    const { user } = useAuth();
    const codigoMarca = user.brand.codigoMarca;
-  //const codigoMarca = "puma"; // Hardcodeado temporalmente
 
   const {
     marcaDetail,

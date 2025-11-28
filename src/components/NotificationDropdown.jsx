@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { FiBell, FiCheck } from "react-icons/fi";
-import { useNotifications } from "../hooks/useNotifications";
+import { useNotifications } from "../hooks/admin/useNotifications";
 import { ArrowUpRight } from "lucide-react";
 const NotificationDropdown = () => {
   const [open, setOpen] = useState(false);
