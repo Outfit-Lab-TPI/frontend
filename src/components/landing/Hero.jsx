@@ -10,7 +10,7 @@ export default function HeroSection() {
             <span className="text-[var(--tertiary)] font-semibold">moda</span>{" "}
             virtual
           </h1>
-          <em className="text-[var(--white)] max-w-[480px] sm:mx-5 lg:mx-0 hidden md:block mt-4 text-lg text-left mt-[-5px] mb-5">
+          <em className="text-[var(--white)] max-w-[480px] sm:mx-5 lg:mx-0 hidden md:block text-lg text-left mt-[-5px] mb-5">
             Permití a tus clientes probarse tus prendas en segundos.
           </em>
           <div className="m-4 hidden md:block lg:mx-0">
